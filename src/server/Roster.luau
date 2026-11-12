@@ -28,6 +28,8 @@ local aliveSet: { [Actor]: boolean } = {}
 local participants: { Actor } = {}
 local beforeTake: { (Actor) -> () } = {}
 local afterTake: { (Actor) -> () } = {}
+-- Peut annuler une aspiration (le Cocon de secours) : rend vrai s'il sauve.
+local saver: ((Actor) -> boolean)? = nil
 
 local function publish()
 	local n = 0
@@ -125,9 +127,16 @@ function Roster.onTaken(callback: (Actor) -> ())
 	table.insert(afterTake, callback)
 end
 
+function Roster.setSaver(callback: (Actor) -> boolean)
+	saver = callback
+end
+
 -- L'Oeil prend ce participant : il monte vers le ciel, puis disparait.
 function Roster.take(actor: Actor)
 	if not aliveSet[actor] then
+		return
+	end
+	if saver and saver(actor) then
 		return
 	end
 	aliveSet[actor] = nil

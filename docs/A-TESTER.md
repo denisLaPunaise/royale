@@ -115,3 +115,52 @@ aux rebords, l'écran « K.O. » et « Tu portes … ».
 11. Accroupi et glissade : les jambes s'enfoncent dans le sol (pas encore
     d'animation). Gênant ?
 
+## Les objets (12 novembre 2026)
+
+**Vérifié seul dans Studio** (sondes sur des bots) :
+- 30 meubles fouillés : 12 objets, 18 vides (commun 6, peu commun 4,
+  épique 2), aucun meuble fouillé deux fois.
+- Les 28 objets donnés puis utilisés un par un : chacun agit ou refuse avec
+  un message clair (« Il faut être caché dedans », « Aucun faisceau ne te
+  suit », « Rien où s'accrocher »…).
+- Le fumigène coupe vraiment la vue de l'Œil : un bot à découvert vu à
+  1,00, dans la fumée à 0,00.
+- La batte met K.O. en 2 coups et décompte ses coups ; la lampe éblouit.
+- Clochette (elle sonne quand quelqu'un entre), planches (la poussée ne
+  déloge plus), piège (on tombe en sortant), carton piégé (on en est
+  éjecté), Cocon de secours (aspiré, on reste en vie, une fois), Relique
+  (posée, prise, annoncée), aspiré = son sac tombe par terre.
+- Le filet lancé à ses pieds ne renverse plus son lanceur (corrigé).
+- Une partie de 4 minutes avec les bots : ils ont fouillé 31 meubles, aucune
+  erreur, ni serveur ni joueur.
+- **Vérifié par le calcul** (test) : un lancer droit devant tombe à 43 studs ;
+  le meilleur sac de 4 protège 45 s, moins d'un quart du plus court Regard ;
+  aucun objet ne couvre toute une ouverture de l'Œil.
+
+**Vu à l'écran** : le sac en bas (couleur de rareté, place choisie en
+vert, effet en cours au-dessus). Corrigé ensuite pour les petites fenêtres
+(la barre débordait) ; ce dernier réglage n'a pas été revu à l'écran.
+
+**Jamais vu à l'écran ni à la manette** : le trait de visée et le vol des
+objets, la fumée, les fusées, la flaque, le grappin, le Regard volé, les
+joueurs révélés par les jumelles, l'écran blanc de la lampe, la Relique qui
+brille. Le vol d'un K.O. (l'invite ne se déclenche pas depuis le pont).
+
+**À regarder en jouant, dans l'ordre :**
+
+1. Maintiens X sur un meuble (cuisine, armoire, caisse) : 1,5 s, c'est
+   trop long quand l'Œil va s'ouvrir ? Trouve-t-on assez souvent quelque
+   chose (environ un meuble sur deux) ?
+2. L1 / R1 pour choisir, L2 pour utiliser. Le nom et l'aide au-dessus du
+   sac se lisent bien ?
+3. Fumigène : L2 maintenu, le trait de l'arc se voit ? Lâche : il tombe où
+   tu visais ? Cache-toi dans la fumée pendant qu'un faisceau passe.
+4. Pétard et fusée éclairante loin de toi : le faisceau y va ?
+5. Sac plein, ramasse un objet : celui que tu tenais tombe par terre et se
+   ramasse (X).
+6. Mets un ami K.O. (3 coups), maintiens X sur lui : tu lui voles un objet.
+7. Craie sur la cachette d'un ami, puis attends l'ouverture suivante.
+8. Une Relique tombe au Regard 3 : l'annonce se voit ? On y court tous ?
+9. Les objets trop forts, trop faibles, inutiles ? (Josh : rien ne doit
+   être trop fort.)
+

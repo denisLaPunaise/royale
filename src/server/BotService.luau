@@ -29,6 +29,7 @@ local Config = require(Royale:WaitForChild("Config"))
 
 local CombatService = require(script.Parent.CombatService)
 local HidingService = require(script.Parent.HidingService)
+local ItemService = require(script.Parent.ItemService)
 local Roster = require(script.Parent.Roster)
 local World = require(script.Parent.World)
 local ZoneService = require(script.Parent.ZoneService)
@@ -65,6 +66,8 @@ type Bot = {
 	stuck: number,
 	-- Les cachettes qu'il evite un moment (inaccessibles pour lui).
 	avoid: { [Model]: number },
+	-- Il fouille ce meuble jusqu'a cette heure.
+	searchUntil: number?,
 }
 
 local bots: { Bot } = {}
@@ -377,6 +380,50 @@ local function nearestActor(bot: Bot, range: number): Roster.Actor?
 	return best
 end
 
+-- La relique, ou le meuble le plus proche : y aller, puis fouiller le temps
+-- qu'il faut (comme un joueur qui maintient X). Rend vrai s'il s'en occupe.
+local function goToLoot(bot: Bot, position: Vector3, circle: Vector3?, now: number): boolean
+	local relic = ItemService.relicNear(position, B.relicRadius)
+	if relic then
+		if (relic.Position - position).Magnitude <= Config.loot.promptDistance then
+			ItemService.tryTakeRelic(bot.model)
+			stop(bot)
+		else
+			setGoal(bot, relic.Position, true, nil)
+		end
+		return true
+	end
+	local full = true
+	for _, id in ItemService.bagOf(bot.model) do
+		if id == "" then
+			full = false
+		end
+	end
+	if full then
+		return false
+	end
+	local part = ItemService.searchableNear(position, B.searchRadius)
+	if part == nil or (circle and not insideCircle(circle, part.Position)) then
+		bot.searchUntil = nil
+		return false
+	end
+	if (part.Position - position).Magnitude <= Config.loot.promptDistance then
+		if bot.goal then
+			stop(bot)
+		end
+		if bot.searchUntil == nil then
+			bot.searchUntil = now + Config.loot.searchSeconds
+		elseif now >= bot.searchUntil then
+			bot.searchUntil = nil
+			ItemService.trySearch(bot.model, part)
+		end
+	else
+		bot.searchUntil = nil
+		setGoal(bot, part.Position, false, nil)
+	end
+	return true
+end
+
 local function think(bot: Bot, now: number)
 	if not Roster.isAlive(bot.model) or bot.model.Parent == nil then
 		return
@@ -414,6 +461,11 @@ local function think(bot: Bot, now: number)
 	end
 	local current = circleOf(Config.zone.attribute)
 	local nextCircle = circleOf(Config.zone.nextAttribute)
+
+	-- Traque : il sort ce qui le protege (fumigene, cape...).
+	if bot.model:GetAttribute(Config.eye.huntedAttribute) == true and not bot.careless then
+		ItemService.defend(bot.model)
+	end
 
 	-- Une nouvelle ouverture : cette fois-ci, joue-t-il mal ?
 	if open and not bot.lastBurstOpen then
@@ -499,7 +551,12 @@ local function think(bot: Bot, now: number)
 			end
 			setGoal(bot, target, true, nil)
 		end
-	-- 3. Au calme : vers une cachette du prochain cercle (ou de l'actuel). Un
+	-- 3. L'Oeil ferme : la relique s'il y en a une pas loin, sinon fouiller
+	-- un meuble du cercle s'il a de la place dans son sac.
+	elseif not open and not warning and goToLoot(bot, position, current, now) then
+		-- Le chemin (et le deblocage) se font plus bas, comme pour un autre but.
+		bot.sawDanger = false
+	-- 4. Au calme : vers une cachette du prochain cercle (ou de l'actuel). Un
 	-- but hors du prochain cercle ne vaut plus rien.
 	elseif
 		bot.goal == nil

@@ -56,6 +56,22 @@ local random = Random.new()
 -- Les bruits qu'on lui fait (coups, toquer a un abri) : `always`, il les
 -- entend a tout Regard ; sinon seulement quand il entend les coups.
 local noises: { { at: Vector3, untilT: number, always: boolean } } = {}
+-- Les leurres (fusees, mannequin) : un point qui attire un faisceau, ou tous.
+local lures: { { at: () -> Vector3?, untilT: number, all: boolean } } = {}
+-- Ceux qu'il ne voit plus un moment (le Miroir).
+local ignoredUntil: { [Roster.Actor]: number } = {}
+-- Tous les faisceaux eteints jusqu'a cette heure (la Larme).
+local blindUntil = 0
+-- Le Regard vole : qui dirige un faisceau, jusqu'a quand, et ou.
+local steer: { actor: Roster.Actor?, untilT: number, x: number, z: number } =
+	{ actor = nil, untilT = 0, x = 0, z = 0 }
+local FX = Config.effects
+
+-- Un effet (heure de fin du serveur, posee par ItemService) encore actif.
+local function effect(actor: Roster.Actor, attribute: string): boolean
+	local untilT = actor:GetAttribute(attribute)
+	return typeof(untilT) == "number" and workspace:GetServerTimeNow() < untilT
+end
 local folder: Folder? = nil
 
 local function beamFolder(): Folder
@@ -116,7 +132,73 @@ function EyeService.noise(at: Vector3, seconds: number, always: boolean)
 	table.insert(noises, { at = at, untilT = os.clock() + seconds, always = always })
 end
 
+-- Un leurre : `at` rend sa position (nil : il a disparu). `all` : tous les
+-- faisceaux y vont (Fusee rouge) ; sinon le plus proche.
+function EyeService.lure(at: () -> Vector3?, seconds: number, all: boolean)
+	table.insert(lures, { at = at, untilT = os.clock() + seconds, all = all })
+end
+
+-- Le Miroir : le faisceau qui le poursuit part sur le plus proche des autres,
+-- et ne le voit plus `seconds`. Rend vrai si un faisceau le poursuivait.
+function EyeService.deflect(actor: Roster.Actor, seconds: number): boolean
+	local id = Roster.idOf(actor)
+	local root = Roster.rootOf(actor)
+	ignoredUntil[actor] = os.clock() + seconds
+	local deflected = false
+	for _, beam in beams do
+		if beam.target == id and root then
+			deflected = true
+			local best, bestD = nil, math.huge
+			for _, other in Roster.alive() do
+				local r = Roster.rootOf(other)
+				if other ~= actor and r and not HidingService.isHidden(other) then
+					local d = (r.Position - root.Position).Magnitude
+					if d < bestD then
+						best, bestD = other, d
+					end
+				end
+			end
+			beam.target = if best then Roster.idOf(best) else nil
+		end
+	end
+	return deflected
+end
+
+-- La Larme : il cligne, tous les faisceaux s'eteignent.
+function EyeService.blink(seconds: number)
+	blindUntil = os.clock() + seconds
+end
+
+-- Le Carton piege : il est flaire, l'Oeil vient a lui.
+function EyeService.flag(actor: Roster.Actor)
+	local root = Roster.rootOf(actor)
+	if root then
+		local state = Suspicion.new(root.Position.X, root.Position.Z)
+		state.level = 1
+		suspicion[actor] = state
+	end
+end
+
+-- Le Regard vole : `actor` dirige un faisceau `seconds`.
+function EyeService.steer(actor: Roster.Actor, seconds: number)
+	local root = Roster.rootOf(actor)
+	steer.actor = actor
+	steer.untilT = os.clock() + seconds
+	steer.x = if root then root.Position.X else 0
+	steer.z = if root then root.Position.Z else 0
+end
+
+function EyeService.steerTo(actor: Roster.Actor, x: number, z: number)
+	if steer.actor == actor and os.clock() < steer.untilT then
+		steer.x, steer.z = x, z
+	end
+end
+
 function EyeService.reset()
+	table.clear(lures)
+	table.clear(ignoredUntil)
+	blindUntil = 0
+	steer.actor = nil
 	table.clear(noises)
 	table.clear(beams)
 	table.clear(exposure)
@@ -163,6 +245,7 @@ local function heard(regard: any): { Vector3 }
 			root
 			and not HidingService.isHidden(player)
 			and not ZoneService.outside(root.Position)
+			and not effect(player, FX.adrenalineAttribute)
 		then
 			local speed = Vector3.new(
 				root.AssemblyLinearVelocity.X,
@@ -216,6 +299,16 @@ function EyeService.step(dt: number, regard: any, open: boolean, burst: number, 
 		end
 	end
 	workspace:SetAttribute(Config.match.eyeOpenAttribute, open)
+	-- Les faisceaux allumes : ouvert, et pas pendant un clignement.
+	local lightsOn = open and now >= blindUntil
+	for i = #lures, 1, -1 do
+		if now >= lures[i].untilT or lures[i].at() == nil then
+			table.remove(lures, i)
+		end
+	end
+	if steer.actor and (now >= steer.untilT or not Roster.isAlive(steer.actor)) then
+		steer.actor = nil
+	end
 
 	-- Le nombre de faisceaux suit les joueurs en vie, meme au milieu d'une
 	-- ouverture.
@@ -254,9 +347,13 @@ function EyeService.step(dt: number, regard: any, open: boolean, burst: number, 
 		-- hors du cercle, c'est le regard rouge diffus qui s'en charge.
 		local inZone = not ZoneService.outside(root.Position)
 		local hidden = HidingService.isHidden(player)
-		local sight = if hidden then 0 else World.seenFactor(Roster.characterOf(player) :: Model)
+		local veiled = effect(player, FX.veiledAttribute)
+			or (ignoredUntil[player] ~= nil and now < (ignoredUntil[player] :: number))
+		local sight = if hidden or veiled
+			then 0
+			else World.seenFactor(Roster.characterOf(player) :: Model)
 		local lit = false
-		if open then
+		if lightsOn then
 			for _, beam in beams do
 				local dx, dz = root.Position.X - beam.x, root.Position.Z - beam.z
 				if dx * dx + dz * dz <= radius * radius then
@@ -312,7 +409,43 @@ function EyeService.step(dt: number, regard: any, open: boolean, burst: number, 
 		end
 		-- Bouger les faisceaux.
 		local sounds = heard(regard)
+		-- Les leurres : chacun prend le faisceau le plus proche, une fusee
+		-- rouge les prend tous ; le Regard vole tient le premier.
+		local forced: { [any]: Vector3 } = {}
+		if steer.actor and beams[1] then
+			forced[beams[1]] = Vector3.new(steer.x, 0, steer.z)
+		end
+		for _, lure in lures do
+			local at = lure.at()
+			if at == nil then
+				continue
+			end
+			if lure.all then
+				for _, beam in beams do
+					forced[beam] = at
+				end
+			else
+				local best, bestD = nil, math.huge
+				for _, beam in beams do
+					local d = (beam.x - at.X) ^ 2 + (beam.z - at.Z) ^ 2
+					if forced[beam] == nil and d < bestD then
+						best, bestD = beam, d
+					end
+				end
+				if best then
+					forced[best] = at
+				end
+			end
+		end
 		for _, beam in beams do
+			local lured = forced[beam]
+			if lured then
+				beam.target = nil
+				beam.x, beam.z =
+					Targeting.chaseStep(beam.x, beam.z, lured.X, lured.Z, regard.chaseSpeed, dt)
+				beam.x, beam.z = ZoneService.clamp(beam.x, beam.z)
+				continue
+			end
 			if now >= beam.reroll then
 				beam.ex, beam.ez = random:NextNumber(-1, 1), random:NextNumber(-1, 1)
 				beam.reroll = now + E.aimRerollSeconds
@@ -351,7 +484,7 @@ function EyeService.step(dt: number, regard: any, open: boolean, burst: number, 
 			end
 		end
 	end
-	publishBeams(open, radius)
+	publishBeams(lightsOn, radius)
 
 	-- Les jauges.
 	local hunted: { [Roster.Actor]: boolean } = {}
@@ -380,8 +513,12 @@ function EyeService.step(dt: number, regard: any, open: boolean, burst: number, 
 				drainSeconds = E.drainSeconds,
 			})
 		else
+			-- La Cape : la jauge monte moins vite.
+			local fill = if effect(player, FX.cloakAttribute)
+				then regard.fillSeconds / Config.items.cloak.fillFactor
+				else regard.fillSeconds
 			level = Exposure.step(level, factor[player] or 0, dt, {
-				fillSeconds = regard.fillSeconds,
+				fillSeconds = fill,
 				drainSeconds = E.drainSeconds,
 			})
 		end
@@ -399,6 +536,7 @@ function EyeService.step(dt: number, regard: any, open: boolean, burst: number, 
 end
 
 Players.PlayerRemoving:Connect(function(player: Player)
+	ignoredUntil[player] = nil
 	exposure[player] = nil
 	suspicion[player] = nil
 end)

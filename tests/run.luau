@@ -18,6 +18,7 @@ local suites = {
 	{ name = "Commandes manette et clavier", run = require("./specs/controls") },
 	{ name = "Le coeur du jeu", run = require("./specs/core") },
 	{ name = "Le corps a corps", run = require("./specs/combat") },
+	{ name = "Les objets", run = require("./specs/items") },
 	{ name = "Regles branchees", run = require("./specs/wiring") },
 }
 

@@ -148,3 +148,42 @@ d'abord le cœur »). Ce que la fiche ne fixait pas, pris par l'assistant :
   posture : sans elles, un corps « allongé » serait un corps enfoncé dans le
   sol.
 
+## 12 novembre 2026 — les objets, choix pris sans Josh
+
+- **L'équilibrage avant le code** (demandé par Josh) : chaque objet porte sa
+  durée de protection contre l'Œil (`shield`, la durée réelle de son
+  effet). Un test vérifie que le meilleur sac de 4 protège au plus un quart
+  du plus court Regard (45 s sur 210) et qu'aucun objet ne couvre toute
+  une ouverture. Ce qui contre chacun : la fumée ne cache que dedans, la
+  cape ralentit sans arrêter, la bâche saute dès qu'on bouge, le miroir ne
+  sert que si un faisceau te suit, le mannequin et les fusées attirent un
+  faisceau sans l'éteindre.
+- **Un meuble sur deux environ a quelque chose** (7 par participant, 60 au
+  moins, sur 276) ; les autres se fouillent pour rien. Fouiller fait du
+  bruit (entendu à partir du Regard 4).
+- **L'adrénaline ne dépasse pas la course** (22) : la fiche interdit d'aller
+  plus vite que l'Œil au dernier Regard. Elle donne donc la course dans
+  toutes les postures (accroupi, en portant quelqu'un), sans bruit pour
+  l'Œil, et on se relève deux fois plus vite. À revoir si elle semble
+  inutile.
+- **La batte se consomme** : 6 coups qui portent, puis elle est finie
+  (« presque tout se consomme »).
+- **Planches et Cadenas se posent de l'intérieur** de sa cachette : ils
+  empêchent qu'on te déloge (poussée, boule puante), pas l'Œil d'arracher.
+  Le cadenas seulement dans une cachette solide. Les cachettes n'ont qu'une
+  place pour l'instant, donc « personne d'autre n'entre » revient au même.
+- **Le carton piégé s'envole** quand quelqu'un s'y fait prendre (l'Œil
+  l'arrache, à la vue de tous) : il ne piège qu'une fois.
+- **La clochette se voit à l'écran** (« Une clochette sonne, à 40 m ») : le
+  jeu n'a encore aucun son.
+- **Le Cocon de secours ne marche plus à partir du Regard 4** : la fiche dit
+  qu'il ne marche plus quand le goulag ferme, aux deux derniers cercles.
+- **Deux Reliques par partie**, au début des Regards 3 et 4, sur un
+  emplacement de cachette à moins de la moitié du rayon du cercle.
+- **Un objet lancé ne touche jamais son lanceur** (bouteille, filet).
+- **Ce qui est par terre disparaît après 2 minutes.**
+- **Les bots** fouillent quand l'Œil est fermé (à moins de 120 studs),
+  courent à une relique à moins de 300 studs, et sortent leur meilleur
+  objet de protection quand un faisceau les suit. Ils ne posent ni craie ni
+  piège.
+

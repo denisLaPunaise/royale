@@ -169,7 +169,12 @@ local function targetInFront(
 end
 
 -- Le fait tomber `seconds` et le pousse de `push` (studs/s), s'il en a un.
+-- Sous adrenaline, on se releve plus vite.
 local function knockDown(actor: Roster.Actor, seconds: number, push: Vector3?)
+	local adrenaline = actor:GetAttribute(Config.effects.adrenalineAttribute)
+	if typeof(adrenaline) == "number" and workspace:GetServerTimeNow() < adrenaline then
+		seconds *= Config.items.adrenaline.fallFactor
+	end
 	states[actor] = Melee.fall(stateOf(actor), os.clock(), seconds)
 	publish(actor)
 	local root = Roster.rootOf(actor)
@@ -246,7 +251,18 @@ local function hit(actor: Roster.Actor, root: BasePart)
 	local target = targetInFront(actor, root, C.hitRange)
 	if target then
 		local now = os.clock()
-		local s, ko = Melee.hit(stateOf(target), now, C)
+		-- La batte : K.O. en moins de coups, tant qu'il lui en reste.
+		local bat = actor:GetAttribute(Config.effects.batAttribute)
+		local rules = C
+		if typeof(bat) == "number" and bat > 0 then
+			rules = {
+				hitsToKO = Config.items.bat.hitsToKO,
+				comboResetSeconds = C.comboResetSeconds,
+				koSeconds = C.koSeconds,
+			}
+			actor:SetAttribute(Config.effects.batAttribute, if bat > 1 then bat - 1 else nil)
+		end
+		local s, ko = Melee.hit(stateOf(target), now, rules)
 		states[target] = s
 		attackers[target] = { by = actor, at = now }
 		publish(target)
@@ -383,6 +399,14 @@ function CombatService.gesture(actor: Roster.Actor, name: string)
 		if flatSpeed(root) > Mv.runningAbove and ready(actor, "slide", Mv.slideCooldown) then
 			slides[actor] = { untilT = os.clock() + Mv.slideSeconds, hit = {} }
 		end
+	end
+end
+
+-- Renverse depuis un objet (bouteille, filet, huile, piege) : comme un
+-- plaquage, sans K.O.
+function CombatService.trip(actor: Roster.Actor, seconds: number, push: Vector3?)
+	if Roster.isAlive(actor) and carriedBy[actor] == nil then
+		knockDown(actor, seconds, push)
 	end
 end
 

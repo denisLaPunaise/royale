@@ -86,8 +86,15 @@ Rokit, StyLua, Selene, Lune, GitHub Actions, tous les chiffres dans
   du client dans `Controls` (glissade, s'agripper aux rebords), l'Œil entend
   les bruits (`EyeService.noise`), les bots rendent les coups et calculent
   leurs chemins par étapes de 400 studs.
-- **Ensuite** : s'allonger et ramper, les animations de posture, les
-  objets et la fouille (voler un K.O.), les power-ups de l'Œil, la méfiance des Repris, le
+- **12 novembre 2026, les objets** (en autonomie) : `ItemService` (fouille
+  des 276 meubles de `Carte.Fouilles`, sac de 4, les 28 objets, voler un
+  K.O., sac lâché à l'aspiration, Reliques aux Regards 3 et 4, Cocon de
+  secours), logique pure `Loot`, `Bag`, `Throw` ; `ItemView` (sac à
+  l'écran, L1/R1, L2 viser et lancer, effets) ; crochets dans `EyeService`
+  (leurres, voile, miroir, clignement, Regard volé, cape), `HidingService`
+  (clochette, piège, barricade, carton piégé, craie) ; les bots fouillent,
+  courent aux reliques et se défendent avec leurs objets.
+- **Ensuite** : s'allonger et ramper, les animations de posture, les power-ups de l'Œil, la méfiance des Repris, le
   goulag, les escouades, la liste des joueurs du jeu (pour cacher les bots).
 
 ## La place et la recette

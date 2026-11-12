@@ -41,6 +41,12 @@ export type Spot = {
 	mark: number?,
 	ripping: boolean,
 	prompt: ProximityPrompt,
+	-- Les objets poses dessus (ItemService) : clochette, piege, barricade
+	-- (heure de fin, os.clock), fausse cachette (le Carton piege).
+	bell: boolean,
+	trap: boolean,
+	barricadedUntil: number,
+	fake: boolean,
 }
 
 local spots: { Spot } = {}
@@ -49,6 +55,8 @@ local placed: Folder? = nil
 local random = Random.new()
 -- Le numero de la derniere ouverture de l'Oeil (tenu par EyeService).
 local burstSerial = 0
+local enterCallbacks: { (Roster.Actor, Spot) -> () } = {}
+local releaseCallbacks: { (Roster.Actor, Spot) -> () } = {}
 
 local function markersOf(model: Instance): (BasePart?, { BasePart })
 	local inside: BasePart? = nil
@@ -95,6 +103,9 @@ local function release(player: Roster.Actor, spot: Spot, grace: boolean)
 			workspace:GetServerTimeNow() + Config.eye.graceSeconds
 		)
 	end
+	for _, callback in releaseCallbacks do
+		callback(player, spot)
+	end
 end
 
 -- Au sol, en portant quelqu'un ou porte : on n'entre nulle part.
@@ -127,6 +138,9 @@ local function enter(player: Roster.Actor, spot: Spot)
 	player:SetAttribute(H.hiddenAttribute, spot.model.Name)
 	root.Anchored = true
 	root.CFrame = spot.inside.CFrame
+	for _, callback in enterCallbacks do
+		callback(player, spot)
+	end
 end
 
 local function makeSpot(model: Model, solid: boolean): Spot?
@@ -151,6 +165,10 @@ local function makeSpot(model: Model, solid: boolean): Spot?
 		exits = exits,
 		solid = solid,
 		occupant = nil,
+		bell = false,
+		trap = false,
+		barricadedUntil = 0,
+		fake = false,
 		mark = nil,
 		ripping = false,
 		prompt = prompt,
@@ -362,10 +380,59 @@ end
 -- l'arrachage (c'est un joueur qui l'a trouve, pas l'Oeil). Rend qui est sorti.
 function HidingService.evict(spot: Spot): Roster.Actor?
 	local occupant = spot.occupant
+	if occupant and os.clock() < spot.barricadedUntil then
+		return nil
+	end
 	if occupant then
 		release(occupant, spot, false)
 	end
 	return occupant
+end
+
+-- Appele quand un participant entre dans une cachette, ou en sort (de
+-- quelque facon que ce soit) : les objets poses dessus reagissent.
+function HidingService.onEnter(callback: (Roster.Actor, Spot) -> ())
+	table.insert(enterCallbacks, callback)
+end
+
+function HidingService.onRelease(callback: (Roster.Actor, Spot) -> ())
+	table.insert(releaseCallbacks, callback)
+end
+
+-- La Craie : l'Oeil vient l'arracher a sa prochaine ouverture.
+function HidingService.mark(spot: Spot)
+	spot.mark = burstSerial
+end
+
+-- Planches, Cadenas : personne ne deloge l'occupant pendant `seconds`.
+function HidingService.barricade(spot: Spot, seconds: number)
+	spot.barricadedUntil = os.clock() + seconds
+end
+
+-- Le Carton piege : une fausse cachette dont le socle se pose a `at`.
+-- Elle se comporte comme une vraie (invite, entree) ; ItemService ejecte.
+function HidingService.placeFake(prefab: string, at: CFrame): Spot?
+	local variants = variantsOf(prefab)
+	if #variants == 0 or placed == nil then
+		return nil
+	end
+	local model = variants[random:NextInteger(1, #variants)]:Clone()
+	local socle = model.PrimaryPart
+	if socle == nil then
+		model:Destroy()
+		return nil
+	end
+	-- Comme une vraie : le socle pose sur le sol, a `at`.
+	model:PivotTo(at * socle.CFrame:ToObjectSpace(model:GetPivot()))
+	model.Name = prefab
+	model.Parent = placed
+	local spot = makeSpot(model, false)
+	if spot then
+		spot.fake = true
+	else
+		model:Destroy()
+	end
+	return spot
 end
 
 -- La cachette ou ce joueur se tient (pour l'arracher quand il est flaire).

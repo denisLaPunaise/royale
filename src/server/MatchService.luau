@@ -29,6 +29,7 @@ local BotService = require(script.Parent.BotService)
 local CombatService = require(script.Parent.CombatService)
 local EyeService = require(script.Parent.EyeService)
 local HidingService = require(script.Parent.HidingService)
+local ItemService = require(script.Parent.ItemService)
 local RemoteGuard = require(script.Parent.RemoteGuard)
 local Roster = require(script.Parent.Roster)
 local World = require(script.Parent.World)
@@ -193,6 +194,7 @@ local function playOnce()
 	EyeService.reset()
 	ZoneService.reset()
 	CombatService.clear()
+	ItemService.clear()
 	HidingService.clear()
 	BotService.clear()
 	Roster.clear()
@@ -224,6 +226,7 @@ local function playOnce()
 	end
 	Roster.start(players)
 	HidingService.setup(#players)
+	ItemService.setup(players)
 	table.clear(aims)
 	setPhase("Visee", M.aimSeconds)
 	for _, player in players do
@@ -260,6 +263,7 @@ local function playOnce()
 			regardIndex = index
 			ZoneService.announce(index, Roster.count(), now)
 			workspace:SetAttribute(M.regardAttribute, index)
+			ItemService.onRegard(index)
 			workspace:SetAttribute(M.regardTitleAttribute, regard.title)
 			workspace:SetAttribute(
 				M.phaseEndsAttribute,
@@ -314,6 +318,11 @@ function MatchService.start()
 	Players.CharacterAutoLoads = false
 	BotService.start()
 	CombatService.start(remote(Config.remotes.gesture))
+	ItemService.start(
+		remote(Config.remotes.item),
+		remote(Config.remotes.projectile),
+		remote(Config.remotes.steer)
+	)
 	remote(Config.remotes.aim).OnServerEvent:Connect(
 		RemoteGuard.wrap(Config.remotes.aim, function(player: Player, x: any, z: any)
 			if phase ~= "Visee" or typeof(x) ~= "number" or typeof(z) ~= "number" then

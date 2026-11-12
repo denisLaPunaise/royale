@@ -116,9 +116,12 @@ function Controls.start()
 			baseHip = humanoid.HipHeight
 		end
 		local down = isDown() or player:GetAttribute(C.carriedAttribute) ~= nil
+		local adrenaline = player:GetAttribute(Config.effects.adrenalineAttribute)
+		local rushing = typeof(adrenaline) == "number" and workspace:GetServerTimeNow() < adrenaline
 		humanoid.PlatformStand = down
 		humanoid.WalkSpeed = if down
 			then 0
+			elseif rushing then Mv.runSpeed
 			elseif carrying() then C.carrySpeed
 			elseif crouched then Mv.crouchSpeed
 			elseif running then Mv.runSpeed
@@ -131,16 +134,26 @@ function Controls.start()
 		running, crouched, sliding, mantling, baseHip = false, false, false, false, nil
 		task.defer(apply)
 	end)
-	for _, attribute in { C.downAttribute, C.carryingAttribute, C.carriedAttribute } do
+	for _, attribute in
+		{
+			C.downAttribute,
+			C.carryingAttribute,
+			C.carriedAttribute,
+			Config.effects.adrenalineAttribute,
+		}
+	do
 		player:GetAttributeChangedSignal(attribute):Connect(apply)
 	end
 	-- `AuSol` porte une heure de fin : on se releve quand elle passe, meme si
 	-- le serveur n'a pas encore efface l'attribut.
-	local wasDown = false
+	-- De meme pour la fin de l'adrenaline.
+	local wasDown, wasRushing = false, false
 	RunService.Heartbeat:Connect(function()
 		local down = isDown()
-		if down ~= wasDown then
-			wasDown = down
+		local adrenaline = player:GetAttribute(Config.effects.adrenalineAttribute)
+		local rushing = typeof(adrenaline) == "number" and workspace:GetServerTimeNow() < adrenaline
+		if down ~= wasDown or rushing ~= wasRushing then
+			wasDown, wasRushing = down, rushing
 			apply()
 		end
 	end)

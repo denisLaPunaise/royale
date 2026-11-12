@@ -540,6 +540,406 @@ Config.combat = {
 }
 
 --------------------------------------------------------------------------------
+-- LA FOUILLE ET LES OBJETS (CONCEPT.md, Les objets, valide le 12 novembre)
+--------------------------------------------------------------------------------
+
+Config.loot = {
+	-- Maintenir X sur un meuble (le meuble de la carte, dans Carte.Fouilles).
+	-- 1,5 s : assez pour hesiter quand le ciel rougit (CONCEPT.md).
+	searchSeconds = 1.5,
+	promptDistance = 7,
+	-- Fouiller fait du bruit : l'Oeil l'entend quand il entend les coups.
+	searchNoiseSeconds = 2,
+	-- Combien de meubles ont quelque chose a chaque partie : par participant
+	-- au depart, jamais moins (la carte en a 276). Les autres sont vides et
+	-- se fouillent pour rien : on ne sait pas d'avance lesquels.
+	perParticipant = 7,
+	minFilled = 60,
+	-- Chances par fouille (CONCEPT.md, a regler) : commun, peu commun, rare,
+	-- epique. Les legendaires ne se fouillent jamais.
+	weights = { common = 56, uncommon = 25, rare = 13, epic = 6 },
+	-- Les endroits dangereux donnent plus d'epiques (CONCEPT.md) : le Cratere,
+	-- sans abri d'en haut. Multiplie la chance epique.
+	dangerTables = { cratere = true },
+	dangerEpicFactor = 3,
+	-- Un objet par terre (sac plein, aspire) : on le ramasse en maintenant X.
+	pickupSeconds = 0.4,
+	-- Un objet par terre disparait apres ce temps (s) : la carte ne se remplit
+	-- pas de restes.
+	groundSeconds = 120,
+	-- Ou il tombe autour du point (studs) : deux objets ne s'empilent pas.
+	groundScatter = 2,
+	-- L'attribut d'un meuble deja fouille cette partie.
+	searchedAttribute = "Fouille",
+	-- Le dossier de ce que la partie pose (fumee, flaques, objets, relique).
+	folder = "ObjetsDeLaPartie",
+}
+
+Config.bag = {
+	-- 4 places (CONCEPT.md) : on choisit ce qu'on garde.
+	slots = 4,
+	-- Attributs du participant : le contenu (ids separes par des virgules,
+	-- vide pour une place libre) et la place choisie (1 a 4).
+	attribute = "Sac",
+	selectedAttribute = "SacChoix",
+	-- L2 ne repart pas avant ce temps (s) : un double appui ne gaspille pas
+	-- deux objets.
+	useCooldown = 0.5,
+	-- Voler (X maintenu sur un K.O., CONCEPT.md) : le temps de maintien.
+	stealSeconds = 0.8,
+	stealDistance = 7,
+	-- Un message court pour le joueur (« Rien ici. »), et une annonce pour
+	-- tous (Relique, Larme) : « texte|heure ».
+	messageAttribute = "Message",
+	announceAttribute = "Annonce",
+}
+
+-- Le lancer (L2 maintenu : viser, lacher : lancer).
+Config.throw = {
+	-- Vitesse au depart (studs/s) et gravite de Roblox : 60 ne portait qu'a
+	-- 20 studs (calcul du test). A 100, en visant droit devant, ~40 studs ;
+	-- au plus loin (45 degres) ~50 : une rue, pas un quartier.
+	speed = 100,
+	gravity = 196.2,
+	-- Le lancer part un peu au-dessus du regard (radians) : en visant droit
+	-- devant, l'objet monte d'abord.
+	lift = 0.3,
+	-- On cherche le point de chute pendant au plus ce temps (s), par pas.
+	maxSeconds = 3,
+	stepSeconds = 0.05,
+	-- Le trait de visee dessine sur le client : tant de points.
+	previewPoints = 30,
+	-- Le depart, devant les yeux (studs).
+	handForward = 1.5,
+}
+
+-- Les raretes et leurs couleurs habituelles (CONCEPT.md) : gris, vert, bleu,
+-- violet, or.
+Config.rarities = {
+	common = { name = "Commun", color = { 190, 190, 190 } },
+	uncommon = { name = "Peu commun", color = { 90, 200, 90 } },
+	rare = { name = "Rare", color = { 80, 150, 255 } },
+	epic = { name = "Épique", color = { 180, 90, 230 } },
+	legendary = { name = "Légendaire", color = { 255, 190, 40 } },
+}
+
+-- Le catalogue (CONCEPT.md, valide le 12 novembre, a equilibrer en jouant).
+-- `kind` : throw (L2 maintenu, on lance), use (L2, effet sur soi ou devant
+-- soi), spot (L2 pres d'une cachette ou dedans), passive (rien a faire).
+-- `shield` : combien de secondes, au mieux, il protege de l'Oeil ; c'est la
+-- duree de son effet (le test d'equilibrage et les bots le lisent).
+Config.items = {
+	smoke = {
+		name = "Fumigène",
+		rarity = "common",
+		kind = "throw",
+		-- Un nuage qui coupe la ligne de vue 15 s (CONCEPT.md) : une boule de
+		-- 14 studs, assez pour cacher deux joueurs, pas une rue.
+		seconds = 15,
+		radius = 14,
+		shield = 15,
+	},
+	firecracker = {
+		name = "Pétard",
+		rarity = "common",
+		kind = "throw",
+		-- Un bruit enorme : l'Oeil l'entend a tout Regard (CONCEPT.md).
+		seconds = 5,
+		shield = 0,
+	},
+	flare = {
+		name = "Fusée éclairante",
+		rarity = "common",
+		kind = "throw",
+		-- Attire un faisceau ; tombee a moins de `stickRadius` d'un joueur,
+		-- elle s'accroche a lui.
+		seconds = 6,
+		stickRadius = 6,
+		shield = 0,
+	},
+	chalk = {
+		name = "Craie",
+		rarity = "common",
+		kind = "spot",
+		-- Marque la cachette : l'Oeil vient l'arracher a sa prochaine
+		-- ouverture.
+		shield = 0,
+	},
+	bottle = {
+		name = "Bouteille",
+		rarity = "common",
+		kind = "throw",
+		-- Etourdit 1 s qui est a moins de `radius` du point de chute.
+		radius = 4,
+		fall = 1,
+		shield = 0,
+	},
+	oil = {
+		name = "Flaque d'huile",
+		rarity = "common",
+		kind = "throw",
+		-- Qui court dessus glisse et tombe 1,5 s ; la flaque reste 20 s.
+		radius = 7,
+		fall = 1.5,
+		seconds = 20,
+		shield = 0,
+	},
+	torch = {
+		name = "Lampe torche",
+		rarity = "common",
+		kind = "use",
+		-- Ebloui 2 s, le joueur devant soi a moins de 25 studs.
+		range = 25,
+		seconds = 2,
+		shield = 0,
+	},
+	bell = {
+		name = "Clochette",
+		rarity = "common",
+		kind = "spot",
+		-- Sonne quand quelqu'un y entre : tous ceux a moins de `hearRadius`
+		-- l'entendent (et voient d'ou ca vient) pendant `seconds`.
+		hearRadius = 150,
+		seconds = 4,
+		shield = 0,
+	},
+	bat = {
+		name = "Batte",
+		rarity = "uncommon",
+		kind = "use",
+		-- K.O. en deux coups au lieu de trois, pour `charges` coups qui
+		-- portent : un objet se consomme (CONCEPT.md).
+		hitsToKO = 2,
+		charges = 6,
+		shield = 0,
+	},
+	trap = {
+		name = "Piège à loup",
+		rarity = "uncommon",
+		kind = "spot",
+		-- Bloque 3 s celui qui sort de la cachette.
+		fall = 3,
+		shield = 0,
+	},
+	binoculars = {
+		name = "Jumelles",
+		rarity = "uncommon",
+		kind = "use",
+		-- Les joueurs a decouvert jusqu'a 250 studs, signales 5 s.
+		range = 250,
+		seconds = 5,
+		shield = 0,
+	},
+	planks = {
+		name = "Planches",
+		rarity = "uncommon",
+		kind = "spot",
+		-- Barricade sa cachette 20 s, de l'interieur : personne ne la deloge.
+		seconds = 20,
+		shield = 0,
+	},
+	fakeBox = {
+		name = "Carton piégé",
+		rarity = "uncommon",
+		kind = "use",
+		-- Une fausse cachette posee devant soi : qui y entre est ejecte et
+		-- flaire par l'Oeil.
+		prefab = "Carton",
+		distance = 5,
+		shield = 0,
+	},
+	stinkBomb = {
+		name = "Boule puante",
+		rarity = "uncommon",
+		kind = "throw",
+		-- Tombee a moins de `radius` d'une cachette : celui qui y est sort.
+		-- Le nuage vert se voit `seconds`.
+		radius = 6,
+		seconds = 4,
+		shield = 0,
+	},
+	net = {
+		name = "Filet",
+		rarity = "uncommon",
+		kind = "throw",
+		-- Immobilise 2 s qui est a moins de `radius` du point de chute.
+		radius = 5,
+		fall = 2,
+		shield = 0,
+	},
+	cloak = {
+		name = "Cape d'ombre",
+		rarity = "rare",
+		kind = "use",
+		-- La jauge monte moitie moins vite pendant 20 s : vaut 10 s de
+		-- protection.
+		seconds = 20,
+		fillFactor = 0.5,
+		shield = 10,
+	},
+	padlock = {
+		name = "Cadenas",
+		rarity = "rare",
+		kind = "spot",
+		-- Comme les planches, 45 s, seulement dans une cachette solide.
+		seconds = 45,
+		solidOnly = true,
+		shield = 0,
+	},
+	mirror = {
+		name = "Miroir",
+		rarity = "rare",
+		kind = "use",
+		-- Renvoie le faisceau qui te poursuit vers le joueur le plus proche ;
+		-- tu es ignore par ce faisceau `seconds`.
+		seconds = 4,
+		shield = 4,
+	},
+	grapple = {
+		name = "Grappin",
+		rarity = "rare",
+		kind = "use",
+		-- Un rebord jusqu'a 60 studs devant le regard ; on y monte en 0,8 s.
+		range = 60,
+		seconds = 0.8,
+		shield = 0,
+	},
+	adrenaline = {
+		name = "Adrénaline",
+		rarity = "rare",
+		kind = "use",
+		-- 8 s : on court a la course (22, jamais plus vite que l'Oeil au
+		-- dernier Regard) dans toutes les postures, sans bruit, et on se
+		-- releve deux fois plus vite.
+		seconds = 8,
+		fallFactor = 0.5,
+		shield = 0,
+	},
+	leadSheet = {
+		name = "Bâche de plomb",
+		rarity = "epic",
+		kind = "use",
+		-- Immobile dessous, le faisceau ne voit pas pendant 10 s ; bouger plus
+		-- vite que `stillSpeed` la souleve (on redevient visible).
+		seconds = 10,
+		stillSpeed = 2,
+		shield = 10,
+	},
+	dummy = {
+		name = "Mannequin",
+		rarity = "epic",
+		kind = "use",
+		-- Pose devant soi, l'Oeil le prend pour un joueur et le poursuit 10 s.
+		seconds = 10,
+		distance = 4,
+		shield = 10,
+	},
+	glassEye = {
+		name = "Œil de verre",
+		rarity = "epic",
+		kind = "use",
+		-- 15 s : les joueurs a moins de 80 studs, a travers les murs.
+		seconds = 15,
+		range = 80,
+		shield = 0,
+	},
+	redFlare = {
+		name = "Fusée rouge",
+		rarity = "epic",
+		kind = "throw",
+		-- Tous les faisceaux sur un point pendant 5 s.
+		seconds = 5,
+		shield = 5,
+	},
+	stolenGaze = {
+		name = "Le Regard volé",
+		rarity = "legendary",
+		kind = "use",
+		-- 10 s : on dirige un faisceau la ou l'on regarde.
+		seconds = 10,
+		shield = 10,
+	},
+	tear = {
+		name = "La Larme de l'Œil",
+		rarity = "legendary",
+		kind = "use",
+		-- Il cligne : tous les faisceaux s'eteignent 5 s, partout.
+		seconds = 5,
+		shield = 5,
+	},
+	cocoon = {
+		name = "Le Cocon de secours",
+		rarity = "legendary",
+		kind = "passive",
+		-- Aspire, recrache aussitot sur place (une fois). Ne marche plus a
+		-- partir de ce Regard (quand le goulag ferme, CONCEPT.md).
+		closedFromRegard = 4,
+		shield = 0,
+	},
+	fragment = {
+		name = "Le Fragment de Fissure",
+		rarity = "legendary",
+		kind = "use",
+		-- 15 s invisible pour l'Oeil, mais tu brilles pour les joueurs.
+		seconds = 15,
+		shield = 15,
+	},
+}
+
+-- Les Reliques (CONCEPT.md) : l'Oeil lache un legendaire au milieu d'une
+-- place, annonce a tous. Un ou deux par partie : au debut de ces Regards.
+Config.relics = {
+	regards = { 3, 4 },
+	-- Elle tombe a moins de cette fraction du rayon du cercle, du centre :
+	-- dedans, sur un emplacement de cachette de la carte.
+	insideFraction = 0.5,
+	-- Elle brille, visible de loin.
+	lightRange = 40,
+	-- La position de la relique en cours (Vector3), pour l'ecran.
+	attribute = "Relique",
+}
+
+-- Les effets que les objets posent sur un participant (heure de fin, serveur).
+Config.effects = {
+	-- Invisible pour l'Oeil (Fragment, Bache immobile).
+	veiledAttribute = "Voile",
+	-- La jauge monte moins vite (Cape) : le facteur en cours.
+	cloakAttribute = "Cape",
+	-- Adrenaline.
+	adrenalineAttribute = "Adrenaline",
+	-- Ebloui (lampe torche) : l'ecran blanchit.
+	dazzledAttribute = "Ebloui",
+	-- Voir les autres (Jumelles, Oeil de verre) : l'heure de fin, la portee,
+	-- et si l'on voit aussi les caches (a travers les murs).
+	revealAttribute = "Revele",
+	revealRangeAttribute = "ReveleDistance",
+	revealHiddenAttribute = "ReveleCaches",
+	-- Les coups de batte qui restent.
+	batAttribute = "Batte",
+	-- On dirige un faisceau (Regard vole).
+	steerAttribute = "Pilote",
+	-- Une clochette a sonne : sur Workspace, la position (Vector3) et l'heure.
+	bellAttribute = "Clochette",
+	bellTimeAttribute = "ClochetteHeure",
+	-- Le Cocon de secours, garde jusqu'a la capture.
+	cocoonAttribute = "Cocon",
+	-- Le Grappin : le point ou monter (Vector3) et l'heure du lancer.
+	grappleAttribute = "GrappinVers",
+	grappleTimeAttribute = "GrappinHeure",
+	-- Sous la Bache de plomb : vrai immobile (invisible), faux en bougeant.
+	sheetAttribute = "Bache",
+	-- La lueur : le Fragment se voit de loin, un legendaire dans le sac
+	-- juste un peu (CONCEPT.md : « tout le monde veut le lui prendre »).
+	fragmentFill = 0.3,
+	legendaryFill = 0.85,
+	legendaryOutline = 0.5,
+	-- Brille pour les joueurs (Fragment).
+	glowColor = { 255, 190, 40 },
+	-- Le service des effets tourne a ce pas (s).
+	stepSeconds = 0.1,
+}
+
+--------------------------------------------------------------------------------
 -- LA MEFIANCE — contre le camping (CONCEPT.md, valide le 12 novembre 2026)
 --------------------------------------------------------------------------------
 
@@ -590,6 +990,11 @@ Config.bots = {
 	-- Ils quittent leur cachette avant d'etre flaires, quand la mefiance
 	-- depasse ce niveau (un peu apres l'avertissement que voit un joueur).
 	leaveSuspicion = 0.8,
+	-- L'Oeil ferme, il fouille les meubles a moins de ce rayon (studs) tant
+	-- que son sac a de la place, et court a une relique a moins de
+	-- `relicRadius`.
+	searchRadius = 120,
+	relicRadius = 300,
 	-- Frappe, il rend les coups pendant ce temps (s).
 	grudgeSeconds = 4,
 	-- L'Oeil ferme, a chaque reflexion, la chance de frapper qui passe a
@@ -719,6 +1124,29 @@ Config.view = {
 	spectateHeight = 6,
 	-- La police des textes de l'Oeil (Survivor : la machine a ecrire).
 	font = "SpecialElite",
+	-- Le sac en bas de l'ecran : 4 places de cette taille (pixels), un ecart,
+	-- a cette distance du bas ; la place choisie a un cadre plus epais.
+	slotWidth = 120,
+	slotHeight = 44,
+	slotGap = 8,
+	slotBottom = 20,
+	slotSelectedStroke = 3,
+	-- La barre ne prend jamais plus que cette part de la largeur de l'ecran.
+	slotFitFraction = 0.95,
+	-- Le trait de visee d'un lancer : des points (studs), un peu transparents.
+	aimDotSize = 0.4,
+	aimDotTransparency = 0.3,
+	-- L'objet lance, vu en vol.
+	projectileSize = 0.8,
+	-- Un message reste ce temps (s), une annonce pour tous un peu plus.
+	messageSeconds = 3,
+	announceSeconds = 5,
+	-- Ebloui : l'ecran devient blanc a ce point au debut (1 = tout blanc).
+	dazzleOpacity = 1,
+	-- Le Regard vole : on envoie le point vise a ce rythme (le garde-fou du
+	-- remote en laisse passer 4 par seconde), jusqu'a cette distance.
+	steerSendSeconds = 0.3,
+	steerRange = 600,
 }
 
 --------------------------------------------------------------------------------
@@ -734,6 +1162,13 @@ Config.remotes = {
 	-- Un geste : (nom) parmi frapper, pousser, porter, jeter, poser, glisser,
 	-- sortir en force. Le serveur choisit la cible et verifie tout.
 	gesture = "Geste",
+	-- Le sac : (action, argument) — choisir une place, utiliser l'objet choisi
+	-- (avec la direction visee pour un lancer).
+	item = "Objet",
+	-- Le serveur montre un lancer a tous (depart, vitesse, objet).
+	projectile = "Projectile",
+	-- Le Regard vole : le point vise (x, z).
+	steer = "Pilote",
 }
 
 return Config
