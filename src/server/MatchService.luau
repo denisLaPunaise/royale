@@ -27,6 +27,7 @@ local Regards = require(Royale:WaitForChild("Regards"))
 
 local BotService = require(script.Parent.BotService)
 local CombatService = require(script.Parent.CombatService)
+local EyePowerService = require(script.Parent.EyePowerService)
 local EyeService = require(script.Parent.EyeService)
 local HidingService = require(script.Parent.HidingService)
 local ItemService = require(script.Parent.ItemService)
@@ -192,6 +193,7 @@ end
 local function playOnce()
 	-- L'ATTENTE.
 	EyeService.reset()
+	EyePowerService.reset()
 	ZoneService.reset()
 	CombatService.clear()
 	ItemService.clear()
@@ -264,6 +266,7 @@ local function playOnce()
 			ZoneService.announce(index, Roster.count(), now)
 			workspace:SetAttribute(M.regardAttribute, index)
 			ItemService.onRegard(index)
+			EyePowerService.onRegard(index)
 			workspace:SetAttribute(M.regardTitleAttribute, regard.title)
 			workspace:SetAttribute(
 				M.phaseEndsAttribute,
@@ -273,6 +276,8 @@ local function playOnce()
 			)
 			print(string.format("[Royale] Regard %d : %s", index, regard.title))
 		end
+		-- Le Regard tel que l'Oeil le joue, avec ses pouvoirs.
+		regard = EyePowerService.regardFor(index)
 		ZoneService.step(now)
 		-- Au premier Regard, l'Oeil laisse d'abord le temps de se poser.
 		local within = t - regardStart
@@ -318,6 +323,7 @@ function MatchService.start()
 	Players.CharacterAutoLoads = false
 	BotService.start()
 	CombatService.start(remote(Config.remotes.gesture))
+	EyePowerService.start()
 	ItemService.start(
 		remote(Config.remotes.item),
 		remote(Config.remotes.projectile),

@@ -19,6 +19,7 @@ local suites = {
 	{ name = "Le coeur du jeu", run = require("./specs/core") },
 	{ name = "Le corps a corps", run = require("./specs/combat") },
 	{ name = "Les objets", run = require("./specs/items") },
+	{ name = "Les pouvoirs de l'Oeil", run = require("./specs/eyepowers") },
 	{ name = "Regles branchees", run = require("./specs/wiring") },
 }
 

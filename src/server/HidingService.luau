@@ -47,6 +47,8 @@ export type Spot = {
 	trap: boolean,
 	barricadedUntil: number,
 	fake: boolean,
+	-- Depuis quand l'occupant y est (os.clock), pour le flair de l'Oeil.
+	since: number,
 }
 
 local spots: { Spot } = {}
@@ -132,6 +134,7 @@ local function enter(player: Roster.Actor, spot: Spot)
 		return
 	end
 	spot.occupant = player
+	spot.since = os.clock()
 	spot.mark = burstSerial
 	spot.prompt.Enabled = false
 	byPlayer[player] = spot
@@ -169,6 +172,7 @@ local function makeSpot(model: Model, solid: boolean): Spot?
 		trap = false,
 		barricadedUntil = 0,
 		fake = false,
+		since = 0,
 		mark = nil,
 		ripping = false,
 		prompt = prompt,
@@ -307,9 +311,13 @@ end
 -- Les cachettes que l'Oeil peut arracher maintenant : marquees AVANT cette
 -- ouverture, il y a au plus `markBursts` ouvertures. Les occupees d'abord,
 -- celles dont l'occupant est flaire (`flagged`) avant tout.
+-- `forgetAfter` : le nombre d'ouvertures qu'il garde une marque (la rancune :
+-- toujours). `byAge` : le flair, les occupees depuis le plus longtemps d'abord.
 function HidingService.ripCandidates(
 	flagged: { [Roster.Actor]: boolean },
-	solidFalls: boolean
+	solidFalls: boolean,
+	forgetAfter: number,
+	byAge: boolean
 ): { Spot }
 	local out: { Spot } = {}
 	for _, spot in spots do
@@ -319,7 +327,7 @@ function HidingService.ripCandidates(
 			and not spot.ripping
 			and mark ~= nil
 			and mark < burstSerial
-			and burstSerial - mark <= H.markBursts
+			and burstSerial - mark <= forgetAfter
 		then
 			table.insert(out, spot)
 		end
@@ -337,6 +345,9 @@ function HidingService.ripCandidates(
 		local ra, rb = rank(a), rank(b)
 		if ra ~= rb then
 			return ra < rb
+		end
+		if byAge and ra < 2 and a.since ~= b.since then
+			return a.since < b.since
 		end
 		return (a.mark :: number) > (b.mark :: number)
 	end)

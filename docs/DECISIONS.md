@@ -187,3 +187,43 @@ d'abord le cœur »). Ce que la fiche ne fixait pas, pris par l'assistant :
   objet de protection quand un faisceau les suit. Ils ne posent ni craie ni
   piège.
 
+
+## 12 novembre 2026 — les pouvoirs de l'Œil, choix pris sans Josh
+
+La fiche demandait d'équilibrer les 14 power-ups avant de coder. Josh ayant
+laissé l'autonomie, l'assistant a fixé ces valeurs (toutes dans
+`Config.eyePowers`, à régler en jouant) :
+
+- **Le tirage** : au début de chaque Regard, Regard 1 compris (l'Œil en a
+  donc cinq au Regard 5). Jamais deux fois le même ; au Regard 5, ni « Il
+  entend tout » ni ce qui joue sur les pauses (il ne se ferme plus).
+- **La rage** : un faisceau de plus aux rafales paires.
+- **Le faux départ** : environ une pause sur trois ne dure que 2 s, **jamais
+  deux de suite**, pour qu'il reste toujours une vraie pause pour fouiller.
+- **Le regard long** : l'une des 3 premières rafales de chaque Regard dure
+  deux fois plus.
+- **La faim** : arrachages × 1,5, arrondi au-dessus.
+- **L'œil lent mais sûr** : poursuite × 0,85, piste + 2 s. Au Regard 5, la
+  course le distance enfin un peu.
+- **Le flair** : parmi les cachettes occupées à arracher, la plus ancienne
+  occupation d'abord (les campeurs flairés restent en tête).
+- **Le regard rasant** : un second regard part à 30° au-dessus de l'horizon,
+  du côté de l'Œil ; on est vu si l'un des deux voit. Il passe sous les
+  auvents, jamais à travers un mur. Mesuré : sur 19 bots, environ 1 sur 6
+  de ceux qui étaient couverts devient visible.
+- **La rancune** : les cachettes marquées ne s'oublient plus (au lieu de 3
+  ouvertures).
+- **L'éclair** : à chaque ouverture, ceux qui sont à découvert dans le
+  cercle brillent en rouge 2 s, visibles à travers les murs pour tout le
+  monde.
+- **La paupière lourde** : pauses × 2/3.
+- **Le retour** : 5 s après avoir perdu une piste, le faisceau libre le plus
+  proche va voir la dernière position pendant 4 s.
+- **Le souffle** : un seul vent par ouverture, même sens pour tous, à 26
+  studs/s (une poussée fait 34) : il déplace d'environ 5 studs sans
+  renverser.
+- **Les empreintes** : qui court laisse une trace rouge tous les 0,4 s, qui
+  reste 10 s. Un faisceau sans cible qui passe à moins de 70 studs d'une
+  piste la remonte jusqu'à la trace la plus récente, avant les bruits.
+- **À l'écran** : la liste des pouvoirs sous les restants, et l'annonce en
+  grand 7 s au début de chaque Regard.

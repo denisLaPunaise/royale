@@ -508,7 +508,7 @@ Les objets et leurs raretés : voir la section Les objets.
 - [x] L'Œil : 5 Regards liés aux cercles, et la montée Regard par Regard (valeurs de départ).
 - [x] L'Œil : un power-up au hasard à chaque Regard.
 - [x] L'Œil : 14 power-ups pour commencer ; la fin se fait par l'Œil, sans cercle qui se referme.
-- [ ] L'équilibrage des power-ups de l'Œil, avant de coder.
+- [x] L'équilibrage des power-ups de l'Œil : valeurs de départ fixées par l'assistant (`DECISIONS.md`), à régler en jouant.
 - [x] La zone : annonce de 90 s à 45 s, pas de faisceaux dehors, jauge dehors de 20 s à 5 s.
 - [x] La zone : la taille de chaque cercle se calcule d'après les joueurs encore en vie.
 - [x] Le départ : recraché par l'Œil, on vise, on file comme une comète et on s'écrase.

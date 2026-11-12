@@ -94,7 +94,13 @@ Rokit, StyLua, Selene, Lune, GitHub Actions, tous les chiffres dans
   (leurres, voile, miroir, clignement, Regard volé, cape), `HidingService`
   (clochette, piège, barricade, carton piégé, craie) ; les bots fouillent,
   courent aux reliques et se défendent avec leurs objets.
-- **Ensuite** : s'allonger et ramper, les animations de posture, les power-ups de l'Œil, la méfiance des Repris, le
+- **12 novembre 2026, les pouvoirs de l'Œil** (en autonomie) : un tiré à
+  chaque Regard parmi 14 (`EyePowerService`, logique pure `EyePowers`,
+  `Config.eyePowers`) ; les chiffres passent par le Regard modifié
+  (`EyePowerService.regardFor`), l'éclair, le souffle et les empreintes
+  vivent dans le service ; `Regards.burst` accepte rafale allongée et faux
+  départs ; le regard rasant dans `World.seenFactor`.
+- **Ensuite** : s'allonger et ramper, les animations de posture, la méfiance des Repris, le
   goulag, les escouades, la liste des joueurs du jeu (pour cacher les bots).
 
 ## La place et la recette

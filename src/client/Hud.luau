@@ -123,6 +123,20 @@ function Hud.start()
 	local regard = label(gui, "Regard", UDim2.new(0.9, 0, 0, 28), UDim2.new(0.5, 0, 0, 44), 22)
 	local eyeState = label(gui, "Oeil", UDim2.new(0.6, 0, 0, 26), UDim2.new(0.5, 0, 0, 74), 22)
 	local alive = label(gui, "Restants", UDim2.new(0.6, 0, 0, 24), UDim2.new(0.5, 0, 0, 102), 20)
+	-- Les pouvoirs de l'Oeil : la liste en petit, et le dernier annonce en
+	-- grand quelques secondes.
+	-- Le texte se reduit pour tenir sur un petit ecran (vu en image : a
+	-- taille fixe, l'annonce debordait des deux cotes).
+	local powers = label(gui, "Pouvoirs", UDim2.new(0.9, 0, 0, 20), UDim2.new(0.5, 0, 0, 128), 17)
+	powers.TextColor3 = Color3.fromRGB(255, 150, 120)
+	local power = label(gui, "Pouvoir", UDim2.new(0.9, 0, 0, 64), UDim2.new(0.5, 0, 0, 154), 26)
+	power.TextColor3 = Color3.fromRGB(255, 110, 80)
+	for _, l in { powers, power } do
+		local limit = Instance.new("UITextSizeConstraint")
+		limit.MaxTextSize = l.TextSize
+		limit.Parent = l
+		l.TextScaled = true
+	end
 	local center = label(gui, "Centre", UDim2.fromOffset(760, 90), UDim2.fromScale(0.5, 0.3), 30)
 	local warning = label(gui, "Alerte", UDim2.fromOffset(760, 34), UDim2.fromScale(0.5, 0.62), 28)
 	local hint = label(gui, "Aide", UDim2.fromOffset(760, 28), UDim2.new(0.5, 0, 1, -150), 22)
@@ -177,6 +191,20 @@ function Hud.start()
 		else
 			regard.Text = ""
 			eyeState.Text = ""
+		end
+		local P = Config.eyePowers
+		local list = workspace:GetAttribute(P.listAttribute)
+		powers.Text = if phase == "Partie" and typeof(list) == "string"
+			then "Ses pouvoirs : " .. list
+			else ""
+		power.Text = ""
+		local last = workspace:GetAttribute(P.announceAttribute)
+		if phase == "Partie" and typeof(last) == "string" then
+			local name, text, at = string.match(last, "^(.-)|(.-)|(.+)$")
+			local t = tonumber(at)
+			if name and text and t and now - t < P.announceSeconds then
+				power.Text = "L'ŒIL GAGNE UN POUVOIR : " .. name .. "\n" .. text
+			end
 		end
 		local count = workspace:GetAttribute(M.aliveAttribute)
 		alive.Text = if typeof(count) == "number" and phase ~= "Attente"

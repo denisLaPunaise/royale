@@ -356,6 +356,124 @@ Config.eye = {
 }
 
 --------------------------------------------------------------------------------
+-- LES POUVOIRS DE L'OEIL — un tire au sort a chaque Regard (CONCEPT.md)
+--------------------------------------------------------------------------------
+
+-- Valide le 12 novembre 2026 : un pouvoir au hasard a chaque Regard, jamais
+-- deux fois le meme, jamais un qui ne change rien, garde jusqu'a la fin.
+-- Equilibre par l'assistant (DECISIONS.md) : chacun doit se sentir dans une
+-- ouverture, aucun ne doit rendre une cachette bien choisie inutile.
+Config.eyePowers = {
+	-- Attributs de Workspace : le dernier pouvoir gagne (« nom|heure ») et la
+	-- liste de ceux qu'il a (noms separes par « · »).
+	announceAttribute = "PouvoirOeil",
+	listAttribute = "PouvoirsOeil",
+	-- L'annonce reste a l'ecran ce temps (s) : le temps de la lire deux fois.
+	announceSeconds = 7,
+	list = {
+		hearAll = {
+			name = "Il entend tout",
+			text = "Il entend tout bruit, même la marche, dès maintenant.",
+		},
+		rage = {
+			name = "La rage",
+			text = "Une rafale sur deux, un faisceau de plus.",
+			-- Une rafale sur `every`, `beams` faisceaux en plus : un de plus
+			-- double la chasse dans une petite partie, sans la noyer.
+			every = 2,
+			beams = 1,
+		},
+		feint = {
+			name = "Le faux départ",
+			text = "Parfois, il se ferme et se rouvre aussitôt.",
+			-- Une pause sur trois environ ne dure que `seconds` : assez pour
+			-- sortir la tete, pas pour fouiller (une fouille dure 1,5 s, mais
+			-- il faut aussi sortir et rentrer).
+			chance = 0.35,
+			seconds = 2,
+		},
+		longBurst = {
+			name = "Le regard long",
+			text = "Une rafale par Regard dure deux fois plus longtemps.",
+			factor = 2,
+			-- La rafale allongee est l'une des `among` premieres : elle tombe
+			-- toujours dans le Regard, meme le plus court (3 min 30).
+			among = 3,
+		},
+		hunger = {
+			name = "La faim",
+			text = "Il arrache moitié plus de cachettes.",
+			ripFactor = 1.5,
+		},
+		slowSure = {
+			name = "L'œil lent mais sûr",
+			text = "Il poursuit un peu moins vite, mais garde ta piste 2 s de plus.",
+			-- 15 % plus lent : au Regard 5 (22), la course le distance enfin
+			-- un peu ; la piste gardee compense largement.
+			chaseFactor = 0.85,
+			memoryBonus = 2,
+		},
+		flair = {
+			name = "Le flair",
+			text = "Il arrache d'abord les cachettes occupées depuis longtemps.",
+		},
+		slant = {
+			name = "Le regard rasant",
+			text = "Sa lumière arrive en biais : sous un auvent, on est vu.",
+			-- Un second regard part a cette hauteur (degres au-dessus de
+			-- l'horizon) : il passe sous les avancees, pas a travers les murs.
+			elevation = 30,
+		},
+		grudge = {
+			name = "La rancune",
+			text = "Les cachettes marquées le restent jusqu'à la fin.",
+		},
+		flash = {
+			name = "L'éclair",
+			text = "Chaque rafale s'ouvre par un éclair : qui est à découvert brille.",
+			-- Ceux qui sont a decouvert brillent ce temps pour tout le monde.
+			seconds = 2,
+			color = { 255, 70, 50 },
+		},
+		heavyLid = {
+			name = "La paupière lourde",
+			text = "Ses pauses entre deux rafales raccourcissent d'un tiers.",
+			closedFactor = 2 / 3,
+		},
+		comeback = {
+			name = "Le retour",
+			text = "Quand il perd ta piste, il revient voir 5 s plus tard.",
+			delay = 5,
+			-- Il fouille la derniere position ce temps, puis repart.
+			linger = 4,
+		},
+		wind = {
+			name = "Le souffle",
+			text = "Chaque rafale commence par un coup de vent qui pousse.",
+			-- Moins qu'une poussee (34) : il deplace, il ne fait pas tomber.
+			speed = 26,
+			lift = 6,
+		},
+		prints = {
+			name = "Les empreintes",
+			text = "Qui court laisse des traces rouges que l'Œil suit.",
+			-- Une trace tous les `every` s, qui reste `seconds` s.
+			every = 0.4,
+			seconds = 10,
+			-- Un faisceau sans cible prend une piste a moins de cette distance
+			-- et la remonte vers la trace la plus recente (studs).
+			followRange = 70,
+			-- Une trace se pose si le sol est a moins de cette distance sous le
+			-- bassin (studs) : debout, il est a ~3 ; en l'air, pas de trace.
+			probe = 5,
+			size = { 1.4, 0.15, 2 },
+			color = { 170, 20, 20 },
+		},
+	},
+	folder = "Empreintes",
+}
+
+--------------------------------------------------------------------------------
 -- LA ZONE — un cercle par Regard (CONCEPT.md, La carte)
 --------------------------------------------------------------------------------
 

@@ -410,6 +410,14 @@ function CombatService.trip(actor: Roster.Actor, seconds: number, push: Vector3?
 	end
 end
 
+-- Pousse sans renverser (le souffle de l'Oeil).
+function CombatService.push(actor: Roster.Actor, velocity: Vector3)
+	local root = Roster.rootOf(actor)
+	if root and Roster.isAlive(actor) and carriedBy[actor] == nil and not root.Anchored then
+		impulse(root, velocity)
+	end
+end
+
 function CombatService.isDown(actor: Roster.Actor): boolean
 	return isDown(actor)
 end

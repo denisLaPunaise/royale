@@ -65,6 +65,13 @@ local blindUntil = 0
 -- Le Regard vole : qui dirige un faisceau, jusqu'a quand, et ou.
 local steer: { actor: Roster.Actor?, untilT: number, x: number, z: number } =
 	{ actor = nil, untilT = 0, x = 0, z = 0 }
+-- Le retour (pouvoir) : les dernieres positions de ceux qu'il a perdus, ou il
+-- revient voir entre `at` et `untilT`.
+local comebacks: { { x: number, z: number, at: number, untilT: number } } = {}
+-- Les empreintes (pouvoir) : rend la trace a suivre pres d'un faisceau.
+local trail: ((x: number, z: number) -> Vector3?)? = nil
+-- Appeles au debut de chaque ouverture (l'eclair, le souffle).
+local burstCallbacks: { (regard: any) -> () } = {}
 local FX = Config.effects
 
 -- Un effet (heure de fin du serveur, posee par ItemService) encore actif.
@@ -194,7 +201,17 @@ function EyeService.steerTo(actor: Roster.Actor, x: number, z: number)
 	end
 end
 
+-- Les empreintes : `fn` rend la trace la plus recente d'une piste proche.
+function EyeService.setTrail(fn: (x: number, z: number) -> Vector3?)
+	trail = fn
+end
+
+function EyeService.onBurst(callback: (regard: any) -> ())
+	table.insert(burstCallbacks, callback)
+end
+
 function EyeService.reset()
+	table.clear(comebacks)
 	table.clear(lures)
 	table.clear(ignoredUntil)
 	blindUntil = 0
@@ -280,7 +297,7 @@ function EyeService.step(dt: number, regard: any, open: boolean, burst: number, 
 		serial += 1
 		HidingService.setBurst(serial)
 		table.clear(beams)
-		for _ = 1, Regards.beamCount(regard, #alive) do
+		for _ = 1, Regards.beamCount(regard, #alive, burst) do
 			table.insert(beams, newBeam(randomAlivePosition()))
 		end
 		table.clear(rips)
@@ -290,12 +307,21 @@ function EyeService.step(dt: number, regard: any, open: boolean, burst: number, 
 				flagged[player] = true
 			end
 		end
-		local candidates = HidingService.ripCandidates(flagged, regard.solidFalls)
+		-- La rancune : il n'oublie plus ses marques.
+		local candidates = HidingService.ripCandidates(
+			flagged,
+			regard.solidFalls,
+			if regard.grudge then math.huge else Config.hiding.markBursts,
+			regard.flair
+		)
 		for i = 1, math.min(regard.ripsPerBurst, #candidates) do
 			table.insert(
 				rips,
 				{ at = now + random:NextNumber(0, regard.openSeconds), spot = candidates[i] }
 			)
+		end
+		for _, callback in burstCallbacks do
+			task.spawn(callback, regard)
 		end
 	end
 	workspace:SetAttribute(Config.match.eyeOpenAttribute, open)
@@ -313,7 +339,7 @@ function EyeService.step(dt: number, regard: any, open: boolean, burst: number, 
 	-- Le nombre de faisceaux suit les joueurs en vie, meme au milieu d'une
 	-- ouverture.
 	if open then
-		local wanted = Regards.beamCount(regard, #alive)
+		local wanted = Regards.beamCount(regard, #alive, burst)
 		while #beams > wanted do
 			table.remove(beams)
 		end
@@ -351,7 +377,7 @@ function EyeService.step(dt: number, regard: any, open: boolean, burst: number, 
 			or (ignoredUntil[player] ~= nil and now < (ignoredUntil[player] :: number))
 		local sight = if hidden or veiled
 			then 0
-			else World.seenFactor(Roster.characterOf(player) :: Model)
+			else World.seenFactor(Roster.characterOf(player) :: Model, regard.slantElevation)
 		local lit = false
 		if lightsOn then
 			for _, beam in beams do
@@ -384,6 +410,20 @@ function EyeService.step(dt: number, regard: any, open: boolean, burst: number, 
 		-- Qui chaque faisceau poursuit.
 		local assigned = Targeting.assign(beams, seen, regard.memorySeconds, dt)
 		for i, a in assigned do
+			-- Le retour : une piste perdue, il reviendra voir.
+			local lost = beams[i].target
+			if regard.comebackDelay and lost and a.target == nil then
+				local who = byId[lost]
+				local at = who and positions[who]
+				if at then
+					table.insert(comebacks, {
+						x = at.X,
+						z = at.Z,
+						at = now + regard.comebackDelay,
+						untilT = now + regard.comebackDelay + regard.comebackLinger,
+					})
+				end
+			end
 			beams[i].target = a.target
 			beams[i].memory = a.memory
 		end
@@ -414,6 +454,24 @@ function EyeService.step(dt: number, regard: any, open: boolean, burst: number, 
 		local forced: { [any]: Vector3 } = {}
 		if steer.actor and beams[1] then
 			forced[beams[1]] = Vector3.new(steer.x, 0, steer.z)
+		end
+		-- Le retour : le faisceau libre le plus proche va revoir l'endroit.
+		for i = #comebacks, 1, -1 do
+			local c = comebacks[i]
+			if now >= c.untilT then
+				table.remove(comebacks, i)
+			elseif now >= c.at then
+				local best, bestD = nil, math.huge
+				for _, beam in beams do
+					local d = (beam.x - c.x) ^ 2 + (beam.z - c.z) ^ 2
+					if beam.target == nil and forced[beam] == nil and d < bestD then
+						best, bestD = beam, d
+					end
+				end
+				if best then
+					forced[best] = Vector3.new(c.x, 0, c.z)
+				end
+			end
 		end
 		for _, lure in lures do
 			local at = lure.at()
@@ -459,6 +517,13 @@ function EyeService.step(dt: number, regard: any, open: boolean, burst: number, 
 				-- chasser.
 				speed = math.min(E.roamSpeed, regard.chaseSpeed)
 				local best = math.huge
+				-- Les empreintes passent avant les bruits : il remonte la piste.
+				if regard.prints and trail then
+					goal = trail(beam.x, beam.z)
+					if goal then
+						best = 0
+					end
+				end
 				for _, p in sounds do
 					local d = (p.X - beam.x) ^ 2 + (p.Z - beam.z) ^ 2
 					if d < best then

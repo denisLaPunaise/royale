@@ -164,3 +164,44 @@ brille. Le vol d'un K.O. (l'invite ne se déclenche pas depuis le pont).
 9. Les objets trop forts, trop faibles, inutiles ? (Josh : rien ne doit
    être trop fort.)
 
+## Les pouvoirs de l'Œil (12 novembre 2026)
+
+**Vérifié par le calcul** (`tests/specs/eyepowers.luau`) : sur 200 parties
+tirées, jamais deux fois le même pouvoir et toujours un pouvoir utile ;
+chacun des 14 change vraiment le Regard où il tombe ; la plus courte pause
+possible laisse le temps d'une fouille ; même avec les cinq pires pouvoirs,
+un Regard 4 garde des pauses.
+
+**Vérifié seul dans Studio** (19 bots, les 14 pouvoirs forcés d'un coup) :
+- le tirage et l'annonce au Regard 1, aucune erreur en 90 s ;
+- la rage : 4 faisceaux au lieu de 3 aux rafales paires ;
+- les empreintes : jusqu'à 79 traces au sol en même temps ;
+- l'éclair : les bots à découvert brillent à chaque ouverture ;
+- le souffle : 5 à 6 studs de poussée, personne ne tombe ;
+- le regard rasant : il voit 3 bots sur 19 que le regard d'en haut ne voyait
+  pas, et ne voit jamais moins.
+
+**Vu à l'écran** : l'annonce « L'ŒIL GAGNE UN POUVOIR » et la liste (elle
+débordait, corrigée et revue).
+
+**Jamais vu en jeu** : le retour, le flair, la rancune, le faux départ et le
+regard long (seulement vérifiés par le calcul), l'éclair et les empreintes
+vus de près, le souffle sur un vrai joueur.
+
+**À regarder en jouant, dans l'ordre :**
+
+1. Au début de chaque Regard : l'annonce se lit en entier avant de
+   disparaître (7 s) ?
+2. L'éclair : à l'ouverture, les amis à découvert brillent en rouge. Ça se
+   voit, c'est utile ou c'est trop ?
+3. Le souffle : en pleine rue à l'ouverture, tu es poussé. Gênant, drôle,
+   trop faible ?
+4. Les empreintes : cours, retourne-toi : les traces rouges se voient ? Un
+   faisceau te suit à la trace ?
+5. Le faux départ : la pause de 2 s surprend, ou on ne la remarque pas ?
+6. Le retour : cache-toi d'un faisceau qui te poursuit, attends 5 s : il
+   revient voir ?
+7. Le regard rasant : sous un auvent ou un abri de bus, on est vu ?
+8. Au Regard 5, avec cinq pouvoirs : l'Œil est assez fort ? trop ? Un
+   pouvoir paraît inutile ? (Josh : aucun trop faible, aucun trop fort.)
+

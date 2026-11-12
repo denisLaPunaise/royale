@@ -16,6 +16,7 @@ local ServerStorage = game:GetService("ServerStorage")
 
 local Royale = ReplicatedStorage:WaitForChild("Royale")
 local Config = require(Royale:WaitForChild("Config"))
+local EyePowers = require(Royale:WaitForChild("EyePowers"))
 
 local World = {}
 
@@ -86,10 +87,10 @@ end
 
 -- La part du regard qui atteint `target` depuis la pupille : 1 a decouvert,
 -- 0 cache, entre les deux derriere un buisson.
-function World.visibility(target: Vector3, ignore: { Instance }): number
+function World.visibility(target: Vector3, ignore: { Instance }, from: Vector3?): number
 	local eye = Config.eye
 	local seen = 1
-	local origin = World.eyeOrigin
+	local origin = from or World.eyeOrigin
 	local filter = table.clone(alwaysIgnored)
 	for _, instance in ignore do
 		table.insert(filter, instance)
@@ -118,9 +119,26 @@ function World.visibility(target: Vector3, ignore: { Instance }): number
 	return 0
 end
 
+-- Le regard rasant (pouvoir) : le meme point vu d'un second endroit, plus bas
+-- sur l'horizon ; il voit ce que l'un des deux voit.
+local function slanted(target: Vector3, ignore: { Instance }, elevation: number?): number
+	local seen = World.visibility(target, ignore)
+	if elevation == nil or seen >= 1 then
+		return seen
+	end
+	local o = World.eyeOrigin
+	local from = EyePowers.slantOrigin(
+		{ x = target.X, y = target.Y, z = target.Z },
+		{ x = o.X, y = o.Y, z = o.Z },
+		elevation
+	)
+	return math.max(seen, World.visibility(target, ignore, Vector3.new(from.x, from.y, from.z)))
+end
+
 -- Ce que l'Oeil voit d'un personnage : le mieux de sa tete et de son bassin.
--- Les personnages ne se cachent pas les uns les autres.
-function World.seenFactor(character: Model): number
+-- Les personnages ne se cachent pas les uns les autres. `slant` : l'elevation
+-- du regard rasant, s'il l'a.
+function World.seenFactor(character: Model, slant: number?): number
 	local head = character:FindFirstChild("Head")
 	local root = character:FindFirstChild("HumanoidRootPart")
 	if not (head and head:IsA("BasePart") and root and root:IsA("BasePart")) then
@@ -132,10 +150,7 @@ function World.seenFactor(character: Model): number
 			table.insert(ignore, player.Character)
 		end
 	end
-	return math.max(
-		World.visibility(head.Position, ignore),
-		World.visibility(root.Position, ignore)
-	)
+	return math.max(slanted(head.Position, ignore, slant), slanted(root.Position, ignore, slant))
 end
 
 -- Le sol sous un point (le plus haut solide), ou nil au-dessus du vide.
