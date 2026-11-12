@@ -125,6 +125,40 @@ Bien caché, on n'est jamais aspiré directement, mais une cachette n'est jamais
 | Les empreintes | Qui court laisse des traces rouges au sol pendant 10 s, que l'Œil suit |
 
 **Validé (12 novembre) : dans une petite partie**, le nombre de faisceaux suit les joueurs en vie ; la vitesse, la précision et le reste de l'Œil ne changent pas. Tout se règle en jouant.
+## Contre le camping : la méfiance de l'Œil et les Repris
+
+**Validé (12 novembre) : deux menaces qui se complètent.** Rester à découvert, c'est l'Œil ; rester caché trop longtemps au même endroit, ce sont les Repris. Josh : sans ça, un joueur bien placé au début n'aurait qu'à camper.
+
+**La méfiance de l'Œil.**
+
+- Une jauge cachée monte chez chaque joueur qui reste caché (cachette ou recoin) dans un rayon d'environ 15 studs ; bouger de plus de 25 studs la fait redescendre.
+- Pleine, le joueur est **flairé** : à la prochaine ouverture, l'Œil commence par lui et arrache sa cachette, ou ce qui couvre son recoin ; s'il n'y a rien à arracher, il y envoie des Repris.
+- **Elle se remplit en 90 s au Regard 1**, puis 75, 60, 45, et **30 s au Regard 5**.
+- **Le joueur est prévenu** vers 70 % : un murmure (« Il te sent… ») et un battement rouge discret au bord de l'écran.
+
+**Les Repris, les yeux de l'Œil au sol.** Ceux qu'il a aspirés, qu'il recrache (repris de Survivor : corps, crânes, animations).
+
+| Repris | Arrive | Ce qu'il fait | La parade |
+| --- | --- | --- | --- |
+| Errant | Regard 1 | Erre lentement ; s'il te voit, il crie et le faisceau vient vers toi | Rester hors de sa vue, le frapper (3 coups) |
+| Rampant | Regard 1 | Sent les joueurs cachés à 14 studs et les arrache de leur cachette | Changer de cachette, le tuer avant |
+| Hurleur | Regard 3 | Quand il te voit, il hurle : l'Œil vient vers le bruit, les Repris proches accourent | Le faire taire vite, ou fuir loin |
+| Coureur | Regard 3 | Rapide et fragile, il te plaque : K.O. 2 s | L'esquiver d'une glissade ; 2 coups suffisent |
+
+- **Ils ne tuent jamais** : ils signalent, délogent ou mettent K.O. 2 à 3 s. C'est toujours l'Œil qui aspire, par une vraie ligne de vue (le principe « l'Œil ne triche pas » tient).
+- **À chaque fermeture de l'Œil, il en recrache**, de plus en plus au fil des Regards (environ 1 pour 8 joueurs en vie au Regard 1, jusqu'à 1 pour 3 au Regard 5), en priorité près des joueurs flairés et des cachettes solides occupées. Ils tombent dans une traînée visible de tous.
+- **Un plafond** : au plus 1 Repris en vie pour 2 joueurs en vie. Au début de chaque Regard, l'Œil en ré-aspire la moitié (on les voit remonter).
+- **Se battre fait du bruit** (l'Œil entend les coups à partir du Regard 4). Un Repris tué lâche un objet commun.
+- **Les parades** : le fumigène les aveugle aussi ; accroupi, on se fait moins remarquer ; une cachette fermée cache des Errants et des Hurleurs, pas du Rampant.
+
+**À équilibrer en jouant, avec ces garde-fous dès le départ** (Josh : « il faut que ça reste jouable », pas trop forts ET trop nombreux à la fois) :
+
+- **des Repris faibles** : l'Errant et le Rampant vont moins vite que la marche, le Coureur tombe en 2 coups ;
+- **jamais plus de 2 Repris sur le même joueur** à la fois ;
+- **ils préviennent** : un grognement avant d'attaquer, et un délai entre deux cris du même Repris ;
+- **le plafond** (1 pour 2 joueurs en vie) et le ré-aspirage de la moitié à chaque Regard ;
+- tous les chiffres dans le fichier de réglages, et des parties de bots pour mesurer combien de joueurs ils mettent réellement K.O.
+
 ## La carte
 
 **Validé (12 novembre) : une grande carte fixe, à thèmes.** Josh : une vraie carte de battle royale, avec des zones bien à thème, belles, **jamais un copier-coller** d'un autre jeu (des inspirations, oui). La disposition des zones ne change pas d'une partie à l'autre : on apprend la carte.
@@ -490,4 +524,5 @@ Les objets et leurs raretés : voir la section Les objets.
 - [x] Les paris : un petit gain, et pas de pari sur un ami Roblox (le chiffre reste à régler).
 - [x] La progression et la boutique : une monnaie (crédits), boutique tournante, saisons et passe, tirages par fragments ou crédits.
 - [ ] Les prix (passe, crédits, tirages) et les récompenses par partie, en chiffres.
+- [x] Contre le camping : la méfiance de l'Œil et les Repris recrachés.
 - [ ] Le nom du jeu, la stratégie de lancement, les miniatures, le marketing : au moment de lancer (voir Le lancement).
