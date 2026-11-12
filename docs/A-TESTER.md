@@ -504,4 +504,10 @@ Corrigé grâce à elle :
   bâtiment. Elle s'arrête maintenant devant le mur ;
 - un Rampant arrachait le même bot quatre fois de suite (il rentrait
   aussitôt). Après un arrachage, il ne sent plus rien pendant 15 s.
+- en escouade, les bots n'ouvraient jamais le cocon d'un coéquipier : tous
+  les cocons finissaient pris par le faisceau, et un joueur avec des bots
+  dans son équipe n'aurait jamais été délivré. Maintenant, un bot court
+  ouvrir le cocon d'un coéquipier à moins de 120 studs, et sort même de sa
+  cachette pour ça. Vérifié : deux cocons ouverts par des bots, 3 et 5 s
+  après leur apparition.
 

@@ -322,6 +322,20 @@ function SquadService.regardOf(actor: Roster.Actor): number
 	return lastRegard[actor] or 0
 end
 
+-- Le cocon d'un coequipier a portee (pour les bots qui viennent l'ouvrir).
+function SquadService.cocoonNear(actor: Roster.Actor, at: Vector3, range: number): BasePart?
+	local best, bestD = nil, range
+	for _, cocoon in cocoons do
+		if SquadService.allies(actor, cocoon.actor) then
+			local d = (cocoon.part.Position - at).Magnitude
+			if d <= bestD then
+				best, bestD = cocoon.part, d
+			end
+		end
+	end
+	return best
+end
+
 function SquadService.clear()
 	table.clear(teamLastIn)
 	table.clear(lastRegard)

@@ -475,6 +475,36 @@ local function think(bot: Bot, now: number)
 	local current = circleOf(Config.zone.attribute)
 	local nextCircle = circleOf(Config.zone.nextAttribute)
 
+	-- Le cocon d'un coequipier : il court l'ouvrir (3 coups), avant que
+	-- l'Oeil ne le trouve (vu en partie : sans ca, tous les cocons etaient
+	-- pris, et un joueur avec des bots dans son equipe n'etait jamais
+	-- delivre).
+	do
+		local cocoon = SquadService.cocoonNear(bot.model, position, B.cocoonRange)
+		if cocoon and HidingService.isHidden(bot.model) then
+			-- Cache, il sort quand meme : c'est maintenant ou jamais (vu en
+			-- partie : le coequipier cache restait cache).
+			HidingService.leave(bot.model)
+			return
+		end
+		if cocoon then
+			local flat =
+				Vector3.new(cocoon.Position.X - position.X, 0, cocoon.Position.Z - position.Z)
+			if flat.Magnitude <= Config.combat.hitRange - 1 then
+				stop(bot)
+				bot.root.CFrame = CFrame.lookAt(
+					position,
+					Vector3.new(cocoon.Position.X, position.Y, cocoon.Position.Z)
+				)
+				CombatService.gesture(bot.model, "hit")
+			else
+				setGoal(bot, cocoon.Position - flat.Unit * 3, true, nil)
+				follow(bot)
+			end
+			return
+		end
+	end
+
 	-- Traque : il sort ce qui le protege (fumigene, cape...).
 	if bot.model:GetAttribute(Config.eye.huntedAttribute) == true and not bot.careless then
 		ItemService.defend(bot.model)

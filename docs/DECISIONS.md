@@ -472,3 +472,12 @@ Josh : « tout faire », avec des choix de l'assistant, revus au rapport.
 - **L'écran** : croix gauche au salon. On navigue à la croix, L1 / R1
   changent d'onglet, A choisit, B ferme. C'est notre navigation, pas
   celle de Roblox, pour qu'elle marche pareil au clavier.
+
+## 13 novembre 2026 (nuit) — corrections après les parties de test
+
+- **Les bots vont ouvrir le cocon d'un coéquipier** à moins de 120 studs,
+  quitte à sortir de leur cachette. Sinon, un joueur dont l'équipe est
+  complétée par des bots ne revenait jamais du Ventre.
+- **Le Rampant se repose 15 s** après avoir arraché quelqu'un.
+- **La caméra du spectateur** s'arrête devant les murs.
+

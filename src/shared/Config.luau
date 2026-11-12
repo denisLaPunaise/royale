@@ -1797,6 +1797,9 @@ Config.bots = {
 	-- portee (A REGLER : assez pour que la rue soit vivante, pas assez pour
 	-- que chaque croisement soit une bagarre).
 	brawlChance = 0.15,
+	-- Le cocon d'un coequipier a moins de cette distance : il va l'ouvrir.
+	-- Le cocon apparait a 6 studs de lui : large, pour aller au secours.
+	cocoonRange = 120,
 	-- Entre deux deplacements, ils restent un moment (s) dans une cachette.
 	hideMinSeconds = 8,
 	hideMaxSeconds = 30,
