@@ -50,3 +50,23 @@ le plan (« je te laisse voir et adapter »).
   Quartier suspendu au-dessus de la Banlieue.
 - **La place des thèmes** a été choisie pour que des zones voisines se
   contrastent (le Marais à côté du Port, la Fête foraine à côté du Lycée).
+
+## 12 novembre 2026 — le tour de l'Œil refait
+
+Josh : le globe, l'iris et les veines sont parfaits, mais le tour de l'Œil
+(un « carré noir » au-dessus, des paupières plates) ne va pas avec le reste.
+Pris par l'assistant :
+
+- **Le fond de la déchirure** n'est plus une plaque noire plate (c'était le
+  carré) : une voûte courbe, rouge très sombre, éclairée de l'intérieur, assez
+  petite pour rester cachée derrière la déchirure.
+- **De vraies paupières** : deux coques de peau qui épousent le globe, avec un
+  bourrelet humide, une braise le long de la jointure et des cils. Elles
+  s'ouvrent et se ferment en tournant autour de l'axe est-ouest du globe
+  (attributs `Cote`, `Ouvert`, `Ferme`, en degrés). **À faire** : la vue du
+  ciel côté client (reprise de Survivor) devra les animer par cette rotation,
+  et non plus en allongeant des bandes.
+- **Une orbite de chair** : des bourrelets serrés descendent du bord de la
+  déchirure jusqu'au globe ; plus de vide noir autour de l'Œil.
+- **La déchirure** a un bord irrégulier (bruit et quelques longues fentes) au
+  lieu d'une étoile à pointes régulières.

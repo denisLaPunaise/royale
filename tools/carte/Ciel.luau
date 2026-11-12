@@ -51,10 +51,13 @@ return function(O: any)
 		for i = 0, segments - 1 do
 			local a = (i / segments) * math.pi * 2
 			table.insert(inner, almond(a, random:NextNumber(-6, 6)))
-			-- Le contour exterieur alterne pointes et creux : une dechirure.
-			local reach = if i % 2 == 0
-				then random:NextNumber(90, 190)
-				else random:NextNumber(35, 80)
+			-- Le contour exterieur : une dechirure irreguliere, pas une etoile.
+			-- Un bord qui ondule (bruit), avec de loin en loin une longue fente.
+			-- (Des pointes regulieres faisaient un dessin d'enfant, vu par Josh.)
+			local reach = 55 + 45 * math.noise(i / 7, 3.3) + random:NextNumber(-12, 12)
+			if random:NextNumber() < 0.14 then
+				reach += random:NextNumber(70, 140)
+			end
 			table.insert(outer, almond(a, reach))
 		end
 		local black = Color3.fromRGB(10, 7, 9)
@@ -119,16 +122,31 @@ return function(O: any)
 				at += step
 			end
 		end
-		-- Le fond de la dechirure : un noir profond derriere l'Oeil.
-		P(
-			m,
-			"Neant",
-			Vector3.new(halfLong * 2.4, 4, halfShort * 2.4),
-			CFrame.new(0, eyeAt.Y + 120, 0),
-			Enum.Material.SmoothPlastic,
-			Color3.fromRGB(4, 2, 4),
-			noRay
-		)
+		-- Le fond de la dechirure : une voute sombre et courbe derriere l'Oeil,
+		-- eclairee de l'interieur par une lueur rouge. (Une plaque noire plate
+		-- faisait un carre au-dessus de l'Oeil, vu par Josh le 12 novembre 2026.)
+		do
+			local vault = P(
+				m,
+				"Neant",
+				Vector3.new(halfLong * 2.15, 120, halfShort * 2.3),
+				CFrame.new(0, riftY + 70, 0),
+				Enum.Material.SmoothPlastic,
+				-- Assez petite et plate pour rester cachee derriere la dechirure : plus
+				-- grande, elle debordait en un enorme oeuf noir (vu a l'ecran).
+				Color3.fromRGB(34, 10, 10),
+				noRay
+			)
+			local shape = Instance.new("SpecialMesh")
+			shape.MeshType = Enum.MeshType.Sphere
+			shape.Parent = vault
+			local glow = Instance.new("PointLight")
+			glow.Color = Color3.fromRGB(170, 40, 24)
+			glow.Range = 60
+			glow.Brightness = 2
+			glow.Shadows = false
+			glow.Parent = vault
+		end
 
 		-- L'OEIL. Un modele dont l'avant (-Z) regarde le sol ; la vue du ciel le
 		-- tourne vers ce qu'il cherche.
@@ -319,59 +337,198 @@ return function(O: any)
 			end
 		end
 
-		-- LES PAUPIERES : la Fissure se referme sur l'Oeil entre deux Balayages et
-		-- la nuit (Josh : « qu'il se ferme quand il est pas actif »). Deux rideaux
-		-- noirs aux bords brulants, faits de bandes que la vue du ciel allonge ;
-		-- fermees, il ne reste qu'une couture rougeoyante. Elles passent SOUS le
-		-- globe (qui deborde de la dechirure), et depassent largement le trou pour
-		-- le cacher aussi vu de biais. Construites fermees.
+		-- LES PAUPIERES : deux vraies paupieres qui epousent le globe, une en
+		-- haut (vers le nord), une en bas. Chacune est une coque de peau sombre
+		-- faite de plaques posees sur une sphere un peu plus grande que le globe,
+		-- avec un bord humide, une braise le long de la jointure et des cils.
+		-- Elles s'ouvrent et se ferment en TOURNANT autour de l'axe est-ouest du
+		-- globe : la vue du ciel n'a qu'un angle a changer (attributs `Cote`,
+		-- `Ouvert`, `Ferme`, en degres). Construites ouvertes. (Les anciennes
+		-- bandes plates faisaient des rectangles noirs, vu par Josh.)
 		do
 			local lids = folder(m, SKY.lids)
-			local lidY = eyeAt.Y - radius - 6
-			local strips = 32
-			local span = (halfLong + 30) * 2
-			local stripW = span / strips
-			for i = 1, strips do
-				local x = -span / 2 + (i - 0.5) * stripW
-				-- La demi-largeur du trou a cet endroit : le plus grand ecart des
-				-- points du bord dont l'abscisse tombe dans la bande.
-				local h = 0
-				for k = 0, 719 do
-					local a = k / 720 * math.pi * 2
-					local p = almond(a, 0)
-					if math.abs(p.X - x) <= stripW / 2 + 4 then
-						h = math.max(h, math.abs(p.Z))
+			local look = CFrame.lookAt(eyeAt, eyeAt - Vector3.new(0, 1, 0), Vector3.new(0, 0, 1))
+			local shell = 123
+			local skinFar = Color3.fromRGB(58, 26, 24)
+			local skinNear = Color3.fromRGB(96, 44, 38)
+			for _, side in { 1, -1 } do
+				local lid = model(lids, if side == 1 then "PaupiereHaut" else "PaupiereBas")
+				local openDeg = if side == 1 then 34 else -26
+				lid:SetAttribute("Cote", side)
+				lid:SetAttribute("Ouvert", openDeg)
+				lid:SetAttribute("Ferme", 0)
+				local reach = if side == 1 then 104 else 96
+				local stepA, stepB = 6, 8.5
+				-- La coque, plaque par plaque, construite fermee (le bord sur l'axe
+				-- de la pupille), puis tournee jusqu'a l'ouverture.
+				for aDeg = 0, reach - stepA, stepA do
+					for bDeg = -85, 85 - stepB, stepB do
+						local alpha = math.rad((aDeg + stepA / 2) * side)
+						local beta = math.rad(bDeg + stepB / 2)
+						local cf = look
+							* CFrame.Angles(0, beta, 0)
+							* CFrame.Angles(alpha, 0, 0)
+							* CFrame.new(0, 0, -shell)
+						local width = shell * math.rad(stepB) * math.abs(math.cos(alpha)) * 1.25
+							+ 1.5
+						local height = shell * math.rad(stepA) * 1.2
+						local t = math.clamp(aDeg / reach, 0, 1)
+						local plate = P(
+							lid,
+							"Peau",
+							Vector3.new(width, height, 1.6),
+							cf,
+							Enum.Material.Slate,
+							skinNear:Lerp(skinFar, t),
+							noRay
+						)
+						_ = plate
+						-- Quelques veines sur la peau, pres du bord.
+						if aDeg < 30 and random:NextNumber() < 0.18 then
+							P(
+								lid,
+								"VeinePaupiere",
+								Vector3.new(width * random:NextNumber(0.5, 1), 0.6, 0.4),
+								cf
+									* CFrame.new(
+										0,
+										random:NextNumber(-height / 3, height / 3),
+										-0.9
+									)
+									* CFrame.Angles(0, 0, random:NextNumber(-0.6, 0.6)),
+								Enum.Material.SmoothPlastic,
+								Color3.fromRGB(110, 26, 22),
+								noRay
+							)
+						end
 					end
 				end
-				h += 45
-				for _, side in { -1, 1 } do
-					local lid = P(
-						lids,
-						"Paupiere",
-						Vector3.new(stripW + 1, 2, h),
-						CFrame.new(x, lidY, side * h / 2),
-						Enum.Material.SmoothPlastic,
-						-- Une chair sombre, pas le noir de la dechirure : fermee,
-						-- on doit voir l'amande d'une paupiere (en noir, ce n'etait
-						-- qu'une tache, vu en jeu).
-						Color3.fromRGB(46, 18, 16),
-						noRay
-					)
-					lid:SetAttribute("X", x)
-					lid:SetAttribute("Demi", h)
-					lid:SetAttribute("Cote", side)
-					local edge = P(
-						lids,
+				-- Le bord : un bourrelet humide, une braise dessous, des cils.
+				for bDeg = -84, 84, 4 do
+					local beta = math.rad(bDeg)
+					local a0 = look * CFrame.Angles(0, beta, 0) * CFrame.new(0, 0, -(shell + 1.2))
+					local a1 = look
+						* CFrame.Angles(0, math.rad(bDeg + 4), 0)
+						* CFrame.new(0, 0, -(shell + 1.2))
+					local mid = (a0.Position + a1.Position) / 2
+					local len = (a1.Position - a0.Position).Magnitude + 0.6
+					-- Le bourrelet s'amincit vers les coins de l'oeil.
+					local thick = 4.2 * (1 - (math.abs(bDeg) / 90) ^ 2) + 1.2
+					P(
+						lid,
 						"Bord",
-						Vector3.new(stripW + 1, 2.4, 6),
-						CFrame.new(x, lidY - 1.8, 0),
+						Vector3.new(len, thick, thick),
+						CFrame.lookAt(mid, a1.Position) * CFrame.Angles(0, math.rad(90), 0),
+						Enum.Material.SmoothPlastic,
+						Color3.fromRGB(72, 16, 16),
+						{
+							shape = Enum.PartType.Cylinder,
+							collide = false,
+							query = false,
+							shadow = false,
+						}
+					)
+					local ember = P(
+						lid,
+						"Braise",
+						Vector3.new(len, 0.8, 0.8),
+						CFrame.lookAt(mid, a1.Position)
+							* CFrame.Angles(0, math.rad(90), 0)
+							* CFrame.new(0, -side * thick * 0.35, 0),
 						Enum.Material.Neon,
-						C.rift,
+						Color3.fromRGB(150, 38, 18),
+						{
+							shape = Enum.PartType.Cylinder,
+							collide = false,
+							query = false,
+							shadow = false,
+						}
+					)
+					ember.Transparency = 0.25
+					-- Des cils, longs et irreguliers, tournes vers le dehors.
+					for _ = 1, 2 do
+						local base = look
+							* CFrame.Angles(0, beta + math.rad(random:NextNumber(0, 4)), 0)
+							* CFrame.new(0, 0, -(shell + 2))
+						local out = (base.LookVector * 0.75 - base.UpVector * side * 0.65).Unit
+						local length = random:NextNumber(8, 20) * (1 - (math.abs(bDeg) / 100) ^ 2)
+						local tip = base.Position + out * length
+						P(
+							lid,
+							"Cil",
+							Vector3.new(0.45, 0.45, length),
+							CFrame.lookAt((base.Position + tip) / 2, tip),
+							Enum.Material.SmoothPlastic,
+							Color3.fromRGB(14, 8, 8),
+							noRay
+						)
+					end
+				end
+				lid.WorldPivot = look
+				lid:PivotTo(look * CFrame.Angles(math.rad(openDeg), 0, 0))
+			end
+		end
+
+		-- LA CHAIR autour de l'Oeil, la ou il sort de la dechirure : un
+		-- bourrelet gonfle, sombre, veine de braise. Sans elle, le globe
+		-- traversait une plaque noire a angle vif.
+		do
+			-- L'orbite : de la chair qui descend du bord de la dechirure jusqu'au
+			-- globe, en anneaux de bourrelets serres qui se chevauchent. Sans elle,
+			-- un vide noir separait l'anneau du globe (vu a l'ecran).
+			local section = math.sqrt(math.max(radius * radius - (eyeAt.Y - riftY) ^ 2, 0))
+			for ring = 0, 4 do
+				local t = ring / 4
+				for i = 0, 71 do
+					local a = i / 72 * math.pi * 2 + ring * 0.04
+					local rim = almond(a, random:NextNumber(0, 6))
+					-- Du bord du trou jusqu'a la section du globe, en s'enfoncant.
+					local toward =
+						Vector3.new(math.cos(a) * (section + 4), riftY, math.sin(a) * (section + 4))
+					local p = rim:Lerp(toward, t * 0.95)
+					local nextP = almond(a + 0.1, 3):Lerp(
+						Vector3.new(
+							math.cos(a + 0.1) * (section + 4),
+							riftY,
+							math.sin(a + 0.1) * (section + 4)
+						),
+						t * 0.95
+					)
+					local long = random:NextNumber(22, 34) * (1 - t * 0.4)
+					local y = riftY - 4 - t * 16 + random:NextNumber(-2, 2)
+					local lump = P(
+						m,
+						"Chair",
+						Vector3.new(
+							long,
+							random:NextNumber(10, 16),
+							random:NextNumber(14, 22) * (1 - t * 0.3)
+						),
+						CFrame.lookAt(Vector3.new(p.X, y, p.Z), Vector3.new(nextP.X, y, nextP.Z))
+							* CFrame.Angles(0, math.rad(90), random:NextNumber(-0.25, 0.25)),
+						Enum.Material.Slate,
+						Color3.fromRGB(
+							84 - ring * 6 + random:NextInteger(-8, 8),
+							32 - ring * 2,
+							28 - ring * 2
+						),
 						noRay
 					)
-					edge:SetAttribute("X", x)
-					edge:SetAttribute("Demi", h)
-					edge:SetAttribute("Cote", side)
+					local shape = Instance.new("SpecialMesh")
+					shape.MeshType = Enum.MeshType.Sphere
+					shape.Parent = lump
+					if random:NextNumber() < 0.2 then
+						P(
+							m,
+							"VeineChair",
+							Vector3.new(random:NextNumber(8, 16), 0.7, 0.7),
+							CFrame.new(p.X, y - 6, p.Z)
+								* CFrame.Angles(0, random:NextNumber(0, 6), 0),
+							Enum.Material.Neon,
+							Color3.fromRGB(140, 34, 18),
+							noRay
+						)
+					end
 				end
 			end
 		end
