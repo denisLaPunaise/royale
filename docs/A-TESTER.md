@@ -269,3 +269,36 @@ les textes à l'écran), la mort subite, la dernière manche à la fermeture.
 6. Au Regard 4, être aspiré est définitif.
 7. Le Ventre fait-il assez peur ? Est-il trop sombre ?
 
+## Les escouades (nuit du 12 novembre 2026)
+
+**Vérifié par le calcul** (`tests/specs/squads.luau`) : les équipes (les amis
+ensemble, les bots complètent), la fin de partie par équipe, des équipes
+pleines, 3 coups pour ouvrir un cocon bien avant que l'Œil arrive.
+
+**Vérifié seul dans Studio** :
+- 20 participants, 5 équipes de 4 ;
+- des coups entre coéquipiers mettent K.O., et « relever » remet debout ;
+- un cocon apparaît près d'un coéquipier, qui l'ouvre en 3 coups ;
+- un cocon laissé seul est pris par le faisceau (au bout de 65 s, à
+  l'ouverture de l'Œil).
+
+**Vu à l'écran** : la liste « TON ÉQUIPE » en bas à gauche, et le texte du
+haut qui tient maintenant en entier.
+
+**Jamais vu** : les repères bleus à travers les murs (le pont ne montre
+pas les étiquettes au-dessus des têtes), « Relever » et « Donner » à
+l'écran, le cocon vu de près, l'écran de victoire d'équipe.
+
+**À regarder en jouant (avec tes amis), dans l'ordre :**
+
+1. Au début : tes amis sont dans ton équipe ? Tu les vois en bleu à
+   travers les murs, avec leur nom ?
+2. Un ami est K.O. : X maintenu sur lui affiche « Relever » et le remet
+   debout.
+3. X maintenu sur un ami debout : « Donner » lui passe l'objet que tu
+   tiens.
+4. Un ami sauvé du Ventre revient dans un cocon près de toi : 3 coups (R2)
+   l'ouvrent. Attends trop longtemps : le faisceau vient le prendre.
+5. Les objets lancés (bouteille, filet…) ne touchent jamais un ami.
+6. La fin : quand il ne reste que ton équipe, vous avez gagné, tous.
+

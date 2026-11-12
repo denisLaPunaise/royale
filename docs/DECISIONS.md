@@ -292,3 +292,29 @@ laissé l'autonomie, l'assistant a fixé ces valeurs (toutes dans
   suite une dernière manche, puis être aspiré est définitif.
 - **Une partie à 1 joueur en vie** se termine, même s'il reste du monde au
   Ventre.
+
+## 12 novembre 2026 (nuit) — les escouades, choix pris sans Josh
+
+- **Le mode joué** : l'escouade de 4, en attendant que le salon le fasse
+  choisir, parce que tu joues avec tes amis. Le réglage est
+  `Config.squads.mode`.
+- **Les équipes** : les vrais joueurs d'abord, ensemble, dans leur ordre
+  d'arrivée ; les bots complètent. Le nombre de participants est arrondi à
+  des équipes pleines (au plus 24).
+- **Relever un ami K.O.** : X maintenu sur lui. C'est la même invite que
+  « Voler », qui s'affiche « Relever » sur un coéquipier.
+- **Donner son objet** : X maintenu 0,6 s sur un ami debout. L'invite
+  n'apparaît que sur les coéquipiers.
+- **Le cocon** : il apparaît à 6 studs d'un coéquipier en vie, et 3 coups
+  d'un coéquipier l'ouvrent. Après 8 s, il attire le faisceau le plus
+  proche (pendant 40 s) ; si un faisceau allumé le touche, c'est la
+  capture définitive. Sans coéquipier en vie, on revient seul, au hasard.
+- **Les repères** : un contour bleu et le nom au-dessus de la tête, à
+  travers les murs. La liste de l'équipe est en bas à gauche, avec l'état
+  de chacun.
+- **La victoire** : quand une seule équipe a encore quelqu'un en vie ; tous
+  ses membres sont annoncés gagnants, même ceux qui ont été aspirés.
+- **Les bots** ne cherchent pas la bagarre avec leurs coéquipiers. Ils ne
+  relèvent pas, ne donnent pas, et n'ouvrent un cocon que par hasard.
+- **L'écran** : tous les textes du haut se réduisent pour tenir sur un
+  petit écran.

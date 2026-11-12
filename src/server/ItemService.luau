@@ -35,6 +35,7 @@ local EyeService = require(script.Parent.EyeService)
 local HidingService = require(script.Parent.HidingService)
 local RemoteGuard = require(script.Parent.RemoteGuard)
 local Roster = require(script.Parent.Roster)
+local SquadService = require(script.Parent.SquadService)
 local World = require(script.Parent.World)
 local ZoneService = require(script.Parent.ZoneService)
 
@@ -45,6 +46,7 @@ local BG = Config.bag
 local T = Config.throw
 local I = Config.items
 local FX = Config.effects
+local SQ = Config.squads
 local Mv = Config.movement
 
 local random = Random.new()
@@ -61,6 +63,8 @@ local puddles: { { at: Vector3, radius: number, untilT: number, fall: number } }
 -- Bache de plomb : jusqu'a quand.
 local sheets: { [Roster.Actor]: number } = {}
 local stealPrompts: { [Roster.Actor]: ProximityPrompt } = {}
+-- Donner a un coequipier : l'ecran ne la montre qu'a ses coequipiers.
+local givePrompts: { [Roster.Actor]: ProximityPrompt } = {}
 -- Les legendaires deja donnes cette partie (une relique n'en donne jamais
 -- deux fois le meme).
 local givenLegendary: { [string]: boolean } = {}
@@ -265,11 +269,18 @@ function ItemService.searchableNear(at: Vector3, radius: number): BasePart?
 end
 
 -- Les participants a moins de `radius` de `at` (pas caches).
+-- Ceux qu'un objet touche autour de `at` : jamais son lanceur, ni ses
+-- coequipiers (CONCEPT.md : les objets ne touchent jamais un coequipier).
 local function around(at: Vector3, radius: number, except: Roster.Actor?): { Roster.Actor }
 	local out: { Roster.Actor } = {}
 	for _, actor in Roster.alive() do
 		local root = Roster.rootOf(actor)
-		if actor ~= except and root and not HidingService.isHidden(actor) then
+		if
+			actor ~= except
+			and not SquadService.allies(except, actor)
+			and root
+			and not HidingService.isHidden(actor)
+		then
 			if (root.Position - at).Magnitude <= radius then
 				table.insert(out, actor)
 			end
@@ -626,7 +637,8 @@ function ItemService.give(actor: Roster.Actor, id: string)
 	end
 end
 
--- Voler (X maintenu sur un K.O.) : un objet au hasard de son sac.
+-- Voler (X maintenu sur un K.O.) : un objet au hasard de son sac. Sur un
+-- coequipier, la meme invite le releve (CONCEPT.md).
 local function steal(thief: Roster.Actor, victim: Roster.Actor)
 	local victimRoot, thiefRoot = Roster.rootOf(victim), Roster.rootOf(thief)
 	if
@@ -637,6 +649,12 @@ local function steal(thief: Roster.Actor, victim: Roster.Actor)
 		or thiefRoot == nil
 		or (victimRoot.Position - thiefRoot.Position).Magnitude > BG.stealDistance + 2
 	then
+		return
+	end
+	if SquadService.allies(thief, victim) then
+		CombatService.reset(victim)
+		notify(victim, Roster.nameOf(thief) .. " te relève")
+		notify(thief, "Tu relèves " .. Roster.nameOf(victim))
 		return
 	end
 	local items = Bag.items(bagOf(victim))
@@ -671,6 +689,62 @@ local function addStealPrompt(actor: Roster.Actor)
 		steal(player, actor)
 	end)
 	stealPrompts[actor] = prompt
+end
+
+-- Donner l'objet qu'on tient a un coequipier debout (X maintenu sur lui).
+local function hand(giver: Roster.Actor, receiver: Roster.Actor)
+	local a, b = Roster.rootOf(giver), Roster.rootOf(receiver)
+	if
+		not SquadService.allies(giver, receiver)
+		or not free(giver)
+		or not free(receiver)
+		or a == nil
+		or b == nil
+		or (a.Position - b.Position).Magnitude > SQ.giveDistance + 2
+	then
+		return
+	end
+	local slot = selected[giver] or 1
+	local id = bagOf(giver)[slot]
+	if id == nil or id == "" then
+		notify(giver, "Tu ne tiens rien.")
+		return
+	end
+	consume(giver, slot)
+	give(receiver, id)
+	notify(receiver, Roster.nameOf(giver) .. " te donne : " .. I[id].name)
+end
+
+local function addGivePrompt(actor: Roster.Actor)
+	local root = Roster.rootOf(actor)
+	if root == nil or SquadService.size() <= 1 then
+		return
+	end
+	local prompt = Instance.new("ProximityPrompt")
+	prompt.Name = "RoyaleDonner"
+	prompt.ActionText = SQ.giveText
+	prompt.ObjectText = Roster.nameOf(actor)
+	prompt.HoldDuration = SQ.giveSeconds
+	prompt.MaxActivationDistance = SQ.giveDistance
+	prompt.RequiresLineOfSight = false
+	prompt.KeyboardKeyCode = Enum.KeyCode[Config.controls.contexts.onFoot.interact.keyboard]
+	prompt.GamepadKeyCode = Enum.KeyCode[Config.controls.contexts.onFoot.interact.gamepad]
+	prompt.Parent = root
+	prompt.Triggered:Connect(function(player: Player)
+		hand(player, actor)
+	end)
+	givePrompts[actor] = prompt
+end
+
+-- X maintenu sur un participant, par le meme chemin que les invites (les
+-- sondes du pont ne peuvent pas les declencher) : voler ou relever un K.O.,
+-- sinon donner a un coequipier.
+function ItemService.tryInteract(actor: Roster.Actor, target: Roster.Actor)
+	if target:GetAttribute(Config.combat.koAttribute) == true then
+		steal(actor, target)
+	else
+		hand(actor, target)
+	end
 end
 
 -- Le Cocon de secours : aspire, recrache sur place, une fois.
@@ -843,6 +917,7 @@ function ItemService.setup(actors: { Roster.Actor })
 		selected[actor] = 1
 		publish(actor)
 		addStealPrompt(actor)
+		addGivePrompt(actor)
 	end
 	print(string.format("[Royale] %d meubles sur %d ont quelque chose", wanted, #all))
 end
@@ -874,6 +949,10 @@ function ItemService.clear()
 		prompt:Destroy()
 	end
 	table.clear(stealPrompts)
+	for _, prompt in givePrompts do
+		prompt:Destroy()
+	end
+	table.clear(givePrompts)
 	table.clear(bags)
 	table.clear(selected)
 	table.clear(lastUse)
@@ -964,6 +1043,10 @@ local function step()
 			and actor:GetAttribute(Config.combat.koAttribute) == true
 			and Roster.isAlive(actor)
 	end
+	-- Donner : sur un participant debout, a decouvert.
+	for actor, prompt in givePrompts do
+		prompt.Enabled = actor.Parent ~= nil and free(actor) and not HidingService.isHidden(actor)
+	end
 end
 
 function ItemService.start(
@@ -1048,6 +1131,7 @@ function ItemService.start(
 		lastUse[player] = nil
 		sheets[player] = nil
 		stealPrompts[player] = nil
+		givePrompts[player] = nil
 	end)
 	local acc = 0
 	RunService.Heartbeat:Connect(function(dt: number)

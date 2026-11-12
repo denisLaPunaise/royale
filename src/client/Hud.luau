@@ -43,6 +43,12 @@ local function label(
 	l.TextColor3 = Color3.fromRGB(240, 232, 220)
 	l.TextStrokeTransparency = 0.4
 	l.TextWrapped = true
+	-- Le texte se reduit pour tenir sur un petit ecran (vu en image : « L'ŒIL
+	-- EST OUVERT — encore 23 s » perdait sa fin), jamais au-dela de sa taille.
+	l.TextScaled = true
+	local limit = Instance.new("UITextSizeConstraint")
+	limit.MaxTextSize = textSize
+	limit.Parent = l
 	l.Text = ""
 	l.Parent = parent
 	return l
@@ -125,18 +131,10 @@ function Hud.start()
 	local alive = label(gui, "Restants", UDim2.new(0.6, 0, 0, 24), UDim2.new(0.5, 0, 0, 102), 20)
 	-- Les pouvoirs de l'Oeil : la liste en petit, et le dernier annonce en
 	-- grand quelques secondes.
-	-- Le texte se reduit pour tenir sur un petit ecran (vu en image : a
-	-- taille fixe, l'annonce debordait des deux cotes).
 	local powers = label(gui, "Pouvoirs", UDim2.new(0.9, 0, 0, 20), UDim2.new(0.5, 0, 0, 128), 17)
 	powers.TextColor3 = Color3.fromRGB(255, 150, 120)
 	local power = label(gui, "Pouvoir", UDim2.new(0.9, 0, 0, 64), UDim2.new(0.5, 0, 0, 154), 26)
 	power.TextColor3 = Color3.fromRGB(255, 110, 80)
-	for _, l in { powers, power } do
-		local limit = Instance.new("UITextSizeConstraint")
-		limit.MaxTextSize = l.TextSize
-		limit.Parent = l
-		l.TextScaled = true
-	end
 	local center = label(gui, "Centre", UDim2.fromOffset(760, 90), UDim2.fromScale(0.5, 0.3), 30)
 	local warning = label(gui, "Alerte", UDim2.fromOffset(760, 34), UDim2.fromScale(0.5, 0.62), 28)
 	local hint = label(gui, "Aide", UDim2.fromOffset(760, 28), UDim2.new(0.5, 0, 1, -150), 22)
@@ -222,7 +220,9 @@ function Hud.start()
 		elseif phase == "Fin" then
 			local winner = workspace:GetAttribute(M.winnerAttribute)
 			text = if typeof(winner) == "string" and winner ~= ""
-				then winner .. " a survécu à l'Œil"
+				then winner .. (if string.find(winner, ",", 1, true)
+					then " ont survécu à l'Œil"
+					else " a survécu à l'Œil")
 				else "L'Œil a pris tout le monde"
 			if left then
 				text ..= string.format("\nNouvelle partie dans %d s", math.ceil(left))

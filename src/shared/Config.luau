@@ -1285,6 +1285,57 @@ Config.goulag = {
 }
 
 --------------------------------------------------------------------------------
+-- LES ESCOUADES — solo, duo, escouade de 4 (CONCEPT.md, valide le 12 novembre)
+--------------------------------------------------------------------------------
+
+Config.squads = {
+	-- Le mode joue, en attendant que le salon le fasse choisir : l'escouade,
+	-- parce que Josh joue avec ses amis (DECISIONS.md).
+	mode = "squad",
+	sizes = { solo = 1, duo = 2, squad = 4 },
+	-- L'attribut d'un participant : le numero de son equipe.
+	attribute = "Equipe",
+	-- Relever un ami K.O. (X maintenu, la meme invite que voler).
+	reviveText = "Relever",
+	-- Donner l'objet qu'on tient a un ami debout (X maintenu sur lui).
+	giveSeconds = 0.6,
+	giveDistance = 7,
+	giveText = "Donner",
+	-- Le cocon : sauve du Ventre, on revient pres d'un coequipier, dans un
+	-- cocon qu'il ouvre en 3 coups (CONCEPT.md). Il signale sa place a
+	-- l'Oeil apres `eyeDelay` s (propose : 8 s) ; si un faisceau le touche
+	-- avant qu'il soit ouvert, c'est la capture definitive.
+	cocoon = {
+		hits = 3,
+		eyeDelay = 8,
+		lureSeconds = 40,
+		offset = 6,
+		size = { 4.5, 7, 4.5 },
+		color = { 120, 30, 26 },
+		glow = { 255, 80, 40 },
+		-- Il luit : on le trouve, et l'Oeil aussi.
+		lightRange = 14,
+		lightBrightness = 3,
+	},
+	-- Les reperes des coequipiers, a travers les murs : un bleu froid, que
+	-- rien d'autre n'utilise (le rouge est a l'Oeil, l'or aux legendaires).
+	markerColor = { 90, 200, 255 },
+	-- L'ecran : la liste en bas a gauche (au-dessus du sac), le nom au-dessus
+	-- de la tete, et la frequence de mise a jour (s).
+	view = {
+		listWidth = 360,
+		listHeight = 110,
+		listTextSize = 18,
+		tagWidth = 160,
+		tagHeight = 26,
+		tagAbove = 2.6,
+		refreshSeconds = 0.25,
+	},
+	-- L'attribut d'un participant dans un cocon (vrai).
+	cocoonAttribute = "DansCocon",
+}
+
+--------------------------------------------------------------------------------
 -- LES BOTS — invisibles, pour que la partie paraisse toujours pleine
 --------------------------------------------------------------------------------
 

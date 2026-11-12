@@ -864,15 +864,15 @@ end
 function ReprisService.start()
 	getFolder()
 	loadSkull()
-	CombatService.setCreatures(function()
+	CombatService.addCreatures(function()
 		local out: { CombatService.Creature } = {}
 		for _, agent in agents do
 			if agent.ready and not agent.dying then
-				table.insert(out, { id = agent.id, root = agent.root })
+				table.insert(out, { id = agent.id, root = agent.root, onHit = onHit })
 			end
 		end
 		return out
-	end, onHit)
+	end)
 	EyeService.onFlagged(onFlagged)
 	task.spawn(function()
 		while true do

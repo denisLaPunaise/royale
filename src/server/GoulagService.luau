@@ -25,6 +25,7 @@ local CombatService = require(script.Parent.CombatService)
 local HidingService = require(script.Parent.HidingService)
 local ReprisService = require(script.Parent.ReprisService)
 local Roster = require(script.Parent.Roster)
+local SquadService = require(script.Parent.SquadService)
 local World = require(script.Parent.World)
 local ZoneService = require(script.Parent.ZoneService)
 
@@ -238,14 +239,14 @@ function GoulagService.build()
 				Vector3.new(0, 0, -1),
 			}
 		do
-			local wall = part(
+			local barrier = part(
 				"MurCage",
 				Vector3.new(if side.X ~= 0 then 0.4 else s, 8, if side.Z ~= 0 then 0.4 else s),
 				CFrame.new(c + side * s / 2 + Vector3.new(0, 4, 0)),
 				cage,
 				Enum.Material.SmoothPlastic
 			)
-			wall.Transparency = 1
+			barrier.Transparency = 1
 		end
 	end
 end
@@ -304,6 +305,10 @@ end
 local function save(actor: Roster.Actor)
 	remove(actor)
 	CombatService.reset(actor)
+	-- En escouade : dans un cocon, pres d'un coequipier en vie.
+	if SquadService.cocoon(actor) then
+		return
+	end
 	local zone = ZoneService.current()
 	local at = nil
 	for _ = 1, 20 do
@@ -483,7 +488,15 @@ local function startRound()
 		local j = random:NextInteger(1, i)
 		order[i], order[j] = order[j], order[i]
 	end
-	local pairs, alone = Duels.pair(order, {})
+	-- Jamais deux coequipiers dans le meme duel (CONCEPT.md).
+	local team: { [string]: string } = {}
+	for id, actor in byId do
+		local t = SquadService.teamOf(actor)
+		if t and SquadService.size() > 1 then
+			team[id] = tostring(t)
+		end
+	end
+	local pairs, alone = Duels.pair(order, team)
 	local slot = 0
 	for _, p in pairs do
 		slot += 1

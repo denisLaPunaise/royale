@@ -110,7 +110,12 @@ Rokit, StyLua, Selene, Lune, GitHub Actions, tous les chiffres dans
   Repris), logique pure `Duels`, `Config.goulag` ; `Roster.setKeeper` et
   `Roster.revive` ; `CombatService.setArena` (règles du Ventre, un coup à
   terre envoie voler).
-- **Ensuite** : les escouades, les gestes manquants (s'allonger et ramper,
+- **12 novembre 2026 (nuit), les escouades** : `SquadService` (équipes,
+  cocon, victoire d'équipe), logique pure `Squads`, `Config.squads`,
+  `TeamView` (repères et liste) ; relever et donner par les invites
+  d'`ItemService` (`tryInteract` pour les sondes) ;
+  `CombatService.addCreatures` (Repris et cocons).
+- **Ensuite** : les gestes manquants (s'allonger et ramper,
   tirer par les pieds, la porte, les signaux, la carte, l'émote), les
   éliminés, la liste des joueurs du jeu (pour cacher les bots), les
   animations de posture, les sons (programme : `docs/PROGRAMME-NUIT.md`).

@@ -31,6 +31,7 @@ local CombatService = require(script.Parent.CombatService)
 local HidingService = require(script.Parent.HidingService)
 local ItemService = require(script.Parent.ItemService)
 local ReprisService = require(script.Parent.ReprisService)
+local SquadService = require(script.Parent.SquadService)
 local Roster = require(script.Parent.Roster)
 local World = require(script.Parent.World)
 local ZoneService = require(script.Parent.ZoneService)
@@ -371,6 +372,7 @@ local function nearestActor(bot: Bot, range: number): Roster.Actor?
 			and root
 			and not HidingService.isHidden(actor)
 			and not CombatService.isDown(actor)
+			and not SquadService.allies(bot.model, actor)
 		then
 			local d = (root.Position - bot.root.Position).Magnitude
 			if d <= bestD then

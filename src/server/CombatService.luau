@@ -162,6 +162,8 @@ local function candidates(
 		if
 			actor == self
 			or HidingService.isHidden(actor)
+			-- Dans un cocon : on frappe le cocon, pas lui.
+			or actor:GetAttribute(Config.squads.cocoonAttribute) == true
 			or carriedBy[actor] ~= nil
 			or (filter and not filter(actor))
 		then
@@ -269,30 +271,29 @@ local function lift(carrier: Roster.Actor, target: Roster.Actor)
 	publish(target)
 end
 
--- Les creatures qu'on peut frapper sans qu'elles soient des participants
--- (les Repris, ReprisService) : leur liste, et ce qu'un coup leur fait.
-export type Creature = { id: string, root: BasePart }
-local creatures: (() -> { Creature })? = nil
-local onCreatureHit: ((id: string, by: Roster.Actor, push: Vector3) -> ())? = nil
+-- Ce qu'on peut frapper sans que ce soit un participant (les Repris, les
+-- cocons) : chaque source donne sa liste et ce qu'un coup leur fait.
+export type Creature = {
+	id: string,
+	root: BasePart,
+	onHit: (id: string, by: Roster.Actor, push: Vector3) -> (),
+}
+local creatureSources: { () -> { Creature } } = {}
 
-function CombatService.setCreatures(
-	list: () -> { Creature },
-	onHit: (id: string, by: Roster.Actor, push: Vector3) -> ()
-)
-	creatures, onCreatureHit = list, onHit
+function CombatService.addCreatures(list: () -> { Creature })
+	table.insert(creatureSources, list)
 end
 
 -- Une creature devant soi, a portee de coup.
 local function creatureInFront(root: BasePart): Creature?
-	if creatures == nil then
-		return nil
-	end
 	local list: { Melee.Candidate } = {}
 	local byId: { [string]: Creature } = {}
-	for _, c in creatures() do
-		byId[c.id] = c
-		local p = c.root.Position
-		table.insert(list, { id = c.id, x = p.X, y = p.Y, z = p.Z })
+	for _, source in creatureSources do
+		for _, c in source() do
+			byId[c.id] = c
+			local p = c.root.Position
+			table.insert(list, { id = c.id, x = p.X, y = p.Y, z = p.Z })
+		end
 	end
 	local p = root.Position
 	local id =
@@ -307,14 +308,14 @@ local function hit(actor: Roster.Actor, root: BasePart)
 	local target = targetInFront(actor, root, C.hitRange)
 	-- Un Repris plus proche qu'un participant prend le coup.
 	local creature = creatureInFront(root)
-	if creature and onCreatureHit then
+	if creature then
 		local targetRoot = target and Roster.rootOf(target)
 		local cd = (creature.root.Position - root.Position).Magnitude
 		if targetRoot == nil or cd < (targetRoot.Position - root.Position).Magnitude then
 			local away = creature.root.Position - root.Position
 			away = Vector3.new(away.X, 0, away.Z)
 			local push = if away.Magnitude > 0 then away.Unit else Vector3.zero
-			onCreatureHit(creature.id, actor, push)
+			creature.onHit(creature.id, actor, push)
 			-- Se battre fait du bruit (CONCEPT.md).
 			EyeService.noise(creature.root.Position, C.hitNoiseSeconds, false)
 			return

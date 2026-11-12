@@ -33,6 +33,7 @@ local HidingService = require(script.Parent.HidingService)
 local GoulagService = require(script.Parent.GoulagService)
 local ItemService = require(script.Parent.ItemService)
 local ReprisService = require(script.Parent.ReprisService)
+local SquadService = require(script.Parent.SquadService)
 local RemoteGuard = require(script.Parent.RemoteGuard)
 local Roster = require(script.Parent.Roster)
 local World = require(script.Parent.World)
@@ -201,6 +202,7 @@ local function playOnce()
 	ItemService.clear()
 	ReprisService.clear()
 	GoulagService.reset()
+	SquadService.clear()
 	HidingService.clear()
 	BotService.clear()
 	Roster.clear()
@@ -226,11 +228,16 @@ local function playOnce()
 	-- touche pas au stick.
 	local humans = realPlayers()
 	local total = random:NextInteger(Config.bots.totalMin, Config.bots.totalMax)
+	-- Des equipes pleines : arrondi a la taille d'equipe, sans depasser le
+	-- maximum (vu en sonde : 17 en escouade laissait un bot seul).
+	local size = SquadService.size()
+	total = math.min(math.ceil(total / size) * size, Config.bots.totalMax)
 	local players: { Roster.Actor } = table.clone(humans)
 	for _, bot in BotService.spawn(math.max(total - #humans, 0), waitingSpot) do
 		table.insert(players, bot)
 	end
 	Roster.start(players)
+	SquadService.assign(players)
 	HidingService.setup(#players)
 	ItemService.setup(players)
 	table.clear(aims)
@@ -314,22 +321,26 @@ local function playOnce()
 		end
 		wasOpen, lastBurst = open, burst
 
-		local remaining = Roster.count()
-		local enough = if Roster.startCount() > 1 then 1 else 0
-		if remaining <= enough then
+		-- Une seule equipe en vie (en solo, une equipe = un joueur).
+		if SquadService.over() then
 			break
 		end
 	end
 
 	-- LA FIN.
-	local winner = Roster.alive()[1]
-	workspace:SetAttribute(M.winnerAttribute, if winner then Roster.nameOf(winner) else "")
+	local winners = SquadService.winners()
+	local names: { string } = {}
+	for _, actor in winners do
+		table.insert(names, Roster.nameOf(actor))
+	end
+	local winner = winners[1]
+	workspace:SetAttribute(M.winnerAttribute, table.concat(names, ", "))
 	workspace:SetAttribute(Config.match.eyeOpenAttribute, false)
 	EyeService.step(0, Config.regards[1], false, 0, false)
 	setPhase("Fin", M.endSeconds)
 	print(
 		if winner
-			then string.format("[Royale] %s gagne la partie", Roster.nameOf(winner))
+			then string.format("[Royale] %s gagne la partie", table.concat(names, ", "))
 			else "[Royale] L'Œil a pris tout le monde"
 	)
 	task.wait(M.endSeconds)
@@ -342,6 +353,7 @@ function MatchService.start()
 	EyePowerService.start()
 	ReprisService.start()
 	GoulagService.start()
+	SquadService.start()
 	ItemService.start(
 		remote(Config.remotes.item),
 		remote(Config.remotes.projectile),

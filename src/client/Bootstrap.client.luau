@@ -18,6 +18,7 @@ local ItemView = require(script.Parent.ItemView)
 local Hud = require(script.Parent.Hud)
 local SkyView = require(script.Parent.SkyView)
 local Spectate = require(script.Parent.Spectate)
+local TeamView = require(script.Parent.TeamView)
 local ZoneView = require(script.Parent.ZoneView)
 
 print(
@@ -35,3 +36,4 @@ task.spawn(AimView.start)
 task.spawn(Controls.start)
 Spectate.start()
 task.spawn(ItemView.start)
+task.spawn(TeamView.start)
