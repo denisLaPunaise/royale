@@ -122,8 +122,9 @@ Rokit, StyLua, Selene, Lune, GitHub Actions, tous les chiffres dans
 - **12 novembre 2026 (nuit), les éliminés** : `Spectate` (coéquipiers
   d'abord, X parier, B quitter), `BetService`, logique pure `Bets`,
   `Config.bets`.
-- **Ensuite** : la liste des joueurs du jeu (pour cacher les bots), les
-  animations de posture, les sons (programme : `docs/PROGRAMME-NUIT.md`).
+- **12 novembre 2026 (nuit), la liste des joueurs** : `PlayerListView` (R3 /
+  Tab), publiée par `Roster` (`ListeJoueurs`).
+- **Ensuite** : les animations de posture, les sons (programme : `docs/PROGRAMME-NUIT.md`).
 
 ## La place et la recette
 

@@ -343,3 +343,11 @@ coéquipier à travers un arbre.
 3. Gagne-t-on bien les crédits du pari à la fin (après la progression) ?
 4. B : on quitte ; plus tard, retour au salon.
 
+## La liste des joueurs (nuit du 12 novembre 2026)
+
+**Vérifié seul dans Studio et vu à l'écran** : R3 (envoyé comme une touche)
+ouvre la liste avec 24 participants ; mon équipe est en tête, en bleu.
+
+**À regarder en jouant** : R3 ouvre et ferme la liste, on ne devine pas qui
+est un bot, les aspirés passent en gris.
+

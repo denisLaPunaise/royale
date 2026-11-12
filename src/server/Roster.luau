@@ -34,12 +34,39 @@ local saver: ((Actor) -> boolean)? = nil
 -- le prend en charge, et le corps n'est pas detruit.
 local keeper: ((Actor, Model) -> boolean)? = nil
 
+local HttpService = game:GetService("HttpService")
+
+-- L'equipe de chacun, gardee : un bot aspire disparait avec son attribut.
+local teamOf: { [Actor]: number } = {}
+
+-- Le nombre en vie, et la liste des joueurs du jeu (CONCEPT.md : la liste de
+-- Roblox trahirait les bots) : nom, equipe, en vie ou non.
 local function publish()
 	local n = 0
 	for _ in aliveSet do
 		n += 1
 	end
 	workspace:SetAttribute(Config.match.aliveAttribute, n)
+	local list = {}
+	for _, actor in participants do
+		local team = actor.Parent and actor:GetAttribute(Config.squads.attribute)
+		if typeof(team) == "number" then
+			teamOf[actor] = team
+		end
+		table.insert(
+			list,
+			{ n = Roster.nameOf(actor), t = teamOf[actor] or 0, a = aliveSet[actor] == true }
+		)
+	end
+	workspace:SetAttribute(
+		Config.match.listAttribute,
+		if #list > 0 then HttpService:JSONEncode(list) else nil
+	)
+end
+
+-- A appeler quand les equipes changent (elles arrivent apres le depart).
+function Roster.refresh()
+	publish()
 end
 
 function Roster.characterOf(actor: Actor): Model?
@@ -94,6 +121,7 @@ function Roster.clear()
 	end
 	table.clear(participants)
 	table.clear(aliveSet)
+	table.clear(teamOf)
 	publish()
 end
 

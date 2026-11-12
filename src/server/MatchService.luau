@@ -241,6 +241,7 @@ local function playOnce()
 	end
 	Roster.start(players)
 	SquadService.assign(players)
+	Roster.refresh()
 	HidingService.setup(#players)
 	ItemService.setup(players)
 	table.clear(aims)

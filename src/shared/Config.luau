@@ -108,6 +108,9 @@ Config.controls = {
 			signalDanger = { gamepad = "DPadUp", keyboard = "Z" },
 			signalHere = { gamepad = "DPadDown", keyboard = "X" },
 			emote = { gamepad = "DPadRight", keyboard = "G" },
+			-- La liste des joueurs du jeu (R3 etait garde en reserve ; Tab
+			-- comme partout sur Roblox).
+			playerList = { gamepad = "ButtonR3", keyboard = "Tab" },
 		},
 		-- En portant un joueur K.O. au-dessus de sa tete.
 		carrying = {
@@ -136,6 +139,7 @@ Config.controls = {
 			nextPlayer = { gamepad = "ButtonR1", keyboard = "R" },
 			bet = { gamepad = "ButtonX", keyboard = "E" },
 			leave = { gamepad = "ButtonB", keyboard = "Backspace" },
+			playerList = { gamepad = "ButtonR3", keyboard = "Tab" },
 		},
 	},
 }
@@ -205,6 +209,8 @@ Config.match = {
 	eyeOpenAttribute = "OeilOuvert",
 	phaseEndsAttribute = "PhaseFin",
 	aliveAttribute = "EnVie",
+	-- La liste des joueurs du jeu, sur Workspace (JSON : nom, equipe, en vie).
+	listAttribute = "ListeJoueurs",
 	winnerAttribute = "Gagnant",
 }
 
@@ -1628,6 +1634,19 @@ Config.map = {
 	current = { 240, 232, 220 },
 	upcoming = { 255, 90, 70 },
 	me = { 255, 220, 90 },
+}
+
+Config.playerList = {
+	-- Les joueurs du jeu, a droite, sous le haut de l'ecran (le Regard) et
+	-- par-dessus les autres ecrans. Les aspires en gris, son equipe en bleu.
+	top = 150,
+	width = 300,
+	rowHeight = 22,
+	textSize = 18,
+	displayOrder = 4,
+	background = { 20, 16, 16 },
+	text = { 240, 232, 220 },
+	out = { 120, 112, 108 },
 }
 
 Config.emote = {

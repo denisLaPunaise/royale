@@ -354,3 +354,11 @@ laissé l'autonomie, l'assistant a fixé ces valeurs (toutes dans
   gratuit.
 - **Quitter** : B. On arrête de regarder, et l'écran dit « retour au salon
   à la fin ». Le salon s'en chargera.
+
+## 12 novembre 2026 (nuit) — la liste des joueurs, choix pris sans Josh
+
+- **R3** (qui était gardé en réserve) ou **Tab** ouvre et ferme la liste.
+  Elle montre tous les participants, joueurs et bots mêlés, avec leur
+  équipe ; les aspirés sont en gris, son équipe en bleu et en tête. Le
+  serveur la publie (`ListeJoueurs`), ce qui garde aussi les bots aspirés,
+  dont le modèle disparaît.
