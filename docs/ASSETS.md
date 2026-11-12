@@ -66,3 +66,20 @@ pièces ont été éclaircies : ces matières les assombrissent.
 | --- | --- | --- | --- | --- |
 | `Mort1` | 74163741192438 « Dead Forest Tree » | Kipfr9839 | `740991432`, texture `740989141` | 2 scripts retirés (annoncé « no scripts ») |
 | `Mort2` | 13535614846 « realistic dead tree » | pighunt3r15 | `13410604750` | |
+
+## Animations des postures (générées)
+
+Générées la nuit du 12 novembre 2026 par `generate_animation`, publiées sous
+le compte de Josh. Chacune a été regardée sur un mannequin avant d'être
+gardée. Les clips sources sont dans `ServerStorage.RBX_ASSISTANT_ANIMGEN` de
+la place.
+
+| Posture | Asset | Ce qu'on a vu | Demande |
+| --- | --- | --- | --- |
+| Allongé, ramper | `76447610279679` | Couché à plat sur le ventre, bras et jambes écartés | army crawl forward on the stomach, lying flat on the ground, slow looping crawl |
+| Accroupi | `110814117323360` | Genoux pliés, dos voûté, la tête descend de 0,5 stud | sneaking crouched walk, knees bent low, back hunched, cautious looping crouch walk |
+| K.O. | `88589009991204` | Allongé sur le dos, au ras du sol (tête 2,2 sous le bassin) | knocked out, lying motionless on the back on the ground, dazed, slight breathing |
+| Porté | `94783137609755` | Allongé à l'horizontale, 2 studs sous le bassin | limp body carried horizontally, lying stiff on the back with arms and legs dangling down, unconscious |
+
+Les Repris gardent les animations Zombie de Roblox (`616168032`,
+`616163682`, `616158929`), comme dans Survivor.

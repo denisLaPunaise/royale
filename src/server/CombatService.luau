@@ -11,8 +11,10 @@
 
 	Les elans passent par un LinearVelocity dont la limite de force est coupee :
 	l'Humanoid mange les coups de vitesse horizontaux (Arena). Au sol, le corps
-	est en PlatformStand ; le client du joueur le tient aussi de son cote
-	(Controls lit `AuSol`).
+	reste droit et immobile : c'est l'animation K.O. qui le couche
+	(PostureView). En PlatformStand, il basculait ET l'animation le couchait :
+	la tete passait sous le sol (vu en sonde). Seul celui qu'on porte est en
+	PlatformStand (il est soude a son porteur).
 ]]
 
 local Debris = game:GetService("Debris")
@@ -129,7 +131,11 @@ local function publish(actor: Roster.Actor)
 	actor:SetAttribute(C.koAttribute, if down and s.knockedOut then true else nil)
 	local humanoid = humanoidOf(actor)
 	if humanoid then
-		humanoid.PlatformStand = down or carriedBy[actor] ~= nil
+		humanoid.PlatformStand = carriedBy[actor] ~= nil
+		-- Un bot au sol ne marche plus (un joueur, son client s'en charge).
+		if not actor:IsA("Player") then
+			humanoid.WalkSpeed = if down then 0 else Mv.walkSpeed
+		end
 	end
 end
 
@@ -491,7 +497,12 @@ function CombatService.gesture(actor: Roster.Actor, name: string)
 		if flatSpeed(root) > Mv.runningAbove and ready(actor, "slide", Mv.slideCooldown) then
 			slides[actor] = { untilT = os.clock() + Mv.slideSeconds, hit = {} }
 		end
+	elseif name == "crouch" then
+		actor:SetAttribute(C.crouchAttribute, true)
+	elseif name == "uncrouch" then
+		actor:SetAttribute(C.crouchAttribute, nil)
 	elseif name == "prone" then
+		actor:SetAttribute(C.crouchAttribute, nil)
 		actor:SetAttribute(C.proneAttribute, true)
 	elseif name == "stand" then
 		actor:SetAttribute(C.proneAttribute, nil)

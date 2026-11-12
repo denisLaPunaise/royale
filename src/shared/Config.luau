@@ -576,7 +576,22 @@ Config.movement = {
 	-- presque jusqu'au sol (la hauteur de hanche d'un corps standard est ~2).
 	proneHoldSeconds = 0.4,
 	proneSpeed = 4,
-	proneHipDrop = 1.9,
+	-- L'animation couche deja le corps sous le bassin : le bassin descend un
+	-- peu, pas jusqu'au sol (sinon le corps s'enfonce).
+	proneHipDrop = 0.5,
+}
+
+-- Les animations des postures (docs/ASSETS.md), jouees par chaque ecran sur
+-- tous les personnages d'apres leurs attributs. Accroupi et ramper se figent
+-- quand on ne bouge pas (sous `stillSpeed`).
+Config.postures = {
+	prone = 76447610279679,
+	crouch = 110814117323360,
+	knockedOut = 88589009991204,
+	carried = 94783137609755,
+	stillSpeed = 1,
+	fadeSeconds = 0.2,
+	refreshSeconds = 0.1,
 }
 
 --------------------------------------------------------------------------------
@@ -625,7 +640,9 @@ Config.combat = {
 	-- Porter (Y maintenu sur un K.O.) : on le souleve au-dessus de sa tete.
 	carryHoldSeconds = 0.4,
 	carryRange = 6,
-	carryHeight = 3.5,
+	-- Assez haut pour que le corps porte, allonge par son animation (2 studs
+	-- sous son bassin), passe au-dessus de la tete du porteur.
+	carryHeight = 5.5,
 	-- On marche lentement en portant : on ne traverse pas la carte avec un
 	-- otage.
 	carrySpeed = 9,
@@ -662,6 +679,8 @@ Config.combat = {
 	-- Les attributs publies sur le participant (le client et les bots lisent).
 	-- Au sol jusqu'a cette heure du serveur.
 	downAttribute = "AuSol",
+	-- Accroupi (vrai), pour que les autres le voient accroupi.
+	crouchAttribute = "Accroupi",
 	-- Allonge (vrai) : on peut le tirer par les pieds.
 	proneAttribute = "Allonge",
 	-- Tirer par les pieds (X maintenu sur quelqu'un d'allonge, CONCEPT.md) :

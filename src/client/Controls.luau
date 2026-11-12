@@ -107,8 +107,15 @@ function Controls.start()
 		return Vector3.new(v.X, 0, v.Z).Magnitude
 	end
 
+	-- Les autres doivent nous voir accroupi : on le dit au serveur quand ca
+	-- change.
+	local sentCrouch = false
 	-- La vitesse et la hauteur, d'apres la posture et ce que dit le serveur.
 	local function apply()
+		if crouched ~= sentCrouch then
+			sentCrouch = crouched
+			gestureRemote:FireServer(if crouched then "crouch" else "uncrouch")
+		end
 		local humanoid = parts()
 		if humanoid == nil then
 			return
@@ -116,10 +123,14 @@ function Controls.start()
 		if baseHip == nil then
 			baseHip = humanoid.HipHeight
 		end
+
 		local down = isDown() or player:GetAttribute(C.carriedAttribute) ~= nil
 		local adrenaline = player:GetAttribute(Config.effects.adrenalineAttribute)
 		local rushing = typeof(adrenaline) == "number" and workspace:GetServerTimeNow() < adrenaline
-		humanoid.PlatformStand = down
+		-- Seul celui qu'on porte bascule ; au sol, l'animation K.O. couche le
+		-- corps (PostureView).
+		humanoid.PlatformStand = player:GetAttribute(C.carriedAttribute) ~= nil
+		humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping, not down)
 		humanoid.WalkSpeed = if down
 			then 0
 			elseif rushing then Mv.runSpeed

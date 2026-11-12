@@ -362,3 +362,18 @@ laissé l'autonomie, l'assistant a fixé ces valeurs (toutes dans
   équipe ; les aspirés sont en gris, son équipe en bleu et en tête. Le
   serveur la publie (`ListeJoueurs`), ce qui garde aussi les bots aspirés,
   dont le modèle disparaît.
+
+## 12 novembre 2026 (nuit) — les animations des postures, choix pris sans Josh
+
+- **Quatre animations générées**, regardées une à une sur un mannequin :
+  ramper, accroupi, K.O., porté (identifiants dans `docs/ASSETS.md`).
+- **Chaque écran les joue sur tous les personnages**, joueurs et bots,
+  d'après leurs attributs. Le serveur sait maintenant qui est accroupi
+  (attribut `Accroupi`), pour que les autres le voient.
+- **Au sol, le corps ne bascule plus** (plus de `PlatformStand`) : c'est
+  l'animation K.O. qui le couche. Avant, il basculait et l'animation le
+  couchait encore, la tête 1,4 stud sous le sol. Seul celui qu'on porte
+  bascule (il est soudé au porteur). Un joueur au sol ne peut plus sauter.
+- **Porté**, le corps est soulevé à 5,5 studs au lieu de 3,5 : allongé par
+  son animation, il traversait la tête du porteur.
+- **Accroupi et ramper** se figent quand on ne bouge pas.

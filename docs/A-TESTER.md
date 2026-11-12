@@ -351,3 +351,24 @@ ouvre la liste avec 24 participants ; mon équipe est en tête, en bleu.
 **À regarder en jouant** : R3 ouvre et ferme la liste, on ne devine pas qui
 est un bot, les aspirés passent en gris.
 
+## Les animations des postures (nuit du 12 novembre 2026)
+
+**Vérifié seul dans Studio** (mesuré sur mon écran, la tête au-dessus du
+sol) :
+- moi allongé avec C maintenu : animation ramper, tête à 0,9 ;
+- un bot allongé : 1,2 ; un bot accroupi : 3,9 (debout, environ 4,5) ;
+- un bot K.O. : tête à 0,9 (avant la correction : 1,4 sous le sol).
+
+**Vu à l'écran** : chaque animation sur un mannequin, en mode édition.
+
+**Jamais vu en jeu** : les animations sur un vrai personnage qui bouge,
+porté au-dessus d'un porteur, et ce qu'en voient les autres joueurs.
+
+**À regarder en jouant :**
+
+1. Accroupis-toi (B) et marche : tes amis te voient accroupi ?
+2. Allonge-toi (B maintenu) et rampe : le corps est couché, pas enfoncé ?
+3. Un K.O. est allongé au sol, pas debout ni sous terre ?
+4. Porte un K.O. (Y maintenu) : il est couché au-dessus de ta tête, sans la
+   traverser ?
+

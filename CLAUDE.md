@@ -124,7 +124,10 @@ Rokit, StyLua, Selene, Lune, GitHub Actions, tous les chiffres dans
   `Config.bets`.
 - **12 novembre 2026 (nuit), la liste des joueurs** : `PlayerListView` (R3 /
   Tab), publiée par `Roster` (`ListeJoueurs`).
-- **Ensuite** : les animations de posture, les sons (programme : `docs/PROGRAMME-NUIT.md`).
+- **12 novembre 2026 (nuit), les postures** : quatre animations générées
+  (`docs/ASSETS.md`), jouées par `PostureView` sur tous les personnages ;
+  plus de `PlatformStand` au sol.
+- **Ensuite** : les sons (programme : `docs/PROGRAMME-NUIT.md`).
 
 ## La place et la recette
 
