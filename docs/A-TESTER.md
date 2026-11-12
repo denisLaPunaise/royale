@@ -205,3 +205,36 @@ vus de près, le souffle sur un vrai joueur.
 8. Au Regard 5, avec cinq pouvoirs : l'Œil est assez fort ? trop ? Un
    pouvoir paraît inutile ? (Josh : aucun trop faible, aucun trop fort.)
 
+## Les Repris (nuit du 12 novembre 2026)
+
+**Vérifié par le calcul** (`tests/specs/repris.luau`) : combien l'Œil en
+recrache à chaque Regard ; une chute ne dépasse jamais 1 Repris pour 2
+joueurs ; jamais plus de 2 Repris sur le même joueur ; les garde-fous
+(lents, fragiles, ils grognent avant de plaquer).
+
+**Vérifié seul dans Studio** (bots) :
+- l'Œil en recrache à la fermeture, avec le crâne ; ils marchent, et la
+  moitié remonte au Regard suivant ;
+- le Coureur a plaqué un bot (au sol 6 s après sa chute) ;
+- l'Errant a crié en voyant un bot ;
+- le Rampant a délogé 2 bots cachés sur 3 (une voiture, une crypte). Il
+  n'a pas atteint celui qui était sous les gradins ;
+- les bots frappent et détruisent les Repris.
+
+**Jamais vu à l'écran** : le corps des Repris dans cette carte, leur chute
+et sa traînée, les animations. Le hurlement du Hurleur n'a pas été
+déclenché en sonde.
+
+**À regarder en jouant, dans l'ordre :**
+
+1. À la fermeture de l'Œil : tu vois les Repris tomber, avec la traînée ?
+   Ils font peur, ou ils font rire ?
+2. Un Errant te voit : il crie et un faisceau arrive. Tu comprends que
+   c'est lui ?
+3. Cache-toi longtemps dans une voiture : un Rampant vient t'en sortir ?
+4. Un Coureur grogne avant de plaquer : tu as le temps de glisser (B en
+   courant) pour l'esquiver ?
+5. Frappe un Repris (R2) : 3 coups, 2 pour le Coureur. Il lâche un objet ?
+6. Est-ce que ça reste jouable ? Trop de Repris, ou pas assez ? (Josh : pas
+   trop forts et trop nombreux à la fois.)
+

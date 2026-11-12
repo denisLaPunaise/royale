@@ -244,11 +244,57 @@ local function lift(carrier: Roster.Actor, target: Roster.Actor)
 	publish(target)
 end
 
+-- Les creatures qu'on peut frapper sans qu'elles soient des participants
+-- (les Repris, ReprisService) : leur liste, et ce qu'un coup leur fait.
+export type Creature = { id: string, root: BasePart }
+local creatures: (() -> { Creature })? = nil
+local onCreatureHit: ((id: string, by: Roster.Actor, push: Vector3) -> ())? = nil
+
+function CombatService.setCreatures(
+	list: () -> { Creature },
+	onHit: (id: string, by: Roster.Actor, push: Vector3) -> ()
+)
+	creatures, onCreatureHit = list, onHit
+end
+
+-- Une creature devant soi, a portee de coup.
+local function creatureInFront(root: BasePart): Creature?
+	if creatures == nil then
+		return nil
+	end
+	local list: { Melee.Candidate } = {}
+	local byId: { [string]: Creature } = {}
+	for _, c in creatures() do
+		byId[c.id] = c
+		local p = c.root.Position
+		table.insert(list, { id = c.id, x = p.X, y = p.Y, z = p.Z })
+	end
+	local p = root.Position
+	local id =
+		Melee.pickTarget({ x = p.X, y = p.Y, z = p.Z }, flatLook(root), list, C.hitRange, C.hitCone)
+	return if id then byId[id] else nil
+end
+
 local function hit(actor: Roster.Actor, root: BasePart)
 	if not ready(actor, "hit", C.hitCooldown) then
 		return
 	end
 	local target = targetInFront(actor, root, C.hitRange)
+	-- Un Repris plus proche qu'un participant prend le coup.
+	local creature = creatureInFront(root)
+	if creature and onCreatureHit then
+		local targetRoot = target and Roster.rootOf(target)
+		local cd = (creature.root.Position - root.Position).Magnitude
+		if targetRoot == nil or cd < (targetRoot.Position - root.Position).Magnitude then
+			local away = creature.root.Position - root.Position
+			away = Vector3.new(away.X, 0, away.Z)
+			local push = if away.Magnitude > 0 then away.Unit else Vector3.zero
+			onCreatureHit(creature.id, actor, push)
+			-- Se battre fait du bruit (CONCEPT.md).
+			EyeService.noise(creature.root.Position, C.hitNoiseSeconds, false)
+			return
+		end
+	end
 	if target then
 		local now = os.clock()
 		-- La batte : K.O. en moins de coups, tant qu'il lui en reste.

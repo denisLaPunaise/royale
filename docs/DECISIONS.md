@@ -227,3 +227,37 @@ laissé l'autonomie, l'assistant a fixé ces valeurs (toutes dans
   piste la remonte jusqu'à la trace la plus récente, avant les bruits.
 - **À l'écran** : la liste des pouvoirs sous les restants, et l'annonce en
   grand 7 s au début de chaque Regard.
+
+## 12 novembre 2026 (nuit) — les Repris, choix pris sans Josh
+
+- **Vitesses** : Errant 8, Rampant 7, Hurleur 9 (moins que la marche, 14) ;
+  Coureur 19 (moins que la course, 22).
+- **Coups pour les détruire** : 3, et 2 pour le Coureur. Un Repris détruit
+  lâche un objet commun par terre.
+- **Combien** : à chaque fermeture, 1 pour 8 joueurs en vie au Regard 1,
+  puis 7, 6, 4, et 3 au Regard 5 (à chaque rafale, puisqu'il ne se ferme
+  plus). Plafond : 1 Repris pour 2 joueurs en vie. La moitié est
+  re-aspirée au début de chaque Regard.
+- **Où ils tombent** : à 30–60 studs d'un joueur tiré au sort ; un joueur
+  caché pèse 3 fois plus dans ce tirage. La chute laisse une traînée rouge.
+- **Ce qu'ils voient** : comme l'Œil, une vraie ligne de vue depuis leur
+  tête, jusqu'à 60 studs (70 pour le Coureur). Ils ne voient pas à travers
+  la fumée, ni quelqu'un de caché dans une cachette. Un joueur lent
+  (accroupi ou immobile, sous 8 studs/s) n'est vu qu'à 60 % de cette
+  distance.
+- **Errant** : quand il voit quelqu'un, il crie, au plus une fois toutes les
+  10 s. Le faisceau le plus proche va pendant 4 s à l'endroit où était le
+  joueur.
+- **Hurleur** : il hurle, au plus une fois toutes les 12 s. L'Œil entend le
+  bruit 5 s, à tout Regard, et les Repris à moins de 80 studs accourent.
+- **Rampant** : il sent un joueur caché dans une cachette à 14 studs, va à
+  l'entrée la plus proche, et l'arrache après 1,5 s collé contre elle. Les
+  planches et le cadenas le bloquent.
+- **Coureur** : il grogne 0,8 s, puis plaque s'il est encore à portée. Au
+  sol 2 s, au plus une fois toutes les 4 s.
+- **Flairé sans rien à arracher** : l'Œil envoie 2 Repris près de lui, dans
+  la limite du plafond.
+- **Les bots** frappent un Repris qui arrive à portée de coup.
+- **Leur corps** : celui de Survivor (le crâne généré, la cendre, les
+  animations Zombie). Le crâne est chargé au démarrage du serveur depuis son
+  asset.

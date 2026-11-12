@@ -100,7 +100,12 @@ Rokit, StyLua, Selene, Lune, GitHub Actions, tous les chiffres dans
   (`EyePowerService.regardFor`), l'éclair, le souffle et les empreintes
   vivent dans le service ; `Regards.burst` accepte rafale allongée et faux
   départs ; le regard rasant dans `World.seenFactor`.
-- **Ensuite** : s'allonger et ramper, les animations de posture, la méfiance des Repris, le
+- **12 novembre 2026 (nuit), les Repris** : `ReprisService` (quatre sortes,
+  corps et crâne de Survivor, chute à la fermeture, re-aspirés à chaque
+  Regard), logique pure `Horde`, `Config.repris` ; crochets
+  `CombatService.setCreatures`, `EyeService.onFlagged`,
+  `ItemService.dropCommon` ; les bots frappent les Repris.
+- **Ensuite** : s'allonger et ramper, les animations de posture, le
   goulag, les escouades, la liste des joueurs du jeu (pour cacher les bots).
 
 ## La place et la recette

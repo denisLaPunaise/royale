@@ -72,6 +72,8 @@ local comebacks: { { x: number, z: number, at: number, untilT: number } } = {}
 local trail: ((x: number, z: number) -> Vector3?)? = nil
 -- Appeles au debut de chaque ouverture (l'eclair, le souffle).
 local burstCallbacks: { (regard: any) -> () } = {}
+-- Appeles pour un flaire qui n'a rien a arracher (les Repris).
+local flaggedCallbacks: { (actor: Roster.Actor) -> () } = {}
 local FX = Config.effects
 
 -- Un effet (heure de fin du serveur, posee par ItemService) encore actif.
@@ -208,6 +210,11 @@ end
 
 function EyeService.onBurst(callback: (regard: any) -> ())
 	table.insert(burstCallbacks, callback)
+end
+
+-- CONCEPT.md : flaire sans rien a arracher, il y envoie des Repris.
+function EyeService.onFlagged(callback: (actor: Roster.Actor) -> ())
+	table.insert(flaggedCallbacks, callback)
 end
 
 function EyeService.reset()
@@ -437,6 +444,9 @@ function EyeService.step(dt: number, regard: any, open: boolean, burst: number, 
 			if spot then
 				HidingService.rip(spot, regard.solidFalls)
 			else
+				for _, callback in flaggedCallbacks do
+					task.spawn(callback, player)
+				end
 				for _, beam in beams do
 					if beam.target == nil then
 						beam.target = Roster.idOf(player)

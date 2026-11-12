@@ -31,6 +31,7 @@ local EyePowerService = require(script.Parent.EyePowerService)
 local EyeService = require(script.Parent.EyeService)
 local HidingService = require(script.Parent.HidingService)
 local ItemService = require(script.Parent.ItemService)
+local ReprisService = require(script.Parent.ReprisService)
 local RemoteGuard = require(script.Parent.RemoteGuard)
 local Roster = require(script.Parent.Roster)
 local World = require(script.Parent.World)
@@ -197,6 +198,7 @@ local function playOnce()
 	ZoneService.reset()
 	CombatService.clear()
 	ItemService.clear()
+	ReprisService.clear()
 	HidingService.clear()
 	BotService.clear()
 	Roster.clear()
@@ -250,6 +252,7 @@ local function playOnce()
 	-- LA PARTIE.
 	local start = os.clock()
 	local regardIndex = 0
+	local wasOpen, lastBurst = false, 0
 	local tick = Config.eye.tickSeconds
 	setPhase("Partie")
 	local lastStep = os.clock()
@@ -267,6 +270,7 @@ local function playOnce()
 			workspace:SetAttribute(M.regardAttribute, index)
 			ItemService.onRegard(index)
 			EyePowerService.onRegard(index)
+			ReprisService.onRegard(index)
 			workspace:SetAttribute(M.regardTitleAttribute, regard.title)
 			workspace:SetAttribute(
 				M.phaseEndsAttribute,
@@ -297,6 +301,15 @@ local function playOnce()
 			not open and left <= Config.eye.warningSeconds
 		)
 		EyeService.step(dt, regard, open, burst, true)
+		-- Les Repris : a chaque fermeture, et a chaque rafale quand il ne se
+		-- ferme plus (CONCEPT.md).
+		if
+			(wasOpen and not open)
+			or (regard.closedSeconds <= 0 and open and burst ~= lastBurst and lastBurst > 0)
+		then
+			ReprisService.onClose(index)
+		end
+		wasOpen, lastBurst = open, burst
 
 		local remaining = Roster.count()
 		local enough = if Roster.startCount() > 1 then 1 else 0
@@ -324,6 +337,7 @@ function MatchService.start()
 	BotService.start()
 	CombatService.start(remote(Config.remotes.gesture))
 	EyePowerService.start()
+	ReprisService.start()
 	ItemService.start(
 		remote(Config.remotes.item),
 		remote(Config.remotes.projectile),

@@ -242,6 +242,14 @@ function ItemService.trySearch(actor: Roster.Actor, part: BasePart): string?
 end
 
 -- Le meuble encore a fouiller le plus proche (les bots).
+-- Un objet commun par terre (un Repris tue, CONCEPT.md).
+function ItemService.dropCommon(at: Vector3)
+	local id = Loot.pick(I, "common", random:NextNumber())
+	if id then
+		dropOnGround(id, at)
+	end
+end
+
 function ItemService.searchableNear(at: Vector3, radius: number): BasePart?
 	local best: BasePart? = nil
 	local bestD = radius

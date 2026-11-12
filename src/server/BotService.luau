@@ -30,6 +30,7 @@ local Config = require(Royale:WaitForChild("Config"))
 local CombatService = require(script.Parent.CombatService)
 local HidingService = require(script.Parent.HidingService)
 local ItemService = require(script.Parent.ItemService)
+local ReprisService = require(script.Parent.ReprisService)
 local Roster = require(script.Parent.Roster)
 local World = require(script.Parent.World)
 local ZoneService = require(script.Parent.ZoneService)
@@ -457,6 +458,16 @@ local function think(bot: Bot, now: number)
 				Vector3.new(foeRoot.Position.X, position.Y, foeRoot.Position.Z)
 			)
 			CombatService.gesture(bot.model, "hit")
+		elseif foe == nil then
+			-- Un Repris tout pres : il le frappe (CONCEPT.md, la parade).
+			local repris = ReprisService.nearest(position, Config.combat.hitRange)
+			if repris then
+				bot.root.CFrame = CFrame.lookAt(
+					position,
+					Vector3.new(repris.Position.X, position.Y, repris.Position.Z)
+				)
+				CombatService.gesture(bot.model, "hit")
+			end
 		end
 	end
 	local current = circleOf(Config.zone.attribute)

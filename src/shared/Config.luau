@@ -1074,6 +1074,138 @@ Config.suspicion = {
 }
 
 --------------------------------------------------------------------------------
+-- LES REPRIS — les yeux de l'Oeil au sol, contre le camping (CONCEPT.md)
+--------------------------------------------------------------------------------
+
+-- Valide le 12 novembre 2026. Ils ne tuent jamais : ils signalent, delogent
+-- ou mettent K.O. C'est toujours l'Oeil qui aspire, par une vraie ligne de
+-- vue. Garde-fous de Josh : « il faut que ca reste jouable ».
+Config.repris = {
+	-- A chaque fermeture de l'Oeil, il en recrache 1 pour ce nombre de
+	-- joueurs en vie, Regard par Regard (CONCEPT.md : 1 pour 8, jusqu'a 1
+	-- pour 3). Au Regard 5 il ne se ferme plus : a chaque rafale.
+	perPlayers = { 8, 7, 6, 4, 3 },
+	-- Le plafond : au plus 1 Repris en vie pour 2 joueurs en vie.
+	capRatio = 0.5,
+	-- Au debut de chaque Regard, l'Oeil en re-aspire cette part.
+	reaspireFraction = 0.5,
+	-- Jamais plus de 2 Repris sur le meme joueur.
+	maxPerTarget = 2,
+	-- Ils tombent a cette distance d'un joueur (studs) : assez loin pour le
+	-- voir venir, assez pres pour qu'il compte.
+	spawnMin = 30,
+	spawnMax = 60,
+	-- Un joueur cache pese ce poids dans le choix de qui ils visent a la
+	-- chute (les campeurs d'abord, CONCEPT.md).
+	hiddenWeight = 3,
+	-- La chute : de cette hauteur, en ce temps, dans une trainee visible.
+	dropHeight = 90,
+	dropSeconds = 1.4,
+	-- Re-aspires : ils remontent en ce temps avant de disparaitre.
+	riseSeconds = 2.5,
+	-- Les flaires sans rien a arracher : l'Oeil envoie autant de Repris
+	-- (CONCEPT.md, la mefiance).
+	flaggedSend = 2,
+	-- Un joueur lent (accroupi, immobile) se remarque moins : leur vue
+	-- porte moins loin (CONCEPT.md, les parades).
+	slowSpeed = 8,
+	slowSightFactor = 0.6,
+	-- Ils voient quelqu'un si plus de cette part du regard passe (un
+	-- buisson le cache a moitie, la fumee completement).
+	seenAbove = 0.4,
+	-- Ils gardent la piste de qui ils ont vu ce temps, puis vont voir ou il
+	-- etait.
+	memorySeconds = 3,
+	-- Sans cible, ils rodent vers le joueur le plus proche dans ce rayon,
+	-- sinon au hasard.
+	roamRange = 150,
+	roamStep = 25,
+	-- Le pas de reflexion (s).
+	thinkSeconds = 0.2,
+	-- Les chemins (repris de Survivor).
+	path = { radius = 2, height = 5, canJump = true },
+	repathSeconds = 1.5,
+	directRange = 14,
+	stuckSeconds = 1.5,
+	sidestepSeconds = 0.8,
+	-- Un coup sur un Repris le fait reculer de cette vitesse (studs/s).
+	hitPush = 18,
+	-- Le crane genere pour Survivor (docs/ASSETS.md de Survivor), cree au
+	-- demarrage du serveur.
+	headMesh = "rbxassetid://104274234503331",
+	-- Les animations du pack Zombie de Roblox (verifiees dans Survivor).
+	animations = { walk = 616168032, run = 616163682, idle = 616158929 },
+	-- La cendre de leur corps et la lueur de leurs yeux.
+	ash = { 54, 52, 50 },
+	folder = "Repris",
+	-- L'attribut d'un Repris : sa sorte (pour les bots et l'ecran).
+	kindAttribute = "Sorte",
+	kinds = {
+		wanderer = {
+			name = "Errant",
+			arrives = 1,
+			-- Moins vite que la marche (14) : on le distance en marchant.
+			speed = 8,
+			hits = 3,
+			sight = 60,
+			-- S'il te voit, il crie : le faisceau le plus proche vient a
+			-- l'endroit ou tu etais, `lureSeconds`. Jamais deux cris en
+			-- moins de `cooldown` (CONCEPT.md : ils previennent).
+			cry = { cooldown = 10, lureSeconds = 4 },
+			look = { height = 1, width = 0.9, depth = 0.9, scale = 1, eyes = { 255, 120, 40 } },
+		},
+		crawler = {
+			name = "Rampant",
+			arrives = 1,
+			speed = 7,
+			hits = 3,
+			-- Il sent ceux qui sont caches dans une cachette a cette
+			-- distance, et les en arrache apres `evictSeconds` contre elle.
+			smell = 14,
+			evictSeconds = 1.5,
+			evictReach = 5,
+			look = {
+				height = 0.75,
+				width = 1.1,
+				depth = 1,
+				scale = 0.9,
+				eyes = { 200, 255, 120 },
+			},
+		},
+		howler = {
+			name = "Hurleur",
+			arrives = 3,
+			speed = 9,
+			hits = 3,
+			sight = 60,
+			-- Il hurle : l'Oeil entend le bruit `noiseSeconds` (a tout
+			-- Regard), et les Repris a `callRadius` accourent.
+			howl = { cooldown = 12, noiseSeconds = 5, callRadius = 80 },
+			look = {
+				height = 1.1,
+				width = 0.85,
+				depth = 0.85,
+				scale = 1.05,
+				bigEye = { 255, 60, 40 },
+			},
+		},
+		runner = {
+			name = "Coureur",
+			arrives = 3,
+			-- Moins vite que la course (22) : on lui echappe en courant.
+			speed = 19,
+			-- Fragile : 2 coups (CONCEPT.md).
+			hits = 2,
+			sight = 70,
+			-- Il grogne `windup` s avant de plaquer : le temps d'une glissade
+			-- (CONCEPT.md : ils previennent). Le plaquage met au sol `fall` s.
+			tackle = { range = 5, windup = 0.8, fall = 2, cooldown = 4, push = 26 },
+			look = { height = 1.05, width = 0.75, depth = 0.75, scale = 1, eyes = { 255, 200, 80 } },
+		},
+	},
+}
+
+--------------------------------------------------------------------------------
 -- LES BOTS — invisibles, pour que la partie paraisse toujours pleine
 --------------------------------------------------------------------------------
 
