@@ -70,8 +70,27 @@ Rokit, StyLua, Selene, Lune, GitHub Actions, tous les chiffres dans
   Outils communs : `Kit` (sol, place, routes, emplacements, caisses),
   `Ville` (pièces de Survivor), `Batiment`, `Prefabs` (casier, roseaux,
   carton, armoire).
+- **12 novembre 2026, le cœur du jeu et les bots** (en autonomie) : la
+  partie (`MatchService` : attente, visée, chute en comète, Regards, fin,
+  relance), `Roster` (participants joueurs ou bots, aspiration), `World`
+  (contrat de la carte, ligne de vue depuis la pupille), `ZoneService`,
+  `HidingService` (cachettes posées à chaque partie, marques, arrachage),
+  `EyeService` (faisceaux, ciblage, jauge, méfiance), `BotService` (chemins,
+  se cacher, fuir). Client : `SkyView` (Œil qui suit, paupières, faisceaux),
+  `ZoneView`, `Hud`, `AimView`, `Controls`, `Spectate`. Logique pure :
+  `Regards`, `Circles`, `Exposure`, `Suspicion`, `Targeting`. Partie de
+  mesure à 22 : 15 min, sans erreur (`docs/A-TESTER.md`).
+- **Ensuite** : les interactions (coups, poussée, plaquage, porter), les
+  objets et la fouille, les power-ups de l'Œil, la méfiance des Repris, le
+  goulag, les escouades, la liste des joueurs du jeu (pour cacher les bots).
 
 ## La place et la recette
+
+- **Piloter une partie depuis le pont** : les invites ne se déclenchent pas
+  par le pont ; les sondes passent par `HidingService.tryEnter`. Injecter un
+  `Script` serveur pendant le jeu (son `require` partage le cache du jeu),
+  qui écrit son rapport dans un attribut de Workspace. Le pont ne déplace pas
+  la caméra en jeu : faisceaux et mur du cercle ne se voient qu'en jouant.
 
 - La place Studio est publiée (placeId `74018653591531`) ; Rojo y synchronise
   le projet « Royale ». `Lighting.Technology` (Future) se règle à la main.
