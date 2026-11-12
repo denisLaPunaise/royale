@@ -138,7 +138,10 @@ function SquadService.winners(): { Roster.Actor }
 	local team = teams[last]
 	local out: { Roster.Actor } = {}
 	for actor, t in teams do
-		if t == team and actor.Parent then
+		-- Toute l'equipe, meme les aspires (un bot aspire n'a plus de modele
+		-- dans le monde, mais garde son nom ; vu en partie : seul le survivant
+		-- etait annonce).
+		if t == team then
 			table.insert(out, actor)
 		end
 	end

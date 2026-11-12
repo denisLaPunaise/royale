@@ -1481,6 +1481,8 @@ Config.lobby = {
 	-- Le salon, loin de la carte (a l'oppose du Ventre) : une place en ruine.
 	origin = { -3200, 300, 0 },
 	radius = 70,
+	-- Les colonnes brisees qui font la ruine.
+	columns = 10,
 	-- Un groupe : 4 au plus (l'escouade), invite en maintenant X sur
 	-- quelqu'un ; l'invitation attend une reponse ce temps.
 	maxGroup = 4,

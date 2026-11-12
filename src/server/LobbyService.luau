@@ -165,6 +165,64 @@ local function build()
 	glow.Range = 30
 	glow.Brightness = 2
 	glow.Parent = brazier
+	-- Des colonnes brisees en cercle, de hauteurs differentes (la silhouette
+	-- d'une ruine, pas un disque nu).
+	for i = 1, LB.columns do
+		local a = (i - 0.5) / LB.columns * math.pi * 2
+		local at = ORIGIN + Vector3.new(math.cos(a) * (r - 18), 0, math.sin(a) * (r - 18))
+		local h = random:NextNumber(4, 16)
+		local column = part(
+			"Colonne",
+			Vector3.new(h, 3.2, 3.2),
+			CFrame.new(at + Vector3.new(0, h / 2, 0)) * CFrame.Angles(0, 0, math.pi / 2),
+			stone,
+			Enum.Material.Limestone
+		)
+		column.Shape = Enum.PartType.Cylinder
+		part(
+			"Socle",
+			Vector3.new(4.4, 1, 4.4),
+			CFrame.new(at + Vector3.new(0, 0.5, 0)),
+			dark,
+			Enum.Material.Slate
+		)
+		if h < 9 then
+			-- Le morceau tombe, a cote.
+			local piece = part(
+				"Debris",
+				Vector3.new(random:NextNumber(3, 6), 3, 3),
+				CFrame.new(
+					at + Vector3.new(random:NextNumber(-4, 4), 1.5, random:NextNumber(-4, 4))
+				) * CFrame.Angles(0, random:NextNumber(0, 6.3), math.pi / 2),
+				stone,
+				Enum.Material.Limestone
+			)
+			piece.Shape = Enum.PartType.Cylinder
+			piece.CanCollide = false
+		end
+	end
+	-- L'embleme de l'Oeil, au sol autour du brasero : un anneau sombre et un
+	-- iris de braise.
+	local ring = part(
+		"Embleme",
+		Vector3.new(0.2, 22, 22),
+		CFrame.new(ORIGIN + Vector3.new(0, 0.05, 0)) * flat,
+		dark,
+		Enum.Material.Basalt
+	)
+	ring.Shape = Enum.PartType.Cylinder
+	ring.CanCollide = false
+	local iris = part(
+		"Iris",
+		Vector3.new(0.25, 14, 14),
+		CFrame.new(ORIGIN + Vector3.new(0, 0.1, 0)) * flat,
+		rgb(LB.colors.banner),
+		Enum.Material.Neon
+	)
+	iris.Shape = Enum.PartType.Cylinder
+	iris.CanCollide = false
+	-- (Plus opaque, l'iris faisait un aplat rouge vif, vu en image.)
+	iris.Transparency = 0.5
 	for _ = 1, 24 do
 		local a = random:NextNumber(0, math.pi * 2)
 		local d = random:NextNumber(12, r - 6)
