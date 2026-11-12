@@ -65,6 +65,7 @@ type Agent = {
 	windupUntil: number,
 	lastTackle: number,
 	evictSince: number,
+	restUntil: number,
 	waypoints: { PathWaypoint },
 	waypointIndex: number,
 	pathGoal: Vector3?,
@@ -396,6 +397,7 @@ local function spawnAgent(kindId: string, at: Vector3)
 		windupUntil = 0,
 		lastTackle = -math.huge,
 		evictSince = 0,
+		restUntil = 0,
 		waypoints = {},
 		waypointIndex = 0,
 		pathGoal = nil,
@@ -758,7 +760,9 @@ local function think(agent: Agent, now: number)
 	local kind = agent.kind
 	local here = agent.root.Position
 	if kind.smell then
-		local spot = sniff(agent)
+		-- Apres un arrachage, il rode un moment (vu en partie : il arrachait
+		-- le meme bot quatre fois de suite, qui rentrait aussitot).
+		local spot = if now < agent.restUntil then nil else sniff(agent)
 		if spot then
 			-- Il vise l'entree la plus proche (ou l'interieur), a plat : sur le
 			-- toit d'un wagon, il etait a 8 studs de l'interieur sans jamais
@@ -776,6 +780,7 @@ local function think(agent: Agent, now: number)
 					agent.evictSince = now
 				elseif now - agent.evictSince >= kind.evictSeconds then
 					agent.evictSince = 0
+					agent.restUntil = now + kind.evictRest
 					local out = HidingService.evict(spot)
 					if out then
 						print(

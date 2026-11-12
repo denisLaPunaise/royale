@@ -489,3 +489,19 @@ numéros, puis fixer les vrais prix.
 3. Une traînée te suit ? Ton titre apparaît dans la liste (R3) ?
 4. L'onglet Tirages : les chances se lisent bien avant d'acheter ?
 5. Les prix te conviennent ? (Tout est provisoire.)
+
+## Les parties de test de la nuit (13 novembre 2026)
+
+**Partie solo complète, laissée se jouer seule** (moi et 19 bots) : 15 min
+30 du départ à la victoire, 4 Regards (la partie s'est finie au Regard 4,
+avant le dernier), 4 pouvoirs tirés, deux Reliques posées, des dizaines de
+Repris recrachés et détruits, une quinzaine de duels au Ventre (moi
+éliminé par le Repris du Ventre, puisque je ne bougeais pas), retour au
+salon. **Aucune erreur, aucun avertissement du jeu.**
+
+Corrigé grâce à elle :
+- la caméra du spectateur traversait les murs : écran noir derrière un
+  bâtiment. Elle s'arrête maintenant devant le mur ;
+- un Rampant arrachait le même bot quatre fois de suite (il rentrait
+  aussitôt). Après un arrachage, il ne sent plus rien pendant 15 s.
+

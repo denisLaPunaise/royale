@@ -1221,6 +1221,8 @@ Config.repris = {
 			smell = 14,
 			evictSeconds = 1.5,
 			evictReach = 5,
+			-- Apres un arrachage, il ne sent plus rien ce temps (s).
+			evictRest = 15,
 			look = {
 				height = 0.75,
 				width = 1.1,
@@ -1916,6 +1918,8 @@ Config.view = {
 	-- En spectateur, la camera se tient derriere et au-dessus (studs).
 	spectateDistance = 14,
 	spectateHeight = 6,
+	-- Contre un mur, la camera se tient a cette distance devant (studs).
+	spectateWallGap = 1,
 	-- La ligne du spectateur, en bas de l'ecran (pixels).
 	spectateInfoBottom = 40,
 	spectateInfoHeight = 30,

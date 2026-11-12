@@ -172,6 +172,15 @@ function Spectate.start()
 			local from = root.Position
 				- look * V.spectateDistance
 				+ Vector3.new(0, V.spectateHeight, 0)
+			-- Un mur entre lui et la camera : elle s'arrete devant (vu en
+			-- image : derriere un batiment, l'ecran etait noir).
+			local params = RaycastParams.new()
+			params.FilterType = Enum.RaycastFilterType.Exclude
+			params.FilterDescendantsInstances = { list[index].character }
+			local hit = workspace:Raycast(root.Position, from - root.Position, params)
+			if hit then
+				from = hit.Position + (root.Position - hit.Position).Unit * V.spectateWallGap
+			end
 			camera.CFrame = CFrame.lookAt(from, root.Position)
 		end
 	end)
