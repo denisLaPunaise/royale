@@ -831,6 +831,11 @@ function ReprisService.drop(kindId: string, at: Vector3)
 	end
 end
 
+-- Un corps de Repris tout pret, hors de la horde (le bot du Ventre).
+function ReprisService.body(kindId: string): Model
+	return templateFor(kindId):Clone()
+end
+
 -- Pour les bots : le Repris le plus proche a portee.
 function ReprisService.nearest(at: Vector3, range: number): BasePart?
 	local best, bestD = nil, range

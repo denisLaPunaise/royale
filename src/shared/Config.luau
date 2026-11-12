@@ -1206,6 +1206,85 @@ Config.repris = {
 }
 
 --------------------------------------------------------------------------------
+-- LE GOULAG — le Ventre de l'Oeil (CONCEPT.md, Capture)
+--------------------------------------------------------------------------------
+
+-- Valide le 9 et le 12 novembre 2026 : aspire, on arrive dans le Ventre.
+-- Des duels un contre un sur des plateformes dans le vide ; celui qui jette
+-- l'autre est sauve, une seule fois par partie. Il ferme aux deux derniers
+-- cercles. Nombre impair : un bot a la batte (Josh, 12 novembre).
+Config.goulag = {
+	-- Il ferme au debut de ce Regard (les deux derniers cercles sur 5).
+	closesAtRegard = 4,
+	-- Une manche toutes les 45 s au plus (CONCEPT.md) : decompte, duel,
+	-- mort subite tiennent dedans.
+	roundSeconds = 45,
+	-- Le premier arrive attend au moins ceci : le temps de voir ou il est.
+	firstWaitSeconds = 12,
+	introSeconds = 3,
+	duelSeconds = 25,
+	suddenSeconds = 12,
+	-- Le Ventre, loin de la carte et sous l'Oeil : rien de la partie ne s'y
+	-- voit, rien du Ventre ne se voit de la partie.
+	origin = { 3200, 420, 0 },
+	-- Les plateformes de duel, en cercle autour des cages.
+	platforms = 12,
+	ringRadius = 90,
+	-- Une plateforme fait ce rayon au depart, s'effrite jusqu'a
+	-- `crumbleTo` pendant le duel, puis jusqu'a rien en mort subite.
+	platformRadius = 13,
+	crumbleTo = 9,
+	platformThickness = 3,
+	-- Les combattants partent a cette distance du centre, face a face.
+	startOffset = 6,
+	-- Sous la plateforme de plus que ceci : tombe.
+	fallBelow = 20,
+	-- C'est le dernier a avoir frappe, dans ce delai, qui est sauve.
+	lastHitSeconds = 8,
+	-- Les regles du combat au Ventre : la batte pour tous, 3 coups mettent
+	-- K.O. 2 s, un coup a terre envoie voler (CONCEPT.md).
+	rules = {
+		hitsToKO = 3,
+		comboResetSeconds = 4,
+		koSeconds = 2,
+		launchSpeed = 70,
+		launchLift = 30,
+	},
+	-- Les cages : au centre, sur un pilier, d'ou l'on voit les duels. Assez
+	-- espacees pour qu'on voie entre elles (a 22 de rayon, 24 cages se
+	-- touchaient, vu en image).
+	cages = 24,
+	cageRadius = 32,
+	cageSize = 6,
+	-- La salle qui enferme le Ventre : demi-largeur, profondeur sous les
+	-- plateformes, hauteur au-dessus, et le nombre de veines de braise.
+	room = { half = 170, below = 140, above = 70, veins = 18 },
+	-- Le bot de la manche impaire : il vise, frappe, et pousse vers le bord.
+	botThinkSeconds = 0.15,
+	botName = "Repris du Ventre",
+	-- Sauve : on retombe dans le cercle de cette hauteur.
+	returnHeight = 40,
+	-- Attributs : sur le participant, ou il en est ("Cage", "Duel") ; sur
+	-- Workspace, l'heure de la prochaine manche ; et le message de fin de duel.
+	stateAttribute = "Goulag",
+	roundAttribute = "GoulagManche",
+	suddenAttribute = "GoulagMortSubite",
+	resultAttribute = "GoulagIssue",
+	-- L'issue d'un duel reste a l'ecran de tous ce temps (s).
+	resultSeconds = 5,
+	folder = "Ventre",
+	colors = {
+		stone = { 40, 30, 32 },
+		wall = { 48, 14, 16 },
+		pit = { 110, 12, 8 },
+		vein = { 130, 20, 12 },
+		rim = { 200, 30, 20 },
+		cage = { 255, 60, 30 },
+		ember = { 255, 110, 50 },
+	},
+}
+
+--------------------------------------------------------------------------------
 -- LES BOTS — invisibles, pour que la partie paraisse toujours pleine
 --------------------------------------------------------------------------------
 

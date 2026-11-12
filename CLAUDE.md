@@ -105,8 +105,15 @@ Rokit, StyLua, Selene, Lune, GitHub Actions, tous les chiffres dans
   Regard), logique pure `Horde`, `Config.repris` ; crochets
   `CombatService.setCreatures`, `EyeService.onFlagged`,
   `ItemService.dropCommon` ; les bots frappent les Repris.
-- **Ensuite** : s'allonger et ramper, les animations de posture, le
-  goulag, les escouades, la liste des joueurs du jeu (pour cacher les bots).
+- **12 novembre 2026 (nuit), le goulag** : `GoulagService` (le Ventre construit
+  au démarrage, cages, duels, mort subite, bot à la batte au corps de
+  Repris), logique pure `Duels`, `Config.goulag` ; `Roster.setKeeper` et
+  `Roster.revive` ; `CombatService.setArena` (règles du Ventre, un coup à
+  terre envoie voler).
+- **Ensuite** : les escouades, les gestes manquants (s'allonger et ramper,
+  tirer par les pieds, la porte, les signaux, la carte, l'émote), les
+  éliminés, la liste des joueurs du jeu (pour cacher les bots), les
+  animations de posture, les sons (programme : `docs/PROGRAMME-NUIT.md`).
 
 ## La place et la recette
 

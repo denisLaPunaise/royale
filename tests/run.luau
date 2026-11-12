@@ -21,6 +21,7 @@ local suites = {
 	{ name = "Les objets", run = require("./specs/items") },
 	{ name = "Les pouvoirs de l'Oeil", run = require("./specs/eyepowers") },
 	{ name = "Les Repris", run = require("./specs/repris") },
+	{ name = "Le goulag", run = require("./specs/goulag") },
 	{ name = "Regles branchees", run = require("./specs/wiring") },
 }
 

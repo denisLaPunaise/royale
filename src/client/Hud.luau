@@ -227,6 +227,21 @@ function Hud.start()
 			if left then
 				text ..= string.format("\nNouvelle partie dans %d s", math.ceil(left))
 			end
+		elseif
+			phase == "Partie" and player:GetAttribute(Config.goulag.stateAttribute) == "Cage"
+		then
+			local round = workspace:GetAttribute(Config.goulag.roundAttribute)
+			text =
+				"LE VENTRE DE L'ŒIL\nJette ton adversaire dans le vide pour revenir. Une seule chance."
+			if typeof(round) == "number" and round > now then
+				text ..= string.format("\nProchain duel dans %d s", math.ceil(round - now))
+			end
+		elseif
+			phase == "Partie" and player:GetAttribute(Config.goulag.stateAttribute) == "Duel"
+		then
+			text = if player:GetAttribute(Config.goulag.suddenAttribute) == true
+				then "MORT SUBITE — le sol s'écroule"
+				else "DUEL — jette-le par-dessus bord"
 		elseif phase == "Partie" and inMatch == false then
 			text = "L'Œil t'a pris."
 		elseif phase == "Partie" and player:GetAttribute(Config.combat.carriedAttribute) then
@@ -288,7 +303,19 @@ function Hud.start()
 			elseif typeof(carried) == "string" then "Tu portes "
 				.. carried
 				.. " — Y jeter, B poser"
+			elseif
+				player:GetAttribute(Config.goulag.stateAttribute) == "Duel"
+			then "R2 frapper — 3 coups : K.O. ; un coup à terre : il s'envole"
 			else ""
+		-- L'issue d'un duel du Ventre, pour tout le monde, quelques secondes.
+		local issue = workspace:GetAttribute(Config.goulag.resultAttribute)
+		if warning.Text == "" and phase == "Partie" and typeof(issue) == "string" then
+			local said, at = string.match(issue, "^(.-)|(.+)$")
+			local t = tonumber(at)
+			if said and t and now - t < Config.goulag.resultSeconds then
+				warning.Text = said
+			end
+		end
 	end)
 end
 

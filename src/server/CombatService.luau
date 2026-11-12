@@ -84,9 +84,34 @@ local function flatSpeed(root: BasePart): number
 	return Vector3.new(v.X, 0, v.Z).Magnitude
 end
 
--- Peut agir : en vie, debout, pas porte, pas cache.
+-- L'arene du goulag (GoulagService) : ceux qui s'y battent sans etre en vie
+-- dans la partie, et ses regles (K.O. plus court, un coup a terre ejecte).
+local arena: (() -> { Roster.Actor })? = nil
+local arenaRules: any = nil
+
+local function inArena(actor: Roster.Actor): boolean
+	return arena ~= nil and table.find(arena(), actor) ~= nil
+end
+
+-- En jeu : en vie dans la partie, ou au goulag.
+local function active(actor: Roster.Actor): boolean
+	return Roster.isAlive(actor) or inArena(actor)
+end
+
+-- Tous ceux qu'un geste peut toucher.
+local function pool(): { Roster.Actor }
+	local out = Roster.alive()
+	if arena then
+		for _, actor in arena() do
+			table.insert(out, actor)
+		end
+	end
+	return out
+end
+
+-- Peut agir : en jeu, debout, pas porte, pas cache.
 local function free(actor: Roster.Actor): boolean
-	return Roster.isAlive(actor)
+	return active(actor)
 		and not isDown(actor)
 		and carriedBy[actor] == nil
 		and not HidingService.isHidden(actor)
@@ -133,7 +158,7 @@ local function candidates(
 ): ({ Melee.Candidate }, { [string]: Roster.Actor })
 	local list: { Melee.Candidate } = {}
 	local byId: { [string]: Roster.Actor } = {}
-	for _, actor in Roster.alive() do
+	for _, actor in pool() do
 		if
 			actor == self
 			or HidingService.isHidden(actor)
@@ -295,11 +320,29 @@ local function hit(actor: Roster.Actor, root: BasePart)
 			return
 		end
 	end
+	if target and arenaRules and inArena(actor) and isDown(target) then
+		-- Au goulag, un coup sur quelqu'un a terre l'envoie voler (CONCEPT.md).
+		local targetRoot = Roster.rootOf(target)
+		if targetRoot then
+			local away = targetRoot.Position - root.Position
+			away = Vector3.new(away.X, 0, away.Z)
+			local dir = if away.Magnitude > 0 then away.Unit else root.CFrame.LookVector
+			attackers[target] = { by = actor, at = os.clock() }
+			impulse(
+				targetRoot,
+				dir * arenaRules.launchSpeed + Vector3.new(0, arenaRules.launchLift, 0)
+			)
+		end
+		return
+	end
 	if target then
 		local now = os.clock()
 		-- La batte : K.O. en moins de coups, tant qu'il lui en reste.
 		local bat = actor:GetAttribute(Config.effects.batAttribute)
 		local rules = C
+		if arenaRules and inArena(actor) then
+			rules = arenaRules
+		end
 		if typeof(bat) == "number" and bat > 0 then
 			rules = {
 				hitsToKO = Config.items.bat.hitsToKO,
@@ -451,15 +494,28 @@ end
 -- Renverse depuis un objet (bouteille, filet, huile, piege) : comme un
 -- plaquage, sans K.O.
 function CombatService.trip(actor: Roster.Actor, seconds: number, push: Vector3?)
-	if Roster.isAlive(actor) and carriedBy[actor] == nil then
+	if active(actor) and carriedBy[actor] == nil then
 		knockDown(actor, seconds, push)
 	end
+end
+
+-- Le goulag declare ses combattants et ses regles (hitsToKO,
+-- comboResetSeconds, koSeconds, launchSpeed, launchLift).
+function CombatService.setArena(list: () -> { Roster.Actor }, rules: any)
+	arena, arenaRules = list, rules
+end
+
+-- Remet a zero l'etat de combat d'un participant (sorti du goulag).
+function CombatService.reset(actor: Roster.Actor)
+	states[actor] = nil
+	attackers[actor] = nil
+	publish(actor)
 end
 
 -- Pousse sans renverser (le souffle de l'Oeil).
 function CombatService.push(actor: Roster.Actor, velocity: Vector3)
 	local root = Roster.rootOf(actor)
-	if root and Roster.isAlive(actor) and carriedBy[actor] == nil and not root.Anchored then
+	if root and active(actor) and carriedBy[actor] == nil and not root.Anchored then
 		impulse(root, velocity)
 	end
 end
@@ -471,7 +527,7 @@ end
 -- Celui qui l'a frappe il y a moins de `within` secondes, s'il y en a un.
 function CombatService.attackerOf(actor: Roster.Actor, within: number): Roster.Actor?
 	local a = attackers[actor]
-	if a and os.clock() - a.at <= within and Roster.isAlive(a.by) then
+	if a and os.clock() - a.at <= within and active(a.by) then
 		return a.by
 	end
 	return nil

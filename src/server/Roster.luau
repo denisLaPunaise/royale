@@ -30,6 +30,9 @@ local beforeTake: { (Actor) -> () } = {}
 local afterTake: { (Actor) -> () } = {}
 -- Peut annuler une aspiration (le Cocon de secours) : rend vrai s'il sauve.
 local saver: ((Actor) -> boolean)? = nil
+-- Garde le corps d'un aspire apres l'aspiration (le goulag) : rend vrai s'il
+-- le prend en charge, et le corps n'est pas detruit.
+local keeper: ((Actor, Model) -> boolean)? = nil
 
 local function publish()
 	local n = 0
@@ -131,6 +134,20 @@ function Roster.setSaver(callback: (Actor) -> boolean)
 	saver = callback
 end
 
+function Roster.setKeeper(callback: (Actor, Model) -> boolean)
+	keeper = callback
+end
+
+-- Sauve du goulag : de nouveau en vie dans la partie.
+function Roster.revive(actor: Actor)
+	if aliveSet[actor] or table.find(participants, actor) == nil then
+		return
+	end
+	aliveSet[actor] = true
+	actor:SetAttribute(Config.match.aliveAttribute, true)
+	publish()
+end
+
 -- L'Oeil prend ce participant : il monte vers le ciel, puis disparait.
 function Roster.take(actor: Actor)
 	if not aliveSet[actor] then
@@ -160,6 +177,9 @@ function Roster.take(actor: Actor)
 			{ CFrame = goal }
 		):Play()
 		task.delay(eye.suctionSeconds, function()
+			if keeper and character.Parent and keeper(actor, character) then
+				return
+			end
 			if actor:IsA("Player") then
 				if actor.Character == character then
 					character:Destroy()

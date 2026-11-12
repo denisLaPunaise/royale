@@ -238,3 +238,34 @@ déclenché en sonde.
 6. Est-ce que ça reste jouable ? Trop de Repris, ou pas assez ? (Josh : pas
    trop forts et trop nombreux à la fois.)
 
+## Le goulag (nuit du 12 novembre 2026)
+
+**Vérifié par le calcul** (`tests/specs/goulag.luau`) : les paires (jamais
+deux coéquipiers, le nombre impair contre le bot), la plateforme qui finit
+toujours par disparaître, qui est sauvé, la fermeture aux deux derniers
+cercles, une seule fois par partie.
+
+**Vérifié seul dans Studio** : trois bots aspirés au Regard 1 arrivent en
+cage. Une manche se lance au bout de 12 s, avec un duel entre deux bots et
+un duel contre le Repris du Ventre. Un bot a jeté l'autre dans le vide et
+il est revenu dans la partie ; le perdant est éliminé. Le bot seul a battu
+le Repris du Ventre et il est revenu lui aussi.
+
+**Vu à l'écran** (en mode édition) : la salle, les plateformes, les cages.
+
+**Jamais vu en jeu** : un vrai joueur au Ventre (le décompte, la caméra,
+les textes à l'écran), la mort subite, la dernière manche à la fermeture.
+
+**À regarder en jouant, dans l'ordre :**
+
+1. Fais-toi aspirer au Regard 1 ou 2 : tu arrives dans une cage. Tu
+   comprends où tu es et ce qu'il faut faire ?
+2. Le duel : 3 coups (R2) le mettent K.O., le coup suivant l'envoie voler.
+   C'est lisible ? Trop rapide ?
+3. Attends sans frapper : la plateforme rétrécit, puis la mort subite fait
+   tout tomber.
+4. Revenu dans la partie : tu retombes dans le cercle, sac vide.
+5. Fais-toi aspirer une deuxième fois : c'est fini pour de bon.
+6. Au Regard 4, être aspiré est définitif.
+7. Le Ventre fait-il assez peur ? Est-il trop sombre ?
+

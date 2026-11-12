@@ -261,3 +261,34 @@ laissé l'autonomie, l'assistant a fixé ces valeurs (toutes dans
 - **Leur corps** : celui de Survivor (le crâne généré, la cendre, les
   animations Zombie). Le crâne est chargé au démarrage du serveur depuis son
   asset.
+
+## 12 novembre 2026 (nuit) — le goulag, choix pris sans Josh
+
+- **Où** : le Ventre est une salle sombre, loin de la carte (à 3200 studs),
+  construite à chaque démarrage du serveur. Elle contient 12 plateformes de
+  pierre au bord rougeoyant, en cercle autour d'un pilier de 24 cages, et un
+  fond rouge loin en dessous. Il n'est pas dans la place, comme les
+  cachettes posées à chaque partie.
+- **Le rythme** :
+  - le premier arrivé attend 12 s ;
+  - chaque manche : 3 s de décompte (immobiles, face à face), 25 s de duel
+    pendant lesquelles la plateforme s'effrite de 13 à 9 studs de rayon,
+    puis 12 s de mort subite où elle disparaît complètement ;
+  - la manche suivante démarre 5 s après la fin de la précédente.
+- **Qui est sauvé** :
+  - celui qui a frappé l'autre dans les 8 s avant sa chute ;
+  - en mort subite, le premier qui tombe perd, frappé ou non ;
+  - hors mort subite, tomber tout seul ne sauve personne : l'autre retourne
+    en cage et rejoue à la manche suivante.
+- **Le combat au Ventre** : 3 coups mettent K.O. 2 s, comme dans la fiche.
+  Un coup sur quelqu'un à terre l'envoie voler (70 studs/s, plus 30 vers le
+  haut).
+- **Nombre impair** : le dernier affronte un bot à la batte, qui a le corps
+  d'un Repris (« Repris du Ventre ») pour qu'on ne le prenne pas pour un
+  joueur. Le choisir était ta décision.
+- **Sauvé** : on retombe de 40 studs à un endroit au hasard dans le cercle,
+  le sac vide (il est tombé au moment de l'aspiration).
+- **À la fermeture** (début du Regard 4) : ceux qui attendent jouent tout de
+  suite une dernière manche, puis être aspiré est définitif.
+- **Une partie à 1 joueur en vie** se termine, même s'il reste du monde au
+  Ventre.

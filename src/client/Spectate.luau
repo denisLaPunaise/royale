@@ -77,7 +77,9 @@ function Spectate.start()
 	RunService:BindToRenderStep("RoyaleSpectateur", Enum.RenderPriority.Camera.Value + 2, function()
 		local phase = workspace:GetAttribute(Config.match.phaseAttribute)
 		local mine = player:GetAttribute(Config.match.aliveAttribute)
-		local should = (phase == "Partie" or phase == "Fin") and mine ~= true
+		-- Au Ventre (le goulag), on joue encore : pas de spectateur.
+		local inBelly = player:GetAttribute(Config.goulag.stateAttribute) ~= nil
+		local should = (phase == "Partie" or phase == "Fin") and mine ~= true and not inBelly
 		local list = if should then candidates() else {}
 		if not should or #list == 0 then
 			if watching then
