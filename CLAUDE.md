@@ -43,5 +43,11 @@ Rokit, StyLua, Selene, Lune, GitHub Actions, tous les chiffres dans
 
 - **9 novembre 2026** : fiche commencée avec Josh dans un autre chat.
 - **12 novembre 2026** : dossier et dépôt créés, fiche rangée dans
-  `docs/CONCEPT.md`, contradictions du goulag et des paris tranchées. **On
-  finit la fiche avant d'écrire du code** (choix de Josh).
+  `docs/CONCEPT.md`, puis fiche presque finie avec Josh dans la journée :
+  l'Œil (5 Regards liés aux cercles, power-ups), la zone, le départ recraché,
+  les bots invisibles, les cachettes, les boutons de la manette, les
+  interactions, 27 objets, la carte (9 zones, 1600 × 1600), les escouades,
+  la boutique. Restent l'équilibrage des objets et des power-ups, et les prix
+  en chiffres ; le nom et le marketing se feront au lancement.
+- **Ordre de construction choisi par Josh** : la carte complète d'abord, puis
+  les mécaniques (voir `docs/CONCEPT.md`, Mise en place). Aucun code encore.
