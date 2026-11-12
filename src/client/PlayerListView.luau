@@ -94,7 +94,8 @@ function PlayerListView.start()
 		title.Text = string.format("JOUEURS — %d en vie sur %d", alive, #list)
 		title.LayoutOrder = 0
 		title.Parent = frame
-		local solo = Config.squads.sizes[Config.squads.mode] <= 1
+		local mode = workspace:GetAttribute(Config.squads.modeAttribute)
+		local solo = typeof(mode) ~= "string" or Config.squads.sizes[mode] <= 1
 		for i, e in list do
 			local row = Instance.new("TextLabel")
 			row.BackgroundTransparency = 1

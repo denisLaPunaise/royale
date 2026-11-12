@@ -43,21 +43,53 @@ local function rgb(c: { number }): Color3
 	return Color3.fromRGB(c[1], c[2], c[3])
 end
 
-function SquadService.size(): number
-	return SQ.sizes[SQ.mode]
+-- Le mode de la partie en cours (choisi au salon).
+local mode = SQ.mode
+
+function SquadService.setMode(newMode: string)
+	if SQ.sizes[newMode] then
+		mode = newMode
+		workspace:SetAttribute(SQ.modeAttribute, newMode)
+	end
 end
 
--- Repartit les participants en equipes et le publie.
-function SquadService.assign(actors: { Roster.Actor })
+function SquadService.size(): number
+	return SQ.sizes[mode]
+end
+
+-- Repartit les participants en equipes et le publie : les groupes du salon
+-- restent ensemble, un joueur sans groupe est un groupe a lui seul, les bots
+-- completent.
+function SquadService.assign(actors: { Roster.Actor }, groups: { { Player } })
 	table.clear(teams)
-	local humans, bots = {}, {}
 	local byId: { [string]: Roster.Actor } = {}
+	local grouped: { [Roster.Actor]: boolean } = {}
+	local lists: { { string } } = {}
+	for _, group in groups do
+		local list: { string } = {}
+		for _, player in group do
+			if table.find(actors, player) then
+				grouped[player] = true
+				table.insert(list, Roster.idOf(player))
+			end
+		end
+		if #list > 0 then
+			table.insert(lists, list)
+		end
+	end
+	local bots: { string } = {}
 	for _, actor in actors do
 		local id = Roster.idOf(actor)
 		byId[id] = actor
-		table.insert(if actor:IsA("Player") then humans else bots, id)
+		if actor:IsA("Player") then
+			if not grouped[actor] then
+				table.insert(lists, { id })
+			end
+		else
+			table.insert(bots, id)
+		end
 	end
-	local map = Squads.assign(SquadService.size(), humans, bots)
+	local map = Squads.assignGroups(SquadService.size(), lists, bots)
 	local seen: { [number]: boolean } = {}
 	startTeams = 0
 	for id, team in map do

@@ -395,3 +395,33 @@ textures ; sinon, il faut peut-être être connecté au bon compte dans Studio.
 5. Au Ventre : le cœur à la place du vent.
 6. Un son trop fort, trop faible ou ridicule ? Dis-moi lequel.
 
+## Le salon (nuit du 12 novembre 2026)
+
+**Vérifié par le calcul** (`tests/specs/lobby.luau`, `squads.luau`) : les
+groupes (inviter, plein à 4, le chef qui part), le mode qui suit la taille
+du groupe, seul le chef se dit prêt, un groupe jamais coupé en équipes.
+
+**Vérifié seul dans Studio** :
+- j'arrive au salon ;
+- Y change le mode, R2 me dit prêt et lance le compte à rebours ;
+- à la fin, la partie part avec moi et 23 bots, mon équipe complétée ;
+- mon équipe gagne : 12 s d'écran de fin, puis retour au salon, et le
+  monde est vidé (bots, Repris).
+
+**Vu à l'écran** : la place et le panneau du salon.
+
+**Jamais vérifié, impossible dans Studio** : l'envoi vers un serveur de
+partie réservé et le retour au salon. Seulement dans le jeu publié. C'est
+le premier test à faire après publication, à deux au moins.
+
+**Jamais vérifié** : inviter un autre joueur et accepter (il faut être deux).
+
+**À regarder en jouant, dans l'ordre :**
+
+1. Publie, rejoins avec un ami : vous êtes dans le même salon ?
+2. X maintenu sur ton ami : il voit l'invitation et accepte avec X.
+3. Y : le mode change ; R2 : prêts, le compte à rebours part.
+4. Vous partez ensemble sur un serveur de partie, dans la même équipe.
+5. À la fin, retour au salon.
+6. Le salon est-il assez beau ? (Première version : à habiller.)
+

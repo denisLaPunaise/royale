@@ -137,8 +137,9 @@ function Spectate.start()
 		-- Au Ventre (le goulag), on joue encore : pas de spectateur.
 		local inBelly = player:GetAttribute(Config.goulag.stateAttribute) ~= nil
 		local left = player:GetAttribute(Config.bets.leftAttribute) == true
+		-- Seulement un participant elimine (ceux du salon n'ont pas l'attribut).
 		local should = (phase == "Partie" or phase == "Fin")
-			and mine ~= true
+			and mine == false
 			and not inBelly
 			and not left
 		local list = if should then candidates() else {}

@@ -13,12 +13,22 @@ return function(t: harness.Harness)
 	local SQ = Config.squads
 
 	t.section("Les equipes")
-	local map = Squads.assign(4, { "josh", "ami1", "ami2" }, { "b1", "b2", "b3", "b4", "b5" })
+	local map = Squads.assignGroups(
+		4,
+		{ { "josh", "ami1", "ami2" } },
+		{ "b1", "b2", "b3", "b4", "b5" }
+	)
 	t.check("trois amis ensemble", map.josh == 1 and map.ami1 == 1 and map.ami2 == 1)
 	t.check("un bot complete leur equipe", map.b1 == 1)
 	t.check("les autres bots forment l'equipe suivante", map.b2 == 2 and map.b5 == 2)
-	local solo = Squads.assign(1, { "a" }, { "b", "c" })
+	local solo = Squads.assignGroups(1, { { "a" } }, { "b", "c" })
 	t.check("en solo, chacun son equipe", solo.a == 1 and solo.b == 2 and solo.c == 3)
+	local split = Squads.assignGroups(4, { { "a", "b", "c" }, { "d", "e" } }, { "x" })
+	t.check(
+		"un groupe n'est jamais coupe : 3 + 2 font deux equipes",
+		split.a == split.c and split.d == split.e and split.a ~= split.d
+	)
+	t.check("les bots comblent la premiere place libre", split.x == split.a)
 	t.equal(
 		"les tailles de la fiche",
 		SQ.sizes.solo * 100 + SQ.sizes.duo * 10 + SQ.sizes.squad,

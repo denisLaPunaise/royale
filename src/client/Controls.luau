@@ -423,6 +423,10 @@ function Controls.start()
 		return false
 	end
 	ContextActionService:BindAction("RoyalePousser", function(_, state: Enum.UserInputState)
+		-- Hors partie (au salon), Y sert a autre chose.
+		if player:GetAttribute(Config.match.aliveAttribute) == nil then
+			return Enum.ContextActionResult.Pass
+		end
 		if state == Enum.UserInputState.Begin then
 			if carrying() then
 				gestureRemote:FireServer("throw")

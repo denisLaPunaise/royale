@@ -2,11 +2,15 @@
 --[[
 	MatchService — le deroule d'une partie (CONCEPT.md, Une partie).
 
-	Attente -> Visee (on choisit ou tomber, depuis la pupille) -> Chute (l'Oeil
-	crache tout le monde en cometes, en ligne droite) -> Partie (les Regards
-	s'enchainent, l'Oeil s'ouvre et se ferme, le cercle se resserre) -> Fin
-	(le dernier en vie gagne). Puis, tant qu'il n'y a pas de salon, une
-	nouvelle partie recommence sur le meme serveur (Josh, 12 novembre 2026).
+	Salon (LobbyService : on forme son groupe, on se dit pret) -> Visee (on
+	choisit ou tomber, depuis la pupille) -> Chute (l'Oeil crache tout le
+	monde en cometes, en ligne droite) -> Partie (les Regards s'enchainent,
+	l'Oeil s'ouvre et se ferme, le cercle se resserre) -> Fin (la derniere
+	equipe en vie gagne) -> retour au salon.
+
+	Ou se joue la partie (choisi avec Josh, DECISIONS.md) : dans Studio, sur
+	place ; dans le jeu publie, le salon envoie les joueurs prets sur un
+	serveur reserve, qui joue une partie puis les renvoie au salon.
 
 	Seul, la partie dure jusqu'a ce que l'Oeil te prenne : il n'y a personne a
 	battre (les bots viendront).
@@ -19,6 +23,7 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
+local TeleportService = game:GetService("TeleportService")
 
 local Royale = ReplicatedStorage:WaitForChild("Royale")
 local Circles = require(Royale:WaitForChild("Circles"))
@@ -33,6 +38,7 @@ local EyeService = require(script.Parent.EyeService)
 local HidingService = require(script.Parent.HidingService)
 local GoulagService = require(script.Parent.GoulagService)
 local ItemService = require(script.Parent.ItemService)
+local LobbyService = require(script.Parent.LobbyService)
 local ReprisService = require(script.Parent.ReprisService)
 local SignalService = require(script.Parent.SignalService)
 local SquadService = require(script.Parent.SquadService)
@@ -197,8 +203,9 @@ local function realPlayers(): { Player }
 	return Players:GetPlayers()
 end
 
-local function playOnce()
-	-- L'ATTENTE.
+-- Tout remettre a zero (avant une partie, et apres, pour que le monde ne
+-- garde ni bots, ni Repris, ni cachettes).
+local function resetAll()
 	EyeService.reset()
 	EyePowerService.reset()
 	ZoneService.reset()
@@ -216,22 +223,19 @@ local function playOnce()
 	workspace:SetAttribute(M.regardTitleAttribute, nil)
 	workspace:SetAttribute(Config.eye.changeAttribute, nil)
 	workspace:SetAttribute(Config.eye.warningAttribute, false)
-	while #realPlayers() < M.minRealPlayers do
-		task.wait(0.5)
-	end
-	setPhase("Attente", M.waitSeconds)
-	for _, player in realPlayers() do
+end
+
+-- Une partie avec ces joueurs, ce mode et ces groupes (venus du salon).
+local function playOnce(humans: { Player }, mode: string, groups: { { Player } })
+	resetAll()
+	SquadService.setMode(mode)
+	for _, player in humans do
 		spawn(player, waitingSpot())
-	end
-	local waitEnds = os.clock() + M.waitSeconds
-	while os.clock() < waitEnds do
-		task.wait(0.25)
 	end
 
 	-- LA VISEE, depuis la pupille. Les bots completent jusqu'a un total tire
 	-- au sort (CONCEPT.md) ; ils visent au hasard, comme quelqu'un qui ne
 	-- touche pas au stick.
-	local humans = realPlayers()
 	local total = random:NextInteger(Config.bots.totalMin, Config.bots.totalMax)
 	-- Des equipes pleines : arrondi a la taille d'equipe, sans depasser le
 	-- maximum (vu en sonde : 17 en escouade laissait un bot seul).
@@ -242,7 +246,7 @@ local function playOnce()
 		table.insert(players, bot)
 	end
 	Roster.start(players)
-	SquadService.assign(players)
+	SquadService.assign(players, groups)
 	Roster.refresh()
 	HidingService.setup(#players)
 	ItemService.setup(players)
@@ -347,10 +351,108 @@ local function playOnce()
 	setPhase("Fin", M.endSeconds)
 	print(
 		if winner
-			then string.format("[Royale] %s gagne la partie", table.concat(names, ", "))
+			then string.format(
+				"[Royale] %s %s la partie",
+				table.concat(names, ", "),
+				if #names > 1 then "gagnent" else "gagne"
+			)
 			else "[Royale] L'Œil a pris tout le monde"
 	)
 	task.wait(M.endSeconds)
+	resetAll()
+end
+
+-- Un serveur reserve (envoye par le salon) : un serveur de partie.
+local function isMatchServer(): boolean
+	return game.PrivateServerId ~= "" and game.PrivateServerOwnerId == 0
+end
+
+-- Le salon a lance un depart : sur place dans Studio, sur un serveur
+-- reserve dans le jeu publie (ReserveServer ne marche pas dans Studio).
+local function launch(players: { Player }, mode: string, groups: { { Player } })
+	if RunService:IsStudio() then
+		LobbyService.setAway(players, true)
+		local ok, err = pcall(playOnce, players, mode, groups)
+		if not ok then
+			warn("[Royale] La partie s'est arrêtée sur une erreur : " .. tostring(err))
+			resetAll()
+		end
+		LobbyService.setAway(players, false)
+		setPhase("Salon")
+		for _, player in players do
+			if player.Parent then
+				LobbyService.place(player)
+			end
+		end
+		return
+	end
+	local ids: { { number } } = {}
+	for _, group in groups do
+		local list: { number } = {}
+		for _, player in group do
+			table.insert(list, player.UserId)
+		end
+		table.insert(ids, list)
+	end
+	local code = TeleportService:ReserveServer(game.PlaceId)
+	local options = Instance.new("TeleportOptions")
+	options.ReservedServerAccessCode = code
+	options:SetTeleportData({ mode = mode, groups = ids, expected = #players })
+	TeleportService:TeleportAsync(game.PlaceId, players, options)
+end
+
+-- Le serveur de partie : attendre les arrivants, jouer, renvoyer au salon.
+local function serveMatch()
+	setPhase("Attente", Config.lobby.arrivalSeconds)
+	while #realPlayers() == 0 do
+		task.wait(0.5)
+	end
+	local data: any = nil
+	local ok, err = pcall(function()
+		data = realPlayers()[1]:GetJoinData().TeleportData
+	end)
+	if not ok then
+		warn("[Royale] Données du salon illisibles : " .. tostring(err))
+	end
+	local expected = if typeof(data) == "table" and typeof(data.expected) == "number"
+		then data.expected
+		else 1
+	local ends = os.clock() + Config.lobby.arrivalSeconds
+	while #realPlayers() < expected and os.clock() < ends do
+		task.wait(0.5)
+	end
+	local mode = if typeof(data) == "table" and Config.squads.sizes[data.mode]
+		then data.mode
+		else Config.squads.mode
+	local groups: { { Player } } = {}
+	if typeof(data) == "table" and typeof(data.groups) == "table" then
+		for _, list in data.groups do
+			local group: { Player } = {}
+			for _, userId in list do
+				local player = Players:GetPlayerByUserId(userId)
+				if player then
+					table.insert(group, player)
+				end
+			end
+			if #group > 0 then
+				table.insert(groups, group)
+			end
+		end
+	end
+	local ok2, err2 = pcall(playOnce, realPlayers(), mode, groups)
+	if not ok2 then
+		warn("[Royale] La partie s'est arrêtée sur une erreur : " .. tostring(err2))
+	end
+	-- Retour au salon : un serveur public de la meme place.
+	local back = realPlayers()
+	if #back > 0 then
+		local sent, why = pcall(function()
+			TeleportService:TeleportAsync(game.PlaceId, back)
+		end)
+		if not sent then
+			warn("[Royale] Retour au salon impossible : " .. tostring(why))
+		end
+	end
 end
 
 function MatchService.start()
@@ -384,21 +486,17 @@ function MatchService.start()
 			HidingService.leave(player)
 		end)
 	)
-	-- Celui qui arrive en cours de partie regarde ; il jouera la suivante.
-	Players.PlayerAdded:Connect(function(player: Player)
-		if phase == "Attente" then
-			spawn(player, waitingSpot())
-		end
-	end)
-	task.spawn(function()
-		repeat
-			local ok, err = pcall(playOnce)
-			if not ok then
-				warn("[Royale] La partie s'est arrêtée sur une erreur : " .. tostring(err))
-				task.wait(2)
+	if isMatchServer() then
+		-- Celui qui arrive pendant l'attente se pose pres du centre.
+		Players.PlayerAdded:Connect(function(player: Player)
+			if phase == "Attente" then
+				spawn(player, waitingSpot())
 			end
-		until not M.restartAfterEnd
-	end)
+		end)
+		task.spawn(serveMatch)
+	else
+		LobbyService.start(remote(Config.remotes.lobby), launch)
+	end
 end
 
 return MatchService

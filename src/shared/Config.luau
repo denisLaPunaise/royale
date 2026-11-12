@@ -112,6 +112,18 @@ Config.controls = {
 			-- comme partout sur Roblox).
 			playerList = { gamepad = "ButtonR3", keyboard = "Tab" },
 		},
+		-- Au salon : X maintenu sur quelqu'un l'invite (ou accepte son
+		-- invitation, par l'invite), Y change de mode, R2 se dit pret, B
+		-- quitte son groupe, croix haut invite des amis Roblox.
+		lobby = {
+			jump = { gamepad = "ButtonA", keyboard = "Space" },
+			invite = { gamepad = "ButtonX", keyboard = "E" },
+			mode = { gamepad = "ButtonY", keyboard = "F" },
+			ready = { gamepad = "ButtonR2", keyboard = "Return" },
+			leaveGroup = { gamepad = "ButtonB", keyboard = "Backspace" },
+			robloxInvite = { gamepad = "DPadUp", keyboard = "I" },
+			playerList = { gamepad = "ButtonR3", keyboard = "Tab" },
+		},
 		-- En portant un joueur K.O. au-dessus de sa tete.
 		carrying = {
 			throw = { gamepad = "ButtonY", keyboard = "F" },
@@ -175,11 +187,6 @@ Config.world = {
 --------------------------------------------------------------------------------
 
 Config.match = {
-	-- L'attente des joueurs : courte, puis les bots completent (valide le 12
-	-- novembre 2026 : « une longue recherche fait quitter le jeu »).
-	waitSeconds = 30,
-	-- Un seul vrai joueur suffit : seul, on joue tout de suite.
-	minRealPlayers = 1,
 	-- Le depart : on vise depuis la pupille, puis l'Oeil crache tout le monde.
 	aimSeconds = 8,
 	-- La vitesse de la comete (studs/s) : de la pupille (~600 de haut) au
@@ -188,12 +195,10 @@ Config.match = {
 	cometSpeed = 180,
 	-- La premiere ouverture de l'Oeil, apres le premier impact (CONCEPT.md).
 	firstOpenDelay = 20,
-	-- L'ecran de victoire, avant qu'une nouvelle partie ne recommence.
+	-- L'ecran de victoire, avant le retour au salon.
 	endSeconds = 12,
-	-- Tant qu'il n'y a pas de salon d'attente : on enchaine les parties sur le
-	-- meme serveur, pour tester en boucle (Josh, 12 novembre 2026).
-	restartAfterEnd = true,
-	-- On attend pres du centre, dans ce rayon (studs), en attendant le salon.
+	-- Avant la visee (et sur un serveur de partie, en attendant les
+	-- arrivants), on se pose pres du centre, dans ce rayon (studs).
 	waitRadius = 80,
 	-- Les personnages se posent un peu au-dessus du sol vise (studs) : la
 	-- hauteur d'un bassin.
@@ -1330,8 +1335,10 @@ Config.squads = {
 	-- parce que Josh joue avec ses amis (DECISIONS.md).
 	mode = "squad",
 	sizes = { solo = 1, duo = 2, squad = 4 },
-	-- L'attribut d'un participant : le numero de son equipe.
+	-- L'attribut d'un participant : le numero de son equipe ; sur Workspace,
+	-- le mode de la partie en cours.
 	attribute = "Equipe",
+	modeAttribute = "ModePartie",
 	-- Relever un ami K.O. (X maintenu, la meme invite que voler).
 	reviveText = "Relever",
 	-- Donner l'objet qu'on tient a un ami debout (X maintenu sur lui).
@@ -1443,6 +1450,50 @@ Config.sounds = {
 	closingSpeed = 0.7,
 	-- Le murmure : des qu'il te voit un peu.
 	murmurAbove = 0.02,
+}
+
+--------------------------------------------------------------------------------
+-- LE SALON — on attend, on forme son groupe, on lance (DECISIONS.md)
+--------------------------------------------------------------------------------
+
+-- Choisi avec Josh (12 novembre 2026, nuit) : les deux. Dans le jeu publie,
+-- le salon envoie les joueurs prets sur un serveur de partie reserve, puis
+-- les recupere a la fin ; dans Studio (ou la teleportation ne marche pas),
+-- la partie se joue sur place.
+Config.lobby = {
+	-- Le salon, loin de la carte (a l'oppose du Ventre) : une place en ruine.
+	origin = { -3200, 300, 0 },
+	radius = 70,
+	-- Un groupe : 4 au plus (l'escouade), invite en maintenant X sur
+	-- quelqu'un ; l'invitation attend une reponse ce temps.
+	maxGroup = 4,
+	inviteSeconds = 15,
+	inviteHoldSeconds = 0.6,
+	inviteDistance = 10,
+	-- Quand un groupe se dit pret, un compte a rebours part pour son mode :
+	-- les autres groupes prets du meme mode partent avec lui.
+	countdownSeconds = 15,
+	-- Le serveur de partie attend les arrivants au plus ce temps, puis joue
+	-- avec ceux qui sont la (les bots completent).
+	arrivalSeconds = 25,
+	-- Les modes, dans l'ordre ou Y les fait defiler.
+	modes = { "solo", "duo", "squad" },
+	modeNames = { solo = "Solo", duo = "Duo", squad = "Escouade" },
+	-- Attributs : sur le joueur, son groupe (le nom du chef), son mode, s'il
+	-- est pret, l'invitation recue (« nom|heure ») ; sur Workspace, le
+	-- compte a rebours (« mode|heure de depart »).
+	groupAttribute = "Groupe",
+	modeAttribute = "Mode",
+	readyAttribute = "Pret",
+	inviteAttribute = "Invitation",
+	countdownAttribute = "Depart",
+	folder = "Salon",
+	colors = {
+		stone = { 92, 86, 82 },
+		dark = { 52, 48, 46 },
+		lantern = { 255, 170, 90 },
+		banner = { 140, 30, 24 },
+	},
 }
 
 --------------------------------------------------------------------------------
@@ -1666,6 +1717,9 @@ Config.remotes = {
 	-- Un signal a ses coequipiers : (sorte, position). Le serveur le renvoie
 	-- a l'equipe : (sorte, position, nom).
 	signal = "Signal",
+	-- Le salon : (action, argument) — inviter (joueur), accepter (chef),
+	-- quitter son groupe, changer de mode, se dire pret.
+	lobby = "Salon",
 	-- Un elimine parie : (celui qu'il regarde, Player ou Model). Ou quitte :
 	-- (rien) avec le remote `quit`.
 	bet = "Pari",

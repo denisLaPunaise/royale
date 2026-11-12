@@ -392,3 +392,31 @@ laissé l'autonomie, l'assistant a fixé ces valeurs (toutes dans
   paupières (au ralenti à la fermeture), un bourdonnement qui enfle quand
   un faisceau est à moins de 300 studs, et un murmure quand il commence à
   te voir.
+
+## 12 novembre 2026 (nuit) — le salon
+
+**Décidé avec Josh** : « les deux ». Dans le jeu publié, le salon envoie les
+joueurs prêts sur un serveur de partie réservé, qui les renvoie au salon à
+la fin. Dans Studio, la partie se joue sur place.
+
+**Choix de l'assistant :**
+- **Le lieu** : une place pavée en ruine, flottant loin de la carte, avec un
+  muret effondré, des lanternes et un brasero, construite au démarrage
+  (comme le Ventre).
+- **Les groupes** : 4 au plus. On invite en maintenant X sur quelqu'un ;
+  lui accepte avec X dans les 15 s. B quitte son groupe. Croix haut ouvre
+  la fenêtre d'invitation d'amis de Roblox ; « rejoindre » marche comme
+  partout sur Roblox, puisqu'on arrive dans le salon.
+- **Le mode** : Y le fait défiler (le chef seulement). Un groupe trop grand
+  pour un mode le saute.
+- **Prêt** : R2 (le chef). Le premier groupe prêt lance un compte à rebours
+  de 15 s pour son mode ; tous les groupes prêts du même mode partent
+  ensemble. Les bots complètent.
+- **Les équipes** : un groupe n'est jamais coupé. S'il ne tient pas dans la
+  place qui reste, il ouvre une nouvelle équipe. Les inconnus et les bots
+  comblent les trous.
+- **Le serveur de partie** attend les arrivants 25 s au plus, joue une
+  partie, puis renvoie tout le monde au salon (un serveur public).
+- **Pour plus tard** : une vraie file d'attente entre plusieurs salons
+  (MemoryStore). Pour l'instant, une partie réunit les groupes prêts du
+  même salon, complétés par des bots.

@@ -129,7 +129,12 @@ Rokit, StyLua, Selene, Lune, GitHub Actions, tous les chiffres dans
   plus de `PlatformStand` au sol.
 - **12 novembre 2026 (nuit), les sons** : `Sfx` (serveur), `SoundView`
   (client), `Config.sounds` (repris de Survivor).
-- **Ensuite** : le salon et les groupes, la progression, la boutique et le
+- **12 novembre 2026 (nuit), le salon** : `LobbyService` (la place, les
+  groupes, le compte à rebours), logique pure `Lobby`,
+  `Squads.assignGroups`, `LobbyView` ; `MatchService` joue sur place dans
+  Studio, envoie sur un serveur réservé ailleurs (`serveMatch` sur le
+  serveur de partie).
+- **Ensuite** : la progression, la boutique et le
   passe (programme : `docs/PROGRAMME-NUIT.md`).
 
 ## La place et la recette
