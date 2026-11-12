@@ -25,6 +25,7 @@ local Circles = require(Royale:WaitForChild("Circles"))
 local Config = require(Royale:WaitForChild("Config"))
 local Regards = require(Royale:WaitForChild("Regards"))
 
+local BetService = require(script.Parent.BetService)
 local BotService = require(script.Parent.BotService)
 local CombatService = require(script.Parent.CombatService)
 local EyePowerService = require(script.Parent.EyePowerService)
@@ -204,6 +205,7 @@ local function playOnce()
 	ReprisService.clear()
 	GoulagService.reset()
 	SquadService.clear()
+	BetService.reset()
 	HidingService.clear()
 	BotService.clear()
 	Roster.clear()
@@ -335,6 +337,7 @@ local function playOnce()
 		table.insert(names, Roster.nameOf(actor))
 	end
 	local winner = winners[1]
+	BetService.settle(winners)
 	workspace:SetAttribute(M.winnerAttribute, table.concat(names, ", "))
 	workspace:SetAttribute(Config.match.eyeOpenAttribute, false)
 	EyeService.step(0, Config.regards[1], false, 0, false)
@@ -356,6 +359,7 @@ function MatchService.start()
 	GoulagService.start()
 	SquadService.start()
 	SignalService.start(remote(Config.remotes.signal))
+	BetService.start(remote(Config.remotes.bet), remote(Config.remotes.quit))
 	ItemService.start(
 		remote(Config.remotes.item),
 		remote(Config.remotes.projectile),

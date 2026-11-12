@@ -119,8 +119,10 @@ Rokit, StyLua, Selene, Lune, GitHub Actions, tous les chiffres dans
   (`Controls`, attribut `Allonge`), tirer par les pieds
   (`CombatService.pull`, invite d'`ItemService`), signaux (`SignalService`,
   `GestureView`), carte et émote (`GestureView`).
-- **Ensuite** : les
-  éliminés, la liste des joueurs du jeu (pour cacher les bots), les
+- **12 novembre 2026 (nuit), les éliminés** : `Spectate` (coéquipiers
+  d'abord, X parier, B quitter), `BetService`, logique pure `Bets`,
+  `Config.bets`.
+- **Ensuite** : la liste des joueurs du jeu (pour cacher les bots), les
   animations de posture, les sons (programme : `docs/PROGRAMME-NUIT.md`).
 
 ## La place et la recette

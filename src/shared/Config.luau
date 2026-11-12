@@ -1348,6 +1348,25 @@ Config.squads = {
 }
 
 --------------------------------------------------------------------------------
+-- LES ELIMINES — regarder, parier, quitter (CONCEPT.md, Capture)
+--------------------------------------------------------------------------------
+
+Config.bets = {
+	-- On parie sur celui qu'on regarde, une fois, tant que le Ventre est
+	-- ouvert (avant les deux derniers cercles) : parier sur les trois
+	-- derniers serait trop facile (choix de l'assistant, a voir).
+	untilRegard = 4,
+	-- Un pari juste rapporte un peu de credits (CONCEPT.md : jamais le
+	-- meilleur moyen d'en gagner). Toujours gratuit : miser des credits en
+	-- ferait un jeu d'argent.
+	rewardCredits = 15,
+	-- Attributs : sur le joueur, le nom de celui sur qui il a parie ; sur
+	-- le joueur qui a quitte, vrai.
+	attribute = "Pari",
+	leftAttribute = "AQuitte",
+}
+
+--------------------------------------------------------------------------------
 -- LES BOTS — invisibles, pour que la partie paraisse toujours pleine
 --------------------------------------------------------------------------------
 
@@ -1514,6 +1533,10 @@ Config.view = {
 	-- En spectateur, la camera se tient derriere et au-dessus (studs).
 	spectateDistance = 14,
 	spectateHeight = 6,
+	-- La ligne du spectateur, en bas de l'ecran (pixels).
+	spectateInfoBottom = 40,
+	spectateInfoHeight = 30,
+	spectateInfoTextSize = 22,
 	-- La police des textes de l'Oeil (Survivor : la machine a ecrire).
 	font = "SpecialElite",
 	-- Le sac en bas de l'ecran : 4 places de cette taille (pixels), un ecart,
@@ -1564,6 +1587,10 @@ Config.remotes = {
 	-- Un signal a ses coequipiers : (sorte, position). Le serveur le renvoie
 	-- a l'equipe : (sorte, position, nom).
 	signal = "Signal",
+	-- Un elimine parie : (celui qu'il regarde, Player ou Model). Ou quitte :
+	-- (rien) avec le remote `quit`.
+	bet = "Pari",
+	quit = "Quitter",
 }
 
 --------------------------------------------------------------------------------

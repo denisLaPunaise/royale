@@ -324,3 +324,22 @@ relever ; la croix (signaux, carte, émote) ; « Tirer » sur un ami.
 4. Croix gauche : la carte se lit ? Il manque le dessin des zones ?
 5. Croix droite : ton personnage salue.
 
+## Les éliminés (nuit du 12 novembre 2026)
+
+**Vérifié par le calcul** (`tests/specs/bets.luau`) : qui peut parier, jamais
+sur un ami Roblox, les paris fermés aux derniers cercles, qui gagne.
+
+**Vérifié seul dans Studio** : mon joueur éliminé pour de bon regarde d'abord
+un coéquipier. Le pari est enregistré et affiché (« pari sur
+Kiwi_Fantome »). Quitter arrête le spectateur et l'écran le dit.
+
+**Vu à l'écran** : la ligne du spectateur, et le contour bleu d'un
+coéquipier à travers un arbre.
+
+**À regarder en jouant :**
+
+1. Éliminé pour de bon : tu regardes d'abord un ami ? L1 / R1 change.
+2. X : le pari s'affiche. Sur un ami Roblox, il est refusé avec la raison.
+3. Gagne-t-on bien les crédits du pari à la fin (après la progression) ?
+4. B : on quitte ; plus tard, retour au salon.
+

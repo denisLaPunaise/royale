@@ -340,3 +340,17 @@ laissé l'autonomie, l'assistant a fixé ces valeurs (toutes dans
   cercle actuel en blanc, le prochain en rouge, soi en jaune et ses
   coéquipiers en bleu. Pas de dessin de la carte dessous pour l'instant.
 - **L'émote** (croix droite) : le salut de Roblox (« wave »).
+
+## 12 novembre 2026 (nuit) — les éliminés, choix pris sans Josh
+
+- **Regarder** : on regarde d'abord ses coéquipiers (ils passent en tête de
+  liste), L1 / R1 pour changer. Une ligne en bas dit qui l'on regarde et ce
+  qu'on peut faire.
+- **Parier** : X parie sur celui qu'on regarde, une fois par partie, tant
+  que le Ventre est ouvert (avant le Regard 4) ; après, ce serait trop
+  facile. Parier sur son propre coéquipier est permis, sur un ami Roblox
+  jamais. Si Roblox ne répond pas sur l'amitié, on refuse le pari. Un pari
+  juste rapporte 15 crédits (versés par la progression), et c'est toujours
+  gratuit.
+- **Quitter** : B. On arrête de regarder, et l'écran dit « retour au salon
+  à la fin ». Le salon s'en chargera.
