@@ -57,7 +57,19 @@ Rokit, StyLua, Selene, Lune, GitHub Actions, tous les chiffres dans
   une vallée côtière (le pays monte vers le nord et l'est), la rivière de
   l'est à la mer, cinq chaînes de montagnes (`Plan.RIDGES`), la côte en caps
   et anses, le Cratère, le Marais en mares, l'Œil et la lumière repris de
-  Survivor. Mesure : 0 problème. Les 9 zones restent à construire.
+  Survivor. Mesure : 0 problème.
+- **12 novembre 2026, la carte complète** (en autonomie, à la demande de
+  Josh) : `tools/carte/zones/` construit les liaisons (routes de campagne,
+  3 ponts et leurs cachettes dessous), la Banlieue (lotissement à rues
+  courbes, 53 maisons de Survivor), le Quartier suspendu (5 îlots, passerelles,
+  dalle retombée), le Cratère (épaves, fissures, butin), la Fête foraine
+  (grande roue penchée, montagnes russes cassées, manège, train fantôme), le
+  Lycée, le Port (quai qui suit la côte, cargo couché, conteneurs, grues,
+  phare), le Marais (cabanes sur pilotis, pontons), la Gare (6 voies, wagons),
+  l'Hypermarché éventré, puis la végétation. Mesure : 0 problème.
+  Outils communs : `Kit` (sol, place, routes, emplacements, caisses),
+  `Ville` (pièces de Survivor), `Batiment`, `Prefabs` (casier, roseaux,
+  carton, armoire).
 
 ## La place et la recette
 
@@ -68,6 +80,21 @@ Rokit, StyLua, Selene, Lune, GitHub Actions, tous les chiffres dans
   synchronisé (comparer la taille des `Source`), `require` un CLONE depuis
   `execute_luau` dans un `task.spawn`, lire `workspace:GetAttribute("RapportRecette")`.
   Le socle prend environ 20 s.
+- **Ne jamais supprimer puis recopier `src/server/RecetteJetable/`** pendant
+  que Rojo tourne : `rojo serve` plante (fichier introuvable) et le plugin se
+  déconnecte. Recopier par-dessus (`cp -r`), sans `rm -rf`.
+- `CorrodedMetal` impose sa couleur rouille : les grandes surfaces sont en
+  `Metal` (sinon tout le port virait au rose).
+- L'eau du terrain se range par cases de 4 et ne partage pas une case avec
+  la terre : elle affleure à -4 et ne remplit que les creux sous -8.
+- `Model:ScaleTo` est **absolu** (par rapport au modèle d'origine) :
+  multiplier `GetScale()`. Et poser un modèle du magasin par le bas de sa
+  boîte, pas par son pivot (les arbres flottaient, géants).
+- Pas de remblai sous les routes : aux carrefours il enterrait la route
+  voisine et s'accumulait à chaque reconstruction.
+- Modèles du magasin : accord de Josh le 12 novembre 2026 ; scripts retirés,
+  tout est noté dans `docs/ASSETS.md`. Ils n'existent que dans la place :
+  Josh doit **publier** après chaque ajout.
 - Pièges vus : `SetMaterialColor` refuse l'eau (`Terrain.WaterColor`) ;
   `WriteVoxels` pose la surface une demi-case plus haut que l'occupation lue à
   plat (le socle retire 0,5) ; la mer et les mares ne se remplissent que là

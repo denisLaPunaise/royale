@@ -34,6 +34,11 @@ local MATERIAL_COLORS = {
 	[Enum.Material.Rock] = Color3.fromRGB(96, 94, 90),
 	[Enum.Material.Basalt] = Color3.fromRGB(40, 36, 36),
 	[Enum.Material.Slate] = Color3.fromRGB(70, 66, 64),
+	-- Le sol du port et de la zone commerciale (peints par leurs zones).
+	[Enum.Material.Pavement] = Color3.fromRGB(120, 118, 112),
+	-- Clair : la variante generee de l asphalte s applique aussi au terrain et
+	-- l assombrit (le sol de la zone commerciale etait noir, vu a l ecran).
+	[Enum.Material.Asphalt] = Color3.fromRGB(158, 158, 160),
 	-- Pas l'eau : sa couleur se regle par `Terrain.WaterColor` (SetMaterialColor
 	-- la refuse, vu dans Studio le 12 novembre 2026).
 }
@@ -217,9 +222,9 @@ return function(_O: any, Plan: any)
 				if zone.name == "Marais" and w > 0.5 then
 					-- Des mares et des ilots d'herbe haute, de la boue au bord de
 					-- l'eau : tout en boue, le Marais faisait une tache noire.
-					h += 2.4 * math.noise(x / 55, z / 55, 8.8) * w
+					h += 7 * math.noise(x / 55, z / 55, 8.8) * w
 					wet = true
-					material = if math.abs(h - Plan.SEA_LEVEL) < 0.7
+					material = if math.abs(h + 4) < 1
 						then Enum.Material.Mud
 						else Enum.Material.LeafyGrass
 				end
@@ -327,11 +332,13 @@ return function(_O: any, Plan: any)
 		for material, color in MATERIAL_COLORS do
 			terrain:SetMaterialColor(material, color)
 		end
-		terrain.WaterColor = Color3.fromRGB(58, 72, 74)
-		terrain.WaterTransparency = 0.35
-		terrain.WaterReflectance = 0.6
-		terrain.WaterWaveSize = 0.08
-		terrain.WaterWaveSpeed = 6
+		-- Sombre, trouble et calme, comme une eau de marais et une mer grise :
+		-- plus claire et plus brillante, elle paraissait laiteuse (vu a l'ecran).
+		terrain.WaterColor = Color3.fromRGB(34, 48, 46)
+		terrain.WaterTransparency = 0.22
+		terrain.WaterReflectance = 0.32
+		terrain.WaterWaveSize = 0.05
+		terrain.WaterWaveSpeed = 4
 
 		local columns = math.floor(Plan.OUTER * 2 / RESOLUTION)
 		local layers = math.floor((MAX_Y - MIN_Y) / RESOLUTION)

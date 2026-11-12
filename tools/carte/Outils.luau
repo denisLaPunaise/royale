@@ -21,8 +21,10 @@ local random = Random.new(2611)
 --------------------------------------------------------------------------------
 
 local C = {
-	asphalt = Color3.fromRGB(58, 58, 60),
-	asphaltPatch = Color3.fromRGB(46, 46, 48),
+	-- Plus clairs depuis les matieres generees (docs/ASSETS.md) : elles
+	-- assombrissent la couleur des pieces (la route etait devenue noire).
+	asphalt = Color3.fromRGB(132, 132, 134),
+	asphaltPatch = Color3.fromRGB(112, 112, 114),
 	line = Color3.fromRGB(176, 170, 150),
 	concrete = Color3.fromRGB(150, 146, 138),
 	concreteDark = Color3.fromRGB(104, 101, 96),
@@ -36,8 +38,8 @@ local C = {
 	roofSlate = Color3.fromRGB(58, 58, 62),
 	roofBrown = Color3.fromRGB(86, 62, 52),
 	trim = Color3.fromRGB(210, 204, 192),
-	wood = Color3.fromRGB(112, 86, 62),
-	woodGray = Color3.fromRGB(118, 110, 100),
+	wood = Color3.fromRGB(150, 120, 92),
+	woodGray = Color3.fromRGB(162, 152, 140),
 	glass = Color3.fromRGB(150, 168, 176),
 	leaves = Color3.fromRGB(78, 92, 58),
 	leavesDry = Color3.fromRGB(110, 104, 64),

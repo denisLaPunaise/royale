@@ -88,7 +88,11 @@ Plan.zones = {
 		minZ = -560,
 		maxZ = -20,
 		flat = 0.4,
-		ground = -2.5,
+		-- Le terrain range l'eau par cases de 4 et une case ne peut pas etre a
+		-- la fois de la terre et de l'eau : l'eau affleure a -4 et ne remplit
+		-- que les creux plus bas que -8 (mesure : 23 points d'eau sur 546).
+		-- Le Marais est donc bas, et tres bossele (Socle).
+		ground = -6.5,
 	},
 	{
 		name = "GareDeTriage",

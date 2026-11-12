@@ -417,6 +417,26 @@ return function(O: any)
 		-- dans les outils de Royale).
 	end
 
+	-- Les matieres generees (docs/ASSETS.md) remplacent les matieres de base
+	-- dans toute la place : MaterialService est un reglage de place, la
+	-- recette le pose elle-meme. Sans les variantes, rien ne change.
+	local function applyMaterials()
+		local MaterialService = game:GetService("MaterialService")
+		local overrides = {
+			RoyaleAsphalte = Enum.Material.Asphalt,
+			RoyaleBeton = Enum.Material.Concrete,
+			RoyaleBrique = Enum.Material.Brick,
+			-- Pas le bois : la variante generee assombrissait trop les murs et les
+			-- planchers des interieurs (vu a l'ecran) ; le bois de Roblox est
+			-- plus clair et bien texture.
+		}
+		for _, v in MaterialService:GetDescendants() do
+			if v:IsA("MaterialVariant") and overrides[v.Name] then
+				MaterialService:SetBaseMaterialOverride(overrides[v.Name], v.Name)
+			end
+		end
+	end
+
 	-- La lumiere : basse, grise, sans soleil franc
 	local function buildLighting()
 		for _, child in Lighting:GetChildren() do
@@ -486,6 +506,7 @@ return function(O: any)
 	return {
 		buildSky = buildSky,
 		buildLighting = buildLighting,
+		applyMaterials = applyMaterials,
 		EYE_HEIGHT = EYE_HEIGHT,
 		SKY = SKY,
 	}
