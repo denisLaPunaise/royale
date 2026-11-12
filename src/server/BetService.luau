@@ -25,7 +25,8 @@ local BT = Config.bets
 -- Parieur (idOf) -> cible (idOf).
 local bets: { [string]: string } = {}
 local byId: { [string]: Player } = {}
-local winListeners: { (Player) -> () } = {}
+-- Ceux dont le pari est juste, cette partie (la progression les paie).
+local paid: { [Player]: boolean } = {}
 local quitListeners: { (Player) -> () } = {}
 
 local function notify(player: Player, text: string)
@@ -98,23 +99,22 @@ function BetService.settle(winners: { Roster.Actor })
 	for _, bettor in Bets.winners(bets, ids) do
 		local player = byId[bettor]
 		if player and player.Parent then
+			paid[player] = true
 			notify(player, "Pari gagné !")
-			for _, listener in winListeners do
-				listener(player)
-			end
 		end
 	end
-end
-
-function BetService.onWin(listener: (Player) -> ())
-	table.insert(winListeners, listener)
 end
 
 function BetService.onQuit(listener: (Player) -> ())
 	table.insert(quitListeners, listener)
 end
 
+function BetService.won(player: Player): boolean
+	return paid[player] == true
+end
+
 function BetService.reset()
+	table.clear(paid)
 	for _, player in byId do
 		if player.Parent then
 			player:SetAttribute(BT.attribute, nil)

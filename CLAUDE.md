@@ -134,7 +134,11 @@ Rokit, StyLua, Selene, Lune, GitHub Actions, tous les chiffres dans
   `Squads.assignGroups`, `LobbyView` ; `MatchService` joue sur place dans
   Studio, envoie sur un serveur réservé ailleurs (`serveMatch` sur le
   serveur de partie).
-- **Ensuite** : la progression, la boutique et le
+- **12 novembre 2026 (nuit), la progression** : `ProfileService` (DataStore,
+  jamais d'écriture si la lecture échoue, verrou de session entre serveurs),
+  logique pure `Progression`, récompenses de fin de partie
+  (`SquadService.track` / `placeOf`).
+- **Ensuite** : la boutique et le
   passe (programme : `docs/PROGRAMME-NUIT.md`).
 
 ## La place et la recette

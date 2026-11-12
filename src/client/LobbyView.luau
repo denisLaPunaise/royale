@@ -76,7 +76,7 @@ function LobbyView.start()
 	gui.IgnoreGuiInset = true
 	gui.Parent = player:WaitForChild("PlayerGui")
 	local panel =
-		label(gui, UDim2.new(0.42, 0, 0, 230), UDim2.new(0, 20, 0, 60), Vector2.new(0, 0), 22)
+		label(gui, UDim2.new(0.42, 0, 0, 230), UDim2.fromOffset(20, 60), Vector2.new(0, 0), 22)
 	panel.TextXAlignment = Enum.TextXAlignment.Left
 	panel.TextYAlignment = Enum.TextYAlignment.Top
 	local center =
@@ -150,8 +150,24 @@ function LobbyView.start()
 		local mode = player:GetAttribute(LB.modeAttribute)
 		local ready = player:GetAttribute(LB.readyAttribute) == true
 		local modeName = if typeof(mode) == "string" then LB.modeNames[mode] or mode else "?"
+		local A = Config.progression.attributes
+		local level = player:GetAttribute(A.level)
+		local stats = if typeof(level) == "number"
+			then string.format(
+				"Niveau %d — %d / %d XP — %d crédits — %d fragments",
+				level,
+				player:GetAttribute(A.xp) or 0,
+				player:GetAttribute(A.xpNeeded) or 0,
+				player:GetAttribute(A.credits) or 0,
+				player:GetAttribute(A.fragments) or 0
+			)
+			else "Profil en chargement…"
+		if player:GetAttribute(A.unreadable) == true then
+			stats ..= " (profil illisible : rien ne sera sauvegardé)"
+		end
 		panel.Text = table.concat({
 			"LE SALON",
+			stats,
 			"Ton groupe : " .. (if typeof(group) == "string" then group else player.DisplayName),
 			"Mode : " .. modeName .. "   (Y changer — le chef)",
 			if ready then "PRÊT — R2 pour annuler" else "R2 : se dire prêt",
@@ -176,6 +192,15 @@ function LobbyView.start()
 				)
 				text = if text == "" then line else text .. "\n" .. line
 			end
+		end
+		local reward = recent(
+			player:GetAttribute(Config.progression.attributes.lastReward),
+			Config.progression.rewardSeconds
+		)
+		if reward then
+			text = if text == ""
+				then "Dernière partie : " .. reward
+				else text .. "\nDernière partie : " .. reward
 		end
 		center.Text = text
 	end)

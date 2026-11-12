@@ -420,3 +420,21 @@ la fin. Dans Studio, la partie se joue sur place.
 - **Pour plus tard** : une vraie file d'attente entre plusieurs salons
   (MemoryStore). Pour l'instant, une partie réunit les groupes prêts du
   même salon, complétés par des bots.
+
+## 12 novembre 2026 (nuit) — la progression, choix pris sans Josh (chiffres à régler)
+
+- **L'XP d'une partie** : 50 pour avoir joué, plus 15 par Regard atteint,
+  plus 150 pour la victoire.
+- **Les niveaux** : le premier coûte 200 XP, chaque suivant 50 de plus.
+- **Les crédits d'une partie** : 10, plus 5 par Regard, plus 40 pour la
+  victoire, plus 15 pour un pari juste.
+- **Les fragments**, comme dans la fiche : top 1 = 2, top 2 à 5 = 1, 20
+  pour un tirage. La place est celle de son équipe, selon l'ordre où les
+  équipes sortent ; tous les membres de l'équipe gagnante sont premiers.
+- **La sauvegarde** : un DataStore (`RoyaleProfils1`). Si la lecture
+  échoue, le profil est marqué illisible, on joue avec un profil vide, et
+  rien n'est jamais écrit. Entre le salon et le serveur de partie, chaque
+  serveur « tient » le profil et le lâche en partant ; l'autre attend
+  jusqu'à 12 s qu'il soit lâché.
+- **À l'écran** : niveau, XP, crédits et fragments dans le panneau du
+  salon, et le gain de la dernière partie au retour.

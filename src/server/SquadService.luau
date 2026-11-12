@@ -34,6 +34,10 @@ local CC = SQ.cocoon
 type Cocoon = { actor: Roster.Actor, part: BasePart, hits: number, born: number, id: string }
 
 local teams: { [Roster.Actor]: number } = {}
+-- Pour les recompenses : quand chaque equipe a eu quelqu'un en jeu pour la
+-- derniere fois, et le dernier Regard ou chacun etait en jeu.
+local teamLastIn: { [number]: number } = {}
+local lastRegard: { [Roster.Actor]: number } = {}
 local cocoons: { Cocoon } = {}
 local startTeams = 0
 local serial = 0
@@ -282,7 +286,42 @@ local function step()
 	end
 end
 
+-- A chaque pas de la partie : qui est encore en jeu (en vie, ou au Ventre
+-- qui le garde), a ce Regard.
+function SquadService.track(regard: number, inGame: (Roster.Actor) -> boolean)
+	local t = os.clock()
+	for actor, team in teams do
+		if inGame(actor) then
+			teamLastIn[team] = t
+			lastRegard[actor] = regard
+		end
+	end
+end
+
+-- La place de son equipe : 1 pour la derniere en jeu, puis par ordre de
+-- sortie.
+function SquadService.placeOf(actor: Roster.Actor): number?
+	local team = teams[actor]
+	local mine = team and teamLastIn[team]
+	if mine == nil then
+		return nil
+	end
+	local place = 1
+	for other, last in teamLastIn do
+		if other ~= team and last > mine then
+			place += 1
+		end
+	end
+	return place
+end
+
+function SquadService.regardOf(actor: Roster.Actor): number
+	return lastRegard[actor] or 0
+end
+
 function SquadService.clear()
+	table.clear(teamLastIn)
+	table.clear(lastRegard)
 	for _, cocoon in table.clone(cocoons) do
 		open(cocoon, true)
 	end

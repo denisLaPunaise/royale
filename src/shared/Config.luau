@@ -1497,6 +1497,52 @@ Config.lobby = {
 }
 
 --------------------------------------------------------------------------------
+-- LA PROGRESSION — XP, niveaux, credits, fragments (CONCEPT.md)
+--------------------------------------------------------------------------------
+
+-- Valide : aucun achat ne donne de puissance ; on gagne en jouant. Les
+-- chiffres sont des valeurs de depart (A REGLER, prix et recompenses a voir
+-- avec Josh).
+Config.progression = {
+	-- Le DataStore des profils, et la version du format.
+	store = "RoyaleProfils1",
+	version = 1,
+	-- Lire : quelques essais espaces, puis on abandonne SANS jamais ecrire.
+	readAttempts = 3,
+	retrySeconds = 2,
+	-- Un profil tenu par un autre serveur (teleportation en cours) : on
+	-- attend qu'il le lache, au plus ce temps, puis on le prend.
+	sessionWaitSeconds = 12,
+	sessionStaleSeconds = 60,
+	-- On sauvegarde aussi regulierement (s), au cas ou le serveur tombe.
+	autosaveSeconds = 120,
+	-- L'XP d'une partie : de quoi jouer, plus pour chaque Regard atteint,
+	-- beaucoup pour la victoire.
+	xp = { played = 50, perRegard = 15, win = 150 },
+	-- Les niveaux : le premier coute 200 XP, chaque suivant 50 de plus.
+	levelBase = 200,
+	levelStep = 50,
+	-- Les credits d'une partie (CONCEPT.md : une seule monnaie).
+	credits = { played = 10, perRegard = 5, win = 40 },
+	-- Les fragments (CONCEPT.md) : top 1 = 2, top 2 a 5 = 1 ; 20 font un
+	-- tirage gratuit. En equipe, chaque membre recoit sa part.
+	fragments = { first = 2, top = 1, topUntil = 5, perDraw = 20 },
+	-- Attributs publies sur le joueur, pour l'ecran.
+	attributes = {
+		level = "Niveau",
+		xp = "XP",
+		xpNeeded = "XPNiveau",
+		credits = "Credits",
+		fragments = "Fragments",
+		-- Le resume de la derniere partie (« texte|heure »).
+		lastReward = "Recompense",
+		-- Vrai si le profil n'a pas pu etre lu (rien ne sera sauvegarde).
+		unreadable = "ProfilIllisible",
+	},
+	rewardSeconds = 10,
+}
+
+--------------------------------------------------------------------------------
 -- LES BOTS — invisibles, pour que la partie paraisse toujours pleine
 --------------------------------------------------------------------------------
 

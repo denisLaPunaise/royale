@@ -425,3 +425,29 @@ le premier test à faire après publication, à deux au moins.
 5. À la fin, retour au salon.
 6. Le salon est-il assez beau ? (Première version : à habiller.)
 
+## La progression (nuit du 12 novembre 2026)
+
+**Vérifié par le calcul** (`tests/specs/progression.luau`) : ce qu'une partie
+rapporte, les fragments de la fiche (10 victoires pour un tirage), les
+niveaux, un ancien profil qui garde tout.
+
+**Vérifié seul dans Studio** :
+- une victoire au Regard 1 a rapporté +215 XP (niveau 2), +55 crédits et
+  +2 fragments, affichés au salon ;
+- Studio refuse les sauvegardes (« API access is not enabled »), donc le
+  profil est marqué illisible et rien n'est écrit : la règle d'or marche.
+
+**Jamais vérifié** : une vraie sauvegarde et sa relecture, et le passage
+du profil entre le salon et le serveur de partie.
+
+**À faire par toi** (c'est un réglage de sécurité, je n'y touche pas) :
+dans Studio, Paramètres du jeu → Sécurité → « Activer l'accès de Studio
+aux services d'API ». Ensuite, je pourrai tester la sauvegarde.
+
+**À regarder en jouant :**
+
+1. Après une partie, au salon : « Dernière partie : +… XP · +… crédits ».
+2. Quitte et reviens : ton niveau et tes crédits sont restés (jeu publié,
+   ou Studio avec l'accès aux API).
+3. Les gains te paraissent-ils justes ? Trop lents, trop rapides ?
+

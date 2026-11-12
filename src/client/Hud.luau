@@ -205,7 +205,9 @@ function Hud.start()
 			end
 		end
 		local count = workspace:GetAttribute(M.aliveAttribute)
-		alive.Text = if typeof(count) == "number" and phase ~= "Attente"
+		-- Seulement pendant une partie (au salon, le compte vaut 0).
+		local playing = phase == "Visee" or phase == "Chute" or phase == "Partie" or phase == "Fin"
+		alive.Text = if typeof(count) == "number" and playing
 			then string.format("Restants : %d", count)
 			else ""
 

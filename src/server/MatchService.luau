@@ -39,6 +39,7 @@ local HidingService = require(script.Parent.HidingService)
 local GoulagService = require(script.Parent.GoulagService)
 local ItemService = require(script.Parent.ItemService)
 local LobbyService = require(script.Parent.LobbyService)
+local ProfileService = require(script.Parent.ProfileService)
 local ReprisService = require(script.Parent.ReprisService)
 local SignalService = require(script.Parent.SignalService)
 local SquadService = require(script.Parent.SquadService)
@@ -331,6 +332,9 @@ local function playOnce(humans: { Player }, mode: string, groups: { { Player } }
 		end
 		wasOpen, lastBurst = open, burst
 
+		SquadService.track(index, function(actor)
+			return Roster.isAlive(actor) or GoulagService.isInside(actor)
+		end)
 		-- Une seule equipe en vie (en solo, une equipe = un joueur).
 		if SquadService.over() then
 			break
@@ -344,7 +348,22 @@ local function playOnce(humans: { Player }, mode: string, groups: { { Player } }
 		table.insert(names, Roster.nameOf(actor))
 	end
 	local winner = winners[1]
+	-- Les gagnants restent en jeu jusqu'au bout : leur equipe est premiere.
+	SquadService.track(regardIndex, function(actor)
+		return table.find(winners, actor) ~= nil
+	end)
 	BetService.settle(winners)
+	-- Ce que la partie rapporte a chaque vrai joueur (CONCEPT.md).
+	for _, player in humans do
+		if player.Parent then
+			ProfileService.grant(player, {
+				regard = SquadService.regardOf(player),
+				won = table.find(winners, player) ~= nil,
+				place = SquadService.placeOf(player),
+				betWon = BetService.won(player),
+			})
+		end
+	end
 	workspace:SetAttribute(M.winnerAttribute, table.concat(names, ", "))
 	workspace:SetAttribute(Config.match.eyeOpenAttribute, false)
 	EyeService.step(0, Config.regards[1], false, 0, false)
@@ -457,6 +476,7 @@ end
 
 function MatchService.start()
 	Players.CharacterAutoLoads = false
+	ProfileService.start()
 	BotService.start()
 	CombatService.start(remote(Config.remotes.gesture))
 	EyePowerService.start()
@@ -486,6 +506,18 @@ function MatchService.start()
 			HidingService.leave(player)
 		end)
 	)
+	-- Un elimine qui quitte : retour au salon (un serveur public dans le jeu
+	-- publie ; sur place dans Studio).
+	BetService.onQuit(function(player: Player)
+		if isMatchServer() then
+			local ok, err = pcall(function()
+				TeleportService:TeleportAsync(game.PlaceId, { player })
+			end)
+			if not ok then
+				warn("[Royale] Retour au salon impossible : " .. tostring(err))
+			end
+		end
+	end)
 	if isMatchServer() then
 		-- Celui qui arrive pendant l'attente se pose pres du centre.
 		Players.PlayerAdded:Connect(function(player: Player)
