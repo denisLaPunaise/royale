@@ -34,6 +34,7 @@ local EyeService = require(script.Parent.EyeService)
 local HidingService = require(script.Parent.HidingService)
 local ItemService = require(script.Parent.ItemService)
 local Roster = require(script.Parent.Roster)
+local Sfx = require(script.Parent.Sfx)
 local World = require(script.Parent.World)
 local ZoneService = require(script.Parent.ZoneService)
 
@@ -51,6 +52,7 @@ type Agent = {
 	head: BasePart,
 	moveTrack: AnimationTrack?,
 	idleTrack: AnimationTrack?,
+	steps: Sound?,
 	hits: number,
 	ready: boolean,
 	dying: boolean,
@@ -381,6 +383,7 @@ local function spawnAgent(kindId: string, at: Vector3)
 		head = head,
 		moveTrack = moveTrack,
 		idleTrack = idleTrack,
+		steps = nil,
 		hits = 0,
 		ready = false,
 		dying = false,
@@ -417,6 +420,8 @@ local function spawnAgent(kindId: string, at: Vector3)
 		root:SetNetworkOwner(nil)
 		trail.Enabled = false
 		agent.ready = true
+		Sfx.at("chute", root)
+		agent.steps = Sfx.loop("pas", root, Config.sounds.stepsMin, Config.sounds.stepsMax)
 	end)
 	fall:Play()
 end
@@ -580,6 +585,14 @@ end
 local function animate(agent: Agent)
 	local v = agent.root.AssemblyLinearVelocity
 	local moving = Vector3.new(v.X, 0, v.Z).Magnitude > 1.5
+	local steps = agent.steps
+	if steps then
+		if moving and not steps.IsPlaying then
+			steps:Play()
+		elseif not moving and steps.IsPlaying then
+			steps:Stop()
+		end
+	end
 	local move, idle = agent.moveTrack, agent.idleTrack
 	if move and idle then
 		if moving and not move.IsPlaying then
@@ -668,12 +681,14 @@ local function chooseTarget(agent: Agent)
 				agent.lastCry = now
 				local at = root.Position
 				print(string.format("[Royale] Un Errant crie : il a vu %s", Roster.nameOf(actor)))
+				Sfx.at("grognement", agent.head)
 				EyeService.lure(function()
 					return at
 				end, kind.cry.lureSeconds, false)
 			elseif kind.howl and now - agent.lastCry >= kind.howl.cooldown then
 				agent.lastCry = now
 				print(string.format("[Royale] Un Hurleur hurle : il a vu %s", Roster.nameOf(actor)))
+				Sfx.at("hurlement", agent.head)
 				EyeService.noise(here, kind.howl.noiseSeconds, true)
 				for _, other in agents do
 					if
@@ -803,6 +818,8 @@ local function think(agent: Agent, now: number)
 				end
 			elseif d <= tackle.range and now - agent.lastTackle >= tackle.cooldown then
 				agent.windupUntil = now + tackle.windup
+				-- Il grogne avant de plaquer (CONCEPT.md : ils previennent).
+				Sfx.at("grognement", agent.head)
 				agent.humanoid:MoveTo(here)
 				return
 			end

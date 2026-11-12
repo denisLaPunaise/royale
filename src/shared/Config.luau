@@ -1392,6 +1392,60 @@ Config.bets = {
 }
 
 --------------------------------------------------------------------------------
+-- LES SONS — repris de Survivor (docs/ASSETS.md de Survivor)
+--------------------------------------------------------------------------------
+
+-- Choisis sur le nom et la duree : l'assistant ne peut pas ecouter. Josh
+-- juge en jouant (DECISIONS.md).
+Config.sounds = {
+	library = {
+		-- Le ciel rougit : un grand coup sourd, puis un grondement.
+		signal = { id = 9125484367, volume = 0.7 },
+		menace = { id = 9125485274, volume = 0.35 },
+		-- Son regard : un bourdonnement grave qui enfle quand un faisceau
+		-- approche.
+		regard = { id = 9114353261, volume = 0.8, looped = true },
+		-- Ses paupieres qui s'ouvrent (et, plus lentement, se ferment).
+		ouverture = { id = 9043343895, volume = 0.6 },
+		-- Il aspire quelqu'un, il arrache une cachette.
+		aspiration = { id = 9118840222, volume = 0.9 },
+		-- L'ambiance : le vent dehors, un coeur lent dans le Ventre.
+		vent = { id = 9114625552, volume = 0.25, looped = true },
+		coeur = { id = 9043365842, volume = 0.5, looped = true },
+		-- Il te voit : un murmure.
+		murmure = { id = 9114228525, volume = 0.6 },
+		-- Une chute lourde (comete, Repris qui tombe).
+		chute = { id = 9125484700, volume = 0.6 },
+		-- Les Repris : un grognement (Errant, Coureur), le cri du Hurleur,
+		-- leurs pas.
+		grognement = { id = 9125475729, volume = 0.7 },
+		hurlement = { id = 9113985445, volume = 1 },
+		pas = { id = 9114166413, volume = 0.45, looped = true },
+		-- Un coup qui porte.
+		coup = { id = 9119330371, volume = 0.7 },
+		-- Fouiller : une boite d'objets qu'on remue.
+		fouille = { id = 9114895552, volume = 0.5 },
+		-- Le fumigene qui eclate.
+		fumee = { id = 9120591722, volume = 0.7 },
+	},
+	-- Au-dela de cette distance d'un faisceau, on n'entend plus son regard ;
+	-- dessous, il enfle jusqu'au volume plein.
+	gazeHeardStuds = 300,
+	-- Les sons poses dans le monde : pleins a 25 studs, eteints a 500.
+	rollOffMin = 25,
+	rollOffMax = 500,
+	-- Les pas des Repris s'entendent de moins loin.
+	stepsMin = 10,
+	stepsMax = 90,
+	-- Le temps de passer d'une ambiance a l'autre.
+	fadeSeconds = 2,
+	-- Les paupieres se referment au ralenti.
+	closingSpeed = 0.7,
+	-- Le murmure : des qu'il te voit un peu.
+	murmurAbove = 0.02,
+}
+
+--------------------------------------------------------------------------------
 -- LES BOTS — invisibles, pour que la partie paraisse toujours pleine
 --------------------------------------------------------------------------------
 

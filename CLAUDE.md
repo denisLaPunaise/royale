@@ -127,7 +127,10 @@ Rokit, StyLua, Selene, Lune, GitHub Actions, tous les chiffres dans
 - **12 novembre 2026 (nuit), les postures** : quatre animations générées
   (`docs/ASSETS.md`), jouées par `PostureView` sur tous les personnages ;
   plus de `PlatformStand` au sol.
-- **Ensuite** : les sons (programme : `docs/PROGRAMME-NUIT.md`).
+- **12 novembre 2026 (nuit), les sons** : `Sfx` (serveur), `SoundView`
+  (client), `Config.sounds` (repris de Survivor).
+- **Ensuite** : le salon et les groupes, la progression, la boutique et le
+  passe (programme : `docs/PROGRAMME-NUIT.md`).
 
 ## La place et la recette
 

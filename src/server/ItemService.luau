@@ -35,6 +35,7 @@ local EyeService = require(script.Parent.EyeService)
 local HidingService = require(script.Parent.HidingService)
 local RemoteGuard = require(script.Parent.RemoteGuard)
 local Roster = require(script.Parent.Roster)
+local Sfx = require(script.Parent.Sfx)
 local SquadService = require(script.Parent.SquadService)
 local World = require(script.Parent.World)
 local ZoneService = require(script.Parent.ZoneService)
@@ -232,6 +233,7 @@ function ItemService.trySearch(actor: Roster.Actor, part: BasePart): string?
 		prompt.Enabled = false
 	end
 	EyeService.noise(part.Position, L.searchNoiseSeconds, false)
+	Sfx.at("fouille", part)
 	if not filled[part] then
 		notify(actor, "Rien ici.")
 		return nil
@@ -308,6 +310,7 @@ end
 local function land(id: string, at: Vector3, thrower: Roster.Actor)
 	local def = I[id]
 	if id == "smoke" then
+		Sfx.at("fumee", at)
 		-- Une boule invisible qui coupe le regard (attribut Couvert a 1), et la
 		-- fumee qu'on voit.
 		local ball =

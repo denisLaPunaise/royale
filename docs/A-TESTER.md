@@ -372,3 +372,26 @@ porté au-dessus d'un porteur, et ce qu'en voient les autres joueurs.
 4. Porte un K.O. (Y maintenu) : il est couché au-dessus de ta tête, sans la
    traverser ?
 
+## Les sons (nuit du 12 novembre 2026)
+
+**Vérifié seul dans Studio** : les 15 sons se chargent ; le vent joue. En
+70 s de partie, le serveur a joué des coups, des fouilles, une aspiration,
+des chutes, des grognements et les pas des Repris.
+
+**Jamais écouté** : je ne peux pas entendre. C'est à toi de juger.
+
+**À noter** : depuis que Studio a été rouvert, 16 avertissements « Requester
+does not have permission for Asset » apparaissent au démarrage. 16, c'est
+le nombre de textures des matières générées de la carte (asphalte, béton,
+brique, bois). Regarde si les routes et les murs ont toujours leurs
+textures ; sinon, il faut peut-être être connecté au bon compte dans Studio.
+
+**À écouter en jouant :**
+
+1. Le ciel rougit : un grand coup sourd, puis l'Œil s'ouvre (paupières).
+2. Un faisceau approche : le bourdonnement enfle-t-il ?
+3. Il te voit : le murmure.
+4. Les coups, la fouille, un Repris qui grogne avant de plaquer.
+5. Au Ventre : le cœur à la place du vent.
+6. Un son trop fort, trop faible ou ridicule ? Dis-moi lequel.
+

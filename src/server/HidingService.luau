@@ -23,6 +23,7 @@ local Royale = ReplicatedStorage:WaitForChild("Royale")
 local Config = require(Royale:WaitForChild("Config"))
 
 local Roster = require(script.Parent.Roster)
+local Sfx = require(script.Parent.Sfx)
 local World = require(script.Parent.World)
 
 local HidingService = {}
@@ -456,6 +457,7 @@ function HidingService.rip(spot: Spot, solidFalls: boolean)
 	if spot.ripping or (spot.solid and not solidFalls) then
 		return
 	end
+	Sfx.at("aspiration", spot.inside.Position)
 	if spot.solid then
 		-- Une cachette solide fait partie de la carte : elle ne s'envole pas,
 		-- elle s'effondre (on en est chasse, et on n'y rentre plus).

@@ -30,6 +30,7 @@ local EyeService = require(script.Parent.EyeService)
 local HidingService = require(script.Parent.HidingService)
 local RemoteGuard = require(script.Parent.RemoteGuard)
 local Roster = require(script.Parent.Roster)
+local Sfx = require(script.Parent.Sfx)
 
 local CombatService = {}
 
@@ -326,6 +327,7 @@ local function hit(actor: Roster.Actor, root: BasePart)
 			creature.onHit(creature.id, actor, push)
 			-- Se battre fait du bruit (CONCEPT.md).
 			EyeService.noise(creature.root.Position, C.hitNoiseSeconds, false)
+			Sfx.at("coup", creature.root)
 			return
 		end
 	end
@@ -372,6 +374,7 @@ local function hit(actor: Roster.Actor, root: BasePart)
 				impulse(targetRoot, away.Unit * C.hitPush)
 			end
 			EyeService.noise(targetRoot.Position, C.hitNoiseSeconds, false)
+			Sfx.at("coup", targetRoot)
 		end
 		if ko then
 			print(

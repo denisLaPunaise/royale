@@ -19,6 +19,8 @@ local TweenService = game:GetService("TweenService")
 local Royale = ReplicatedStorage:WaitForChild("Royale")
 local Config = require(Royale:WaitForChild("Config"))
 
+local Sfx = require(script.Parent.Sfx)
+
 local Roster = {}
 
 -- Un joueur ou un bot.
@@ -195,6 +197,7 @@ function Roster.take(actor: Actor)
 	local root = Roster.rootOf(actor)
 	if character and root then
 		local eye = Config.eye
+		Sfx.at("aspiration", root.Position)
 		root.Anchored = true
 		local goal = root.CFrame
 			* CFrame.new(0, eye.suctionHeight, 0)

@@ -377,3 +377,18 @@ laissé l'autonomie, l'assistant a fixé ces valeurs (toutes dans
 - **Porté**, le corps est soulevé à 5,5 studs au lieu de 3,5 : allongé par
   son animation, il traversait la tête du porteur.
 - **Accroupi et ramper** se figent quand on ne bouge pas.
+
+## 12 novembre 2026 (nuit) — les sons, choix pris sans Josh
+
+- **Les sons de Survivor** (des sons de Roblox), choisis sur le nom et la
+  durée : je ne peux pas écouter.
+- **Côté serveur**, entendus de tous à l'endroit où ils se produisent :
+  coups, fouille, fumigène, aspiration (d'un joueur ou d'une cachette
+  arrachée), chute (atterrissage en comète, Repris qui tombe), grognement
+  (Errant qui voit, Coureur avant de plaquer), hurlement (Hurleur), pas
+  des Repris.
+- **Côté client** : le vent en fond, et un cœur lent au Ventre. Pour
+  l'Œil : un coup sourd et un grondement quand le ciel rougit, les
+  paupières (au ralenti à la fermeture), un bourdonnement qui enfle quand
+  un faisceau est à moins de 300 studs, et un murmure quand il commence à
+  te voir.

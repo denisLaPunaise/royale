@@ -38,6 +38,7 @@ local SignalService = require(script.Parent.SignalService)
 local SquadService = require(script.Parent.SquadService)
 local RemoteGuard = require(script.Parent.RemoteGuard)
 local Roster = require(script.Parent.Roster)
+local Sfx = require(script.Parent.Sfx)
 local World = require(script.Parent.World)
 local ZoneService = require(script.Parent.ZoneService)
 
@@ -182,6 +183,7 @@ local function drop(players: { Roster.Actor })
 				blast.BlastRadius = M.impactRadius
 				blast.DestroyJointRadiusPercent = 0
 				blast.Parent = workspace
+				Sfx.at("chute", ground)
 			end
 			pending -= 1
 		end)
