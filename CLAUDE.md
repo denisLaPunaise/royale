@@ -80,12 +80,21 @@ Rokit, StyLua, Selene, Lune, GitHub Actions, tous les chiffres dans
   `ZoneView`, `Hud`, `AimView`, `Controls`, `Spectate`. Logique pure :
   `Regards`, `Circles`, `Exposure`, `Suspicion`, `Targeting`. Partie de
   mesure à 22 : 15 min, sans erreur (`docs/A-TESTER.md`).
-- **Ensuite** : les interactions (coups, poussée, plaquage, porter), les
-  objets et la fouille, les power-ups de l'Œil, la méfiance des Repris, le
+- **12 novembre 2026, le corps à corps** (en autonomie) : `CombatService`
+  (frapper, K.O., pousser, plaquer, tacle glissé, porter et jeter, toquer à
+  un abri, déloger, la porte dans la figure), logique pure `Melee`, gestes
+  du client dans `Controls` (glissade, s'agripper aux rebords), l'Œil entend
+  les bruits (`EyeService.noise`), les bots rendent les coups et calculent
+  leurs chemins par étapes de 400 studs.
+- **Ensuite** : s'allonger et ramper, les animations de posture, les
+  objets et la fouille (voler un K.O.), les power-ups de l'Œil, la méfiance des Repris, le
   goulag, les escouades, la liste des joueurs du jeu (pour cacher les bots).
 
 ## La place et la recette
 
+- **Mettre les bots en pause pour une mesure** : poser l'attribut `Phase` de
+  Workspace sur autre chose que `Partie` (ils ne pensent qu'en `Partie`), puis
+  le remettre. Sinon un bot frappé retourne se cacher entre deux coups.
 - **Piloter une partie depuis le pont** : les invites ne se déclenchent pas
   par le pont ; les sondes passent par `HidingService.tryEnter`. Injecter un
   `Script` serveur pendant le jeu (son `require` partage le cache du jeu),

@@ -124,3 +124,27 @@ d'abord le cœur »). Ce que la fiche ne fixait pas, pris par l'assistant :
   quittent une cachette qui sera dehors (Œil fermé) et visent une cachette
   dedans. Sans ça, quatre d'un coup se faisaient prendre au premier
   resserrement (vu en partie de mesure).
+
+## 12 novembre 2026 — le corps à corps, choix pris sans Josh
+
+- **Porter prolonge le K.O.** jusqu'à 6 s depuis qu'on soulève : avec un
+  K.O. de 2,5 s, on n'aurait jamais eu le temps de porter quelqu'un. Après
+  6 s, il se débat et tombe.
+- **Le plaquage raté fait tomber quand même** celui qui plaque : sinon on
+  plaquerait dans le vide sans risque pour aller plus vite.
+- **Toquer à un abri attire l'Œil à tout Regard**, même avant qu'il entende
+  la course : c'est un geste voulu pour dénoncer, comme le pétard. Les coups
+  qui portent, eux, ne s'entendent qu'à partir du Regard 4 (« Il entend les
+  coups »).
+- **Pousser sur un abri déloge l'occupant sans répit** : c'est un joueur qui
+  l'a trouvé, pas l'Œil (le répit de 2 s reste pour les arrachages).
+- **Y : sans K.O. à portée, la poussée part tout de suite** ; près d'un K.O.,
+  on attend 0,4 s pour savoir si c'est un maintien (porter). Sinon chaque
+  poussée aurait 0,4 s de retard.
+- **Les bots rendent les coups** pendant 4 s et cherchent parfois querelle
+  quand l'Œil est fermé ; ils ne portent ni ne jettent personne (pour
+  l'instant).
+- **S'allonger, ramper et tirer par les pieds attendent** les animations de
+  posture : sans elles, un corps « allongé » serait un corps enfoncé dans le
+  sol.
+

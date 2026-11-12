@@ -27,6 +27,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Royale = ReplicatedStorage:WaitForChild("Royale")
 local Config = require(Royale:WaitForChild("Config"))
 
+local CombatService = require(script.Parent.CombatService)
 local HidingService = require(script.Parent.HidingService)
 local Roster = require(script.Parent.Roster)
 local World = require(script.Parent.World)
@@ -174,6 +175,50 @@ function BotService.spawn(count: number, at: () -> Vector3): { Model }
 	return out
 end
 
+-- Calcule le chemin vers le but, par etapes : au-dela de `pathMaxDistance`,
+-- le service de chemins refuse (« path request is too long », vu en jeu), on
+-- vise donc un point intermediaire et on repart de la quand on y est.
+local function plan(bot: Bot)
+	local goal = bot.goal
+	if goal == nil or bot.computing then
+		return
+	end
+	local from = bot.root.Position
+	local target = goal
+	local flat = Vector3.new(goal.X - from.X, 0, goal.Z - from.Z)
+	if flat.Magnitude > B.pathMaxDistance then
+		local step = from + flat.Unit * B.pathMaxDistance
+		target = World.ground(step.X, step.Z, { participantsFolder() }) or step
+	end
+	bot.computing = true
+	task.spawn(function()
+		local path = PathfindingService:CreatePath({
+			AgentRadius = B.agentRadius,
+			AgentHeight = B.agentHeight,
+			AgentCanJump = true,
+		})
+		local ok, err = pcall(function()
+			path:ComputeAsync(from, target)
+		end)
+		bot.computing = false
+		if bot.goal ~= goal then
+			return
+		end
+		if ok and path.Status == Enum.PathStatus.Success then
+			bot.waypoints = path:GetWaypoints()
+			bot.index = 1
+		else
+			-- Sans chemin (en plein champ, ou dans l'eau), tout droit.
+			if not ok then
+				warn("[Royale] Chemin de bot impossible : " .. tostring(err))
+			end
+			bot.waypoints = {}
+			bot.index = 0
+			bot.humanoid:MoveTo(target)
+		end
+	end)
+end
+
 local function setGoal(bot: Bot, goal: Vector3, run: boolean, spot: Model?)
 	bot.running = run
 	bot.humanoid.WalkSpeed = if run then Mv.runSpeed else Mv.walkSpeed
@@ -191,36 +236,7 @@ local function setGoal(bot: Bot, goal: Vector3, run: boolean, spot: Model?)
 	end
 	bot.waypoints = {}
 	bot.index = 0
-	if bot.computing then
-		return
-	end
-	bot.computing = true
-	task.spawn(function()
-		local path = PathfindingService:CreatePath({
-			AgentRadius = B.agentRadius,
-			AgentHeight = B.agentHeight,
-			AgentCanJump = true,
-		})
-		local ok, err = pcall(function()
-			path:ComputeAsync(bot.root.Position, goal)
-		end)
-		bot.computing = false
-		if bot.goal ~= goal then
-			return
-		end
-		if ok and path.Status == Enum.PathStatus.Success then
-			bot.waypoints = path:GetWaypoints()
-			bot.index = 1
-		else
-			-- Sans chemin (en plein champ, ou dans l'eau), tout droit.
-			if not ok then
-				warn("[Royale] Chemin de bot impossible : " .. tostring(err))
-			end
-			bot.waypoints = {}
-			bot.index = 0
-			bot.humanoid:MoveTo(goal)
-		end
-	end)
+	plan(bot)
 end
 
 local function stop(bot: Bot)
@@ -248,6 +264,11 @@ local function follow(bot: Bot)
 		bot.index += 1
 		waypoint = bot.waypoints[bot.index]
 		if waypoint == nil then
+			-- Bout d'une etape : la suivante, si le but est encore loin.
+			local goal = bot.goal
+			if goal and (goal - bot.root.Position).Magnitude > B.arriveDistance then
+				plan(bot)
+			end
 			return
 		end
 	end
@@ -335,13 +356,62 @@ local function circleOf(attribute: string): Vector3?
 	return if typeof(v) == "Vector3" then v else nil
 end
 
+-- Le participant debout le plus proche a moins de `range`, hors cachette.
+local function nearestActor(bot: Bot, range: number): Roster.Actor?
+	local best: Roster.Actor? = nil
+	local bestD = range
+	for _, actor in Roster.alive() do
+		local root = Roster.rootOf(actor)
+		if
+			actor ~= bot.model
+			and root
+			and not HidingService.isHidden(actor)
+			and not CombatService.isDown(actor)
+		then
+			local d = (root.Position - bot.root.Position).Magnitude
+			if d <= bestD then
+				best, bestD = actor, d
+			end
+		end
+	end
+	return best
+end
+
 local function think(bot: Bot, now: number)
 	if not Roster.isAlive(bot.model) or bot.model.Parent == nil then
+		return
+	end
+	-- Au sol ou porte : il ne decide plus rien, et reprendra son chemin.
+	if CombatService.isDown(bot.model) or CombatService.isCarried(bot.model) then
+		bot.goal = nil
+		bot.checkAt = now + B.stuckSeconds
 		return
 	end
 	local position = bot.root.Position
 	local open = workspace:GetAttribute(Config.match.eyeOpenAttribute) == true
 	local warning = workspace:GetAttribute(Config.eye.warningAttribute) == true
+
+	-- La bagarre : il rend les coups, et cherche parfois querelle quand l'Oeil
+	-- dort. Jamais quand il est cache (il n'en sort pas pour ca).
+	if not HidingService.isHidden(bot.model) then
+		local foe = CombatService.attackerOf(bot.model, B.grudgeSeconds)
+		if foe == nil and not open and random:NextNumber() < B.brawlChance then
+			foe = nearestActor(bot, Config.combat.hitRange)
+		end
+		local foeRoot = foe and Roster.rootOf(foe)
+		if
+			foe
+			and foeRoot
+			and not HidingService.isHidden(foe)
+			and (foeRoot.Position - position).Magnitude <= Config.combat.hitRange
+		then
+			bot.root.CFrame = CFrame.lookAt(
+				position,
+				Vector3.new(foeRoot.Position.X, position.Y, foeRoot.Position.Z)
+			)
+			CombatService.gesture(bot.model, "hit")
+		end
+	end
 	local current = circleOf(Config.zone.attribute)
 	local nextCircle = circleOf(Config.zone.nextAttribute)
 

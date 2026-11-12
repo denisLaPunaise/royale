@@ -201,6 +201,10 @@ function Hud.start()
 			end
 		elseif phase == "Partie" and inMatch == false then
 			text = "L'Œil t'a pris."
+		elseif phase == "Partie" and player:GetAttribute(Config.combat.carriedAttribute) then
+			text = "On te porte…"
+		elseif phase == "Partie" and player:GetAttribute(Config.combat.koAttribute) then
+			text = "K.O."
 		end
 		center.Text = text
 		-- Pendant la visee, le texte descend : il cachait la carte (vu en jeu).
@@ -250,8 +254,12 @@ function Hud.start()
 		warning.TextColor3 = Color3.fromRGB(255, 120, 90)
 
 		local hidden = player:GetAttribute(Config.hiding.hiddenAttribute)
+		local carried = player:GetAttribute(Config.combat.carryingAttribute)
 		hint.Text = if typeof(hidden) == "string"
-			then "Caché (" .. hidden .. ") — X pour sortir"
+			then "Caché (" .. hidden .. ") — X pour sortir, R2 pour sortir en force"
+			elseif typeof(carried) == "string" then "Tu portes "
+				.. carried
+				.. " — Y jeter, B poser"
 			else ""
 	end)
 end

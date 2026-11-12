@@ -26,6 +26,7 @@ local Config = require(Royale:WaitForChild("Config"))
 local Regards = require(Royale:WaitForChild("Regards"))
 
 local BotService = require(script.Parent.BotService)
+local CombatService = require(script.Parent.CombatService)
 local EyeService = require(script.Parent.EyeService)
 local HidingService = require(script.Parent.HidingService)
 local RemoteGuard = require(script.Parent.RemoteGuard)
@@ -191,6 +192,7 @@ local function playOnce()
 	-- L'ATTENTE.
 	EyeService.reset()
 	ZoneService.reset()
+	CombatService.clear()
 	HidingService.clear()
 	BotService.clear()
 	Roster.clear()
@@ -311,6 +313,7 @@ end
 function MatchService.start()
 	Players.CharacterAutoLoads = false
 	BotService.start()
+	CombatService.start(remote(Config.remotes.gesture))
 	remote(Config.remotes.aim).OnServerEvent:Connect(
 		RemoteGuard.wrap(Config.remotes.aim, function(player: Player, x: any, z: any)
 			if phase ~= "Visee" or typeof(x) ~= "number" or typeof(z) ~= "number" then

@@ -97,8 +97,23 @@ local function release(player: Roster.Actor, spot: Spot, grace: boolean)
 	end
 end
 
+-- Au sol, en portant quelqu'un ou porte : on n'entre nulle part.
+local function busy(player: Roster.Actor): boolean
+	local C = Config.combat
+	local down = player:GetAttribute(C.downAttribute)
+	return (typeof(down) == "number" and workspace:GetServerTimeNow() < down)
+		or player:GetAttribute(C.carryingAttribute) ~= nil
+		or player:GetAttribute(C.carriedAttribute) ~= nil
+end
+
 local function enter(player: Roster.Actor, spot: Spot)
-	if not Roster.isAlive(player) or spot.occupant or spot.ripping or byPlayer[player] then
+	if
+		not Roster.isAlive(player)
+		or spot.occupant
+		or spot.ripping
+		or byPlayer[player]
+		or busy(player)
+	then
 		return
 	end
 	local root = Roster.rootOf(player)
@@ -321,6 +336,36 @@ function HidingService.freeSpots(): { { model: Model, at: Vector3 } }
 		end
 	end
 	return out
+end
+
+-- La cachette la plus proche de `at` a moins de `range` (toquer, deloger).
+-- Rend aussi le point ou elle se touche.
+function HidingService.spotNear(at: Vector3, range: number): (Spot?, Vector3?)
+	local best: Spot? = nil
+	local bestAt: Vector3? = nil
+	local bestD = range
+	for _, spot in spots do
+		if spot.ripping or spot.model.Parent == nil then
+			continue
+		end
+		for _, part in { spot.inside, table.unpack(spot.exits) } do
+			local d = (part.Position - at).Magnitude
+			if d <= bestD then
+				best, bestAt, bestD = spot, part.Position, d
+			end
+		end
+	end
+	return best, bestAt
+end
+
+-- Deloge l'occupant (la poussee sur un abri) : il sort, sans le repit de
+-- l'arrachage (c'est un joueur qui l'a trouve, pas l'Oeil). Rend qui est sorti.
+function HidingService.evict(spot: Spot): Roster.Actor?
+	local occupant = spot.occupant
+	if occupant then
+		release(occupant, spot, false)
+	end
+	return occupant
 end
 
 -- La cachette ou ce joueur se tient (pour l'arracher quand il est flaire).

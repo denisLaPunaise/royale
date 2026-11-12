@@ -53,6 +53,9 @@ local wasOpen = false
 local lastBurst = 0
 local serial = 0
 local random = Random.new()
+-- Les bruits qu'on lui fait (coups, toquer a un abri) : `always`, il les
+-- entend a tout Regard ; sinon seulement quand il entend les coups.
+local noises: { { at: Vector3, untilT: number, always: boolean } } = {}
 local folder: Folder? = nil
 
 local function beamFolder(): Folder
@@ -108,7 +111,13 @@ local function randomAlivePosition(): Vector3?
 	return nil
 end
 
+-- Un bruit a `at` pendant `seconds`. `always` : meme avant qu'il entende.
+function EyeService.noise(at: Vector3, seconds: number, always: boolean)
+	table.insert(noises, { at = at, untilT = os.clock() + seconds, always = always })
+end
+
 function EyeService.reset()
+	table.clear(noises)
 	table.clear(beams)
 	table.clear(exposure)
 	table.clear(suspicion)
@@ -135,6 +144,16 @@ end
 -- tout au 5) : la position des joueurs qu'il entend, sinon vide.
 local function heard(regard: any): { Vector3 }
 	local out: { Vector3 } = {}
+	local now = os.clock()
+	local hearsHits = regard.hears == "coups" or regard.hears == "tout"
+	for i = #noises, 1, -1 do
+		local n = noises[i]
+		if now >= n.untilT then
+			table.remove(noises, i)
+		elseif n.always or hearsHits then
+			table.insert(out, n.at)
+		end
+	end
 	if regard.hears == "rien" then
 		return out
 	end

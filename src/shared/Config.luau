@@ -431,6 +431,112 @@ Config.movement = {
 	-- sort de la ligne de vue de l'Oeil pour de vrai.
 	crouchSpeed = 7,
 	crouchHipDrop = 1.2,
+	-- La glissade (B en courant) : un elan qui decroit, la tete basse. Assez
+	-- pour passer sous un camion, pas assez pour battre la course sur une rue.
+	slideSpeed = 34,
+	slideSeconds = 0.8,
+	slideHipDrop = 1.6,
+	slideCooldown = 1.2,
+	-- Courir, pour le jeu : au-dessus de cette vitesse au sol (studs/s), Y
+	-- plaque au lieu de pousser et B glisse au lieu de s'accroupir. Entre la
+	-- marche (14) et la course (22).
+	runningAbove = 18,
+	-- S'agripper (A en l'air) : un rebord jusqu'a cette hauteur au-dessus des
+	-- pieds (un mur de jardin, un conteneur, un toit plat de garage), devant
+	-- soi a moins de `mantleReach`. Se hisser prend `mantleSeconds`.
+	mantleHeight = 9,
+	mantleReach = 3,
+	mantleSeconds = 0.45,
+}
+
+--------------------------------------------------------------------------------
+-- LE CORPS A CORPS (CONCEPT.md, Interactions entre joueurs, valide le 12/11)
+--------------------------------------------------------------------------------
+
+Config.combat = {
+	-- Le coup (R2) : devant soi, a portee de bras.
+	hitRange = 6,
+	-- Le cone devant soi (cosinus) : 0,5 = 60 degres de chaque cote, on
+	-- touche sans viser au millimetre a la manette.
+	hitCone = 0.5,
+	-- Entre deux coups (s) : trois coups prennent au moins 1,2 s, le temps de
+	-- fuir pour celui qui voit venir.
+	hitCooldown = 0.6,
+	-- Trois coups mettent K.O. (CONCEPT.md) ; la batte en mettra deux.
+	hitsToKO = 3,
+	-- Une serie s'oublie apres ce temps sans coup (s).
+	comboResetSeconds = 4,
+	-- Le K.O. : 2 a 3 s (CONCEPT.md), on prend le haut.
+	koSeconds = 2.5,
+	-- Un coup fait reculer un peu (studs/s), pour qu'on le sente.
+	hitPush = 14,
+
+	-- La poussee (Y a l'arret) : elle chasse, sans faire tomber.
+	shoveRange = 6,
+	-- 48 envoyait a 17-27 studs (mesure le 12/11) : on vise une dizaine,
+	-- assez pour sortir d'une ombre ou entrer dans un faisceau.
+	shoveSpeed = 34,
+	shoveLift = 12,
+	shoveCooldown = 1.2,
+
+	-- Le plaquage (Y en courant) : on tombe tous les deux, l'autre plus
+	-- longtemps (CONCEPT.md).
+	tackleRange = 7,
+	tackleSelfFall = 1,
+	tackleTargetFall = 2.2,
+	tackleCooldown = 3,
+	tackleLunge = 30,
+
+	-- Le tacle glisse (B en courant vers quelqu'un) : il tombe 1,5 s et ta
+	-- glissade continue (CONCEPT.md).
+	slideTackleRange = 5,
+	slideTackleFall = 1.5,
+
+	-- Porter (Y maintenu sur un K.O.) : on le souleve au-dessus de sa tete.
+	carryHoldSeconds = 0.4,
+	carryRange = 6,
+	carryHeight = 3.5,
+	-- On marche lentement en portant : on ne traverse pas la carte avec un
+	-- otage.
+	carrySpeed = 9,
+	-- Porte, le K.O. dure jusqu'a ce temps depuis qu'on l'a souleve (s) : de
+	-- quoi faire quelques pas jusqu'a un faisceau, pas le garder.
+	carryMaxSeconds = 6,
+	-- Prolongation du K.O. a chaque pas du service (s), plus que son pas.
+	carryRefresh = 0.5,
+	-- Jeter (Y) : quelques metres devant (CONCEPT.md), et il reste au sol.
+	-- 42 envoyait a 40-48 studs (mesure le 12/11) : bien plus que « quelques
+	-- metres ».
+	throwSpeed = 22,
+	throwLift = 18,
+	thrownFall = 1.5,
+
+	-- La porte dans la figure (R2 cache, au moment ou on sort) : renverse
+	-- qui se tient devant l'abri.
+	burstRange = 6,
+	burstFall = 1.5,
+
+	-- Toquer a un abri (R2 dessus) : le bruit attire l'Oeil vers l'abri pendant
+	-- `knockNoiseSeconds`, quel que soit le Regard (c'est voulu, on denonce).
+	knockRange = 7,
+	knockNoiseSeconds = 4,
+	knockCooldown = 2,
+	-- Un coup qui porte fait du bruit (l'Oeil l'entend au Regard 4).
+	hitNoiseSeconds = 2,
+
+	-- L'elan d'un coup ou d'un jet dure ce temps (s), puis la physique reprend.
+	impulseSeconds = 0.2,
+	-- Le pas du service (s) : les chutes, les porteurs.
+	stepSeconds = 0.1,
+
+	-- Les attributs publies sur le participant (le client et les bots lisent).
+	-- Au sol jusqu'a cette heure du serveur.
+	downAttribute = "AuSol",
+	-- Vrai pendant un K.O. (pas pendant une simple chute).
+	koAttribute = "KO",
+	-- Sur le porteur : le nom de celui qu'il porte ; sur le porte : vrai.
+	carryingAttribute = "Porte",
+	carriedAttribute = "EstPorte",
 }
 
 --------------------------------------------------------------------------------
@@ -484,6 +590,12 @@ Config.bots = {
 	-- Ils quittent leur cachette avant d'etre flaires, quand la mefiance
 	-- depasse ce niveau (un peu apres l'avertissement que voit un joueur).
 	leaveSuspicion = 0.8,
+	-- Frappe, il rend les coups pendant ce temps (s).
+	grudgeSeconds = 4,
+	-- L'Oeil ferme, a chaque reflexion, la chance de frapper qui passe a
+	-- portee (A REGLER : assez pour que la rue soit vivante, pas assez pour
+	-- que chaque croisement soit une bagarre).
+	brawlChance = 0.15,
 	-- Entre deux deplacements, ils restent un moment (s) dans une cachette.
 	hideMinSeconds = 8,
 	hideMaxSeconds = 30,
@@ -498,6 +610,9 @@ Config.bots = {
 	headHeight = 4.5,
 	-- Arrive (studs) : a son but, et a chaque etape de son chemin.
 	arriveDistance = 4,
+	-- Un chemin se calcule par etapes de cette longueur (studs) : plus loin,
+	-- le service de chemins refuse (« path request is too long », vu en jeu).
+	pathMaxDistance = 400,
 	waypointReach = 3,
 	-- Rentrer dans le cercle : viser a cette fraction du rayon depuis le
 	-- centre (pas le bord, ou il ressortirait au prochain resserrement).
@@ -616,6 +731,9 @@ Config.remotes = {
 	aim = "Viser",
 	-- Sortir de sa cachette.
 	leave = "Sortir",
+	-- Un geste : (nom) parmi frapper, pousser, porter, jeter, poser, glisser,
+	-- sortir en force. Le serveur choisit la cible et verifie tout.
+	gesture = "Geste",
 }
 
 return Config

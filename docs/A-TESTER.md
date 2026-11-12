@@ -75,3 +75,43 @@ Dans cet ordre :
 Regard 4 ; aucune erreur. À 24 participants, le serveur tient 53 images par
 seconde (client et serveur dans le même Studio). À juger en jouant : une
 partie de 15 minutes, c'est bien ?
+
+## Le corps à corps (12 novembre 2026)
+
+**Vérifié seul dans Studio** (sondes sur des bots, trois essais chacun) :
+trois coups mettent K.O. (pas deux), le K.O. couche le corps et se relève
+après 2,5 s ; porter tient le K.O. 3,5 studs au-dessus du porteur ; jeter
+l'envoie à 11–20 studs et il reste au sol 1,5 s ; pousser déplace de
+18–23 studs (le bot finissait peut-être sa marche) ; pousser sur une
+cachette occupée en fait sortir l'occupant ; R2 caché fait sortir et
+renverse celui qui se tient devant. Partie de 5 minutes ensuite : aucun bot
+mort par la physique, plus de message « path request is too long ».
+
+**Vu une fois, pas reproduit** : au tout premier essai de « porter », les
+deux bots sont morts (corps tombés hors de la carte). Quatre essais suivants
+sans souci. À surveiller en jouant : si quelqu'un disparaît en étant porté,
+le dire.
+
+**Jamais vu à l'écran ni à la manette** : la glissade, le tacle glissé, le
+plaquage (il faut courir vraiment, le pont ne fait pas courir), s'agripper
+aux rebords, l'écran « K.O. » et « Tu portes … ».
+
+**À regarder en jouant, dans l'ordre :**
+
+1. R2 sur un ami trois fois : il tombe K.O. ? Le temps entre deux coups
+   (0,6 s) laisse-t-il fuir ?
+2. Y maintenu sur lui : tu le soulèves ? Tu marches lentement ; Y le jette,
+   B le pose. Jeter quelqu'un dans un faisceau, c'est drôle ou injuste ?
+3. Y à l'arrêt sur quelqu'un : la poussée, trop forte ou trop faible ?
+4. En courant (L3), Y : le plaquage, vous tombez tous les deux.
+5. En courant, B : la glissade, et si quelqu'un est devant, il tombe.
+6. Cache-toi, un ami appuie sur Y devant ta cachette : tu sors.
+7. Caché, R2 quand un ami est juste devant : il tombe et tu files.
+8. R2 sur une cachette vide : au Regard 1, le faisceau vient-il voir ?
+9. Saute contre un muret, un conteneur, un toit de garage et appuie encore
+   sur A en l'air : tu te hisses ?
+10. Avec des bots : ils rendent les coups ? Se battent-ils assez souvent
+    (presque jamais seuls, ils se croisent peu) ?
+11. Accroupi et glissade : les jambes s'enfoncent dans le sol (pas encore
+    d'animation). Gênant ?
+
