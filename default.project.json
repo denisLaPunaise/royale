@@ -1,0 +1,29 @@
+{
+	"name": "Royale",
+	"tree": {
+		"$className": "DataModel",
+
+		"ReplicatedStorage": {
+			"Royale": {
+				"$path": "src/shared"
+			}
+		},
+
+		"ServerScriptService": {
+			"Royale": {
+				"$path": "src/server"
+			}
+		},
+
+		"StarterPlayer": {
+			"$properties": {
+				"CameraMode": "LockFirstPerson"
+			},
+			"StarterPlayerScripts": {
+				"Royale": {
+					"$path": "src/client"
+				}
+			}
+		}
+	}
+}

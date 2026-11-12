@@ -50,4 +50,25 @@ Rokit, StyLua, Selene, Lune, GitHub Actions, tous les chiffres dans
   la boutique. Restent l'équilibrage des objets et des power-ups, et les prix
   en chiffres ; le nom et le marketing se feront au lancement.
 - **Ordre de construction choisi par Josh** : la carte complète d'abord, puis
-  les mécaniques (voir `docs/CONCEPT.md`, Mise en place). Aucun code encore.
+  les mécaniques (voir `docs/CONCEPT.md`, Mise en place).
+- **12 novembre 2026, le projet monté et le socle de la carte** : squelette
+  (Rokit, Rojo, CI, `Config` avec les boutons, points d'entrée,
+  `RemoteGuard`), première personne. La recette `tools/carte/` pose le sol :
+  une vallée côtière (le pays monte vers le nord et l'est), la rivière de
+  l'est à la mer, cinq chaînes de montagnes (`Plan.RIDGES`), la côte en caps
+  et anses, le Cratère, le Marais en mares, l'Œil et la lumière repris de
+  Survivor. Mesure : 0 problème. Les 9 zones restent à construire.
+
+## La place et la recette
+
+- La place Studio est publiée (placeId `74018653591531`) ; Rojo y synchronise
+  le projet « Royale ». `Lighting.Technology` (Future) se règle à la main.
+- **Lancer la recette** : copier `tools/carte/` dans
+  `src/server/RecetteJetable/` (ignoré par Git), attendre que Rojo ait
+  synchronisé (comparer la taille des `Source`), `require` un CLONE depuis
+  `execute_luau` dans un `task.spawn`, lire `workspace:GetAttribute("RapportRecette")`.
+  Le socle prend environ 20 s.
+- Pièges vus : `SetMaterialColor` refuse l'eau (`Terrain.WaterColor`) ;
+  `WriteVoxels` pose la surface une demi-case plus haut que l'occupation lue à
+  plat (le socle retire 0,5) ; la mer et les mares ne se remplissent que là
+  où le socle le dit (sinon le Cratère devenait un lac).

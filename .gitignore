@@ -13,3 +13,7 @@ roblox.yml
 desktop.ini
 Thumbs.db
 .DS_Store
+
+# La copie jetable d'une recette, le temps de la lancer depuis le pont MCP :
+# elle ne se commite jamais.
+src/server/RecetteJetable/

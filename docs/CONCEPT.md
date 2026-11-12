@@ -23,6 +23,8 @@ Quand on tranche un point, on change son statut ici, et on note la date.
 - le fumigène qui coupe la ligne de vue ;
 - le Ventre de l'Œil, où l'on arrive quand on est aspiré.
 
+**Validé (12 novembre) : tout le jeu à la première personne**, comme Survivor : c'est plus fort pour les cachettes (Josh).
+
 **Proposé.** Pas d'armes à feu : le vrai tueur, c'est l'Œil. Les joueurs se nuisent surtout en le faisant travailler pour eux.
 
 ## Une partie
