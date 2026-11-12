@@ -115,8 +115,11 @@ Rokit, StyLua, Selene, Lune, GitHub Actions, tous les chiffres dans
   `TeamView` (repères et liste) ; relever et donner par les invites
   d'`ItemService` (`tryInteract` pour les sondes) ;
   `CombatService.addCreatures` (Repris et cocons).
-- **Ensuite** : les gestes manquants (s'allonger et ramper,
-  tirer par les pieds, la porte, les signaux, la carte, l'émote), les
+- **12 novembre 2026 (nuit), les gestes** : s'allonger et ramper
+  (`Controls`, attribut `Allonge`), tirer par les pieds
+  (`CombatService.pull`, invite d'`ItemService`), signaux (`SignalService`,
+  `GestureView`), carte et émote (`GestureView`).
+- **Ensuite** : les
   éliminés, la liste des joueurs du jeu (pour cacher les bots), les
   animations de posture, les sons (programme : `docs/PROGRAMME-NUIT.md`).
 

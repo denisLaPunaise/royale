@@ -155,7 +155,14 @@ function TeamView.start()
 				end
 			end
 			local root = character and character:FindFirstChild("HumanoidRootPart")
-			if root then
+			if root and actor == player then
+				-- Ses propres invites (voler, donner, tirer) : jamais sur soi.
+				for _, child in root:GetChildren() do
+					if child:IsA("ProximityPrompt") then
+						child.Enabled = false
+					end
+				end
+			elseif root then
 				local steal = root:FindFirstChild("RoyaleVoler")
 				if steal and steal:IsA("ProximityPrompt") then
 					steal.ActionText = if mate then SQ.reviveText else "Voler"

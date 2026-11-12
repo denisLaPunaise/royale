@@ -76,6 +76,7 @@ function Controls.start()
 
 	local running = false
 	local crouched = false
+	local prone = false
 	local sliding = false
 	local mantling = false
 	local baseHip: number? = nil
@@ -123,15 +124,21 @@ function Controls.start()
 			then 0
 			elseif rushing then Mv.runSpeed
 			elseif carrying() then C.carrySpeed
+			elseif prone then Mv.proneSpeed
 			elseif crouched then Mv.crouchSpeed
 			elseif running then Mv.runSpeed
 			else Mv.walkSpeed
-		local drop = if sliding then Mv.slideHipDrop elseif crouched then Mv.crouchHipDrop else 0
+		local drop = if sliding
+			then Mv.slideHipDrop
+			elseif prone then Mv.proneHipDrop
+			elseif crouched then Mv.crouchHipDrop
+			else 0
 		humanoid.HipHeight = (baseHip :: number) - drop
 	end
 
 	player.CharacterAdded:Connect(function()
 		running, crouched, sliding, mantling, baseHip = false, false, false, false, nil
+		prone = false
 		task.defer(apply)
 	end)
 	for _, attribute in
@@ -143,6 +150,19 @@ function Controls.start()
 		}
 	do
 		player:GetAttributeChangedSignal(attribute):Connect(apply)
+	end
+	-- Le serveur le releve (tire par les pieds, renverse) : debout.
+	player:GetAttributeChangedSignal(C.proneAttribute):Connect(function()
+		if player:GetAttribute(C.proneAttribute) ~= true and prone then
+			prone = false
+			apply()
+		end
+	end)
+	local function standUp()
+		if prone then
+			prone = false
+			gestureRemote:FireServer("stand")
+		end
 	end
 	-- `AuSol` porte une heure de fin : on se releve quand elle passe, meme si
 	-- le serveur n'a pas encore efface l'attribut.
@@ -266,11 +286,13 @@ function Controls.start()
 				if state == Enum.UserInputState.Begin then
 					running = not running
 					crouched = false
+					standUp()
 				end
 			else
 				running = state == Enum.UserInputState.Begin
 				if running then
 					crouched = false
+					standUp()
 				end
 			end
 			apply()
@@ -280,8 +302,24 @@ function Controls.start()
 		table.unpack(keys(onFoot.sprint))
 	)
 
-	-- B : glisser en courant, s'accroupir a l'arret, poser en portant.
+	-- B : glisser en courant ; a l'arret, un appui s'accroupit et un
+	-- maintien s'allonge (on rampe) ; allonge, B se releve ; en portant, B
+	-- pose.
+	local postureToken = 0
+	local postureHeld = false
 	ContextActionService:BindAction("RoyalePosture", function(_, state: Enum.UserInputState)
+		if state == Enum.UserInputState.End then
+			if postureHeld then
+				-- Relache avant le maintien : un appui, on s'accroupit.
+				postureHeld = false
+				crouched = not crouched
+				if crouched then
+					running = false
+				end
+				apply()
+			end
+			return Enum.ContextActionResult.Pass
+		end
 		if state ~= Enum.UserInputState.Begin then
 			return Enum.ContextActionResult.Pass
 		end
@@ -293,14 +331,23 @@ function Controls.start()
 		if humanoid == nil or root == nil or isDown() or sliding or mantling then
 			return Enum.ContextActionResult.Pass
 		end
-		if flatSpeed(root) > Mv.runningAbove and os.clock() >= slideCooldownUntil then
+		if prone then
+			standUp()
+			apply()
+		elseif flatSpeed(root) > Mv.runningAbove and os.clock() >= slideCooldownUntil then
 			slide(humanoid, root)
 		else
-			crouched = not crouched
-			if crouched then
-				running = false
-			end
-			apply()
+			postureToken += 1
+			postureHeld = true
+			local token = postureToken
+			task.delay(Mv.proneHoldSeconds, function()
+				if postureHeld and token == postureToken and not hidden() and not isDown() then
+					postureHeld = false
+					prone, crouched, running = true, false, false
+					gestureRemote:FireServer("prone")
+					apply()
+				end
+			end)
 		end
 		return Enum.ContextActionResult.Pass
 	end, false, table.unpack(merged({ onFoot.posture, carryingCtx.putDown })))

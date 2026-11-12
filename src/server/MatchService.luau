@@ -33,6 +33,7 @@ local HidingService = require(script.Parent.HidingService)
 local GoulagService = require(script.Parent.GoulagService)
 local ItemService = require(script.Parent.ItemService)
 local ReprisService = require(script.Parent.ReprisService)
+local SignalService = require(script.Parent.SignalService)
 local SquadService = require(script.Parent.SquadService)
 local RemoteGuard = require(script.Parent.RemoteGuard)
 local Roster = require(script.Parent.Roster)
@@ -354,6 +355,7 @@ function MatchService.start()
 	ReprisService.start()
 	GoulagService.start()
 	SquadService.start()
+	SignalService.start(remote(Config.remotes.signal))
 	ItemService.start(
 		remote(Config.remotes.item),
 		remote(Config.remotes.projectile),

@@ -203,6 +203,8 @@ local function knockDown(actor: Roster.Actor, seconds: number, push: Vector3?)
 		seconds *= Config.items.adrenaline.fallFactor
 	end
 	states[actor] = Melee.fall(stateOf(actor), os.clock(), seconds)
+	-- Tombe : il n'est plus allonge (il se relevera debout).
+	actor:SetAttribute(C.proneAttribute, nil)
 	publish(actor)
 	local root = Roster.rootOf(actor)
 	if root and push then
@@ -489,7 +491,44 @@ function CombatService.gesture(actor: Roster.Actor, name: string)
 		if flatSpeed(root) > Mv.runningAbove and ready(actor, "slide", Mv.slideCooldown) then
 			slides[actor] = { untilT = os.clock() + Mv.slideSeconds, hit = {} }
 		end
+	elseif name == "prone" then
+		actor:SetAttribute(C.proneAttribute, true)
+	elseif name == "stand" then
+		actor:SetAttribute(C.proneAttribute, nil)
 	end
+end
+
+-- Tirer par les pieds : `target` est allonge, `puller` le sort a
+-- decouvert, vers lui, et il est au sol un instant (CONCEPT.md).
+function CombatService.pull(puller: Roster.Actor, target: Roster.Actor)
+	local a, b = Roster.rootOf(puller), Roster.rootOf(target)
+	if
+		not free(puller)
+		or not active(target)
+		or target:GetAttribute(C.proneAttribute) ~= true
+		or a == nil
+		or b == nil
+		or (a.Position - b.Position).Magnitude > C.pull.distance + 2
+	then
+		return
+	end
+	target:SetAttribute(C.proneAttribute, nil)
+	local toward = Vector3.new(a.Position.X - b.Position.X, 0, a.Position.Z - b.Position.Z)
+	local step = if toward.Magnitude > 0
+		then toward.Unit * math.min(C.pull.back, toward.Magnitude)
+		else Vector3.zero
+	local character = Roster.characterOf(target)
+	if character then
+		character:PivotTo(character:GetPivot() + step)
+	end
+	knockDown(target, C.pull.fall, nil)
+	print(
+		string.format(
+			"[Royale] %s tire %s par les pieds",
+			Roster.nameOf(puller),
+			Roster.nameOf(target)
+		)
+	)
 end
 
 -- Renverse depuis un objet (bouteille, filet, huile, piege) : comme un

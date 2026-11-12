@@ -65,6 +65,8 @@ local sheets: { [Roster.Actor]: number } = {}
 local stealPrompts: { [Roster.Actor]: ProximityPrompt } = {}
 -- Donner a un coequipier : l'ecran ne la montre qu'a ses coequipiers.
 local givePrompts: { [Roster.Actor]: ProximityPrompt } = {}
+-- Tirer par les pieds quelqu'un d'allonge.
+local pullPrompts: { [Roster.Actor]: ProximityPrompt } = {}
 -- Les legendaires deja donnes cette partie (une relique n'en donne jamais
 -- deux fois le meme).
 local givenLegendary: { [string]: boolean } = {}
@@ -740,11 +742,36 @@ end
 -- sondes du pont ne peuvent pas les declencher) : voler ou relever un K.O.,
 -- sinon donner a un coequipier.
 function ItemService.tryInteract(actor: Roster.Actor, target: Roster.Actor)
-	if target:GetAttribute(Config.combat.koAttribute) == true then
+	if target:GetAttribute(Config.combat.proneAttribute) == true then
+		CombatService.pull(actor, target)
+	elseif target:GetAttribute(Config.combat.koAttribute) == true then
 		steal(actor, target)
 	else
 		hand(actor, target)
 	end
+end
+
+local function addPullPrompt(actor: Roster.Actor)
+	local root = Roster.rootOf(actor)
+	if root == nil then
+		return
+	end
+	local P = Config.combat.pull
+	local prompt = Instance.new("ProximityPrompt")
+	prompt.Name = "RoyaleTirer"
+	prompt.ActionText = P.text
+	prompt.ObjectText = Roster.nameOf(actor)
+	prompt.HoldDuration = P.seconds
+	prompt.MaxActivationDistance = P.distance
+	prompt.RequiresLineOfSight = false
+	prompt.Enabled = false
+	prompt.KeyboardKeyCode = Enum.KeyCode[Config.controls.contexts.onFoot.interact.keyboard]
+	prompt.GamepadKeyCode = Enum.KeyCode[Config.controls.contexts.onFoot.interact.gamepad]
+	prompt.Parent = root
+	prompt.Triggered:Connect(function(player: Player)
+		CombatService.pull(player, actor)
+	end)
+	pullPrompts[actor] = prompt
 end
 
 -- Le Cocon de secours : aspire, recrache sur place, une fois.
@@ -918,6 +945,7 @@ function ItemService.setup(actors: { Roster.Actor })
 		publish(actor)
 		addStealPrompt(actor)
 		addGivePrompt(actor)
+		addPullPrompt(actor)
 	end
 	print(string.format("[Royale] %d meubles sur %d ont quelque chose", wanted, #all))
 end
@@ -953,6 +981,10 @@ function ItemService.clear()
 		prompt:Destroy()
 	end
 	table.clear(givePrompts)
+	for _, prompt in pullPrompts do
+		prompt:Destroy()
+	end
+	table.clear(pullPrompts)
 	table.clear(bags)
 	table.clear(selected)
 	table.clear(lastUse)
@@ -1045,7 +1077,16 @@ local function step()
 	end
 	-- Donner : sur un participant debout, a decouvert.
 	for actor, prompt in givePrompts do
-		prompt.Enabled = actor.Parent ~= nil and free(actor) and not HidingService.isHidden(actor)
+		prompt.Enabled = actor.Parent ~= nil
+			and free(actor)
+			and not HidingService.isHidden(actor)
+			and actor:GetAttribute(Config.combat.proneAttribute) ~= true
+	end
+	-- Tirer : sur quelqu'un d'allonge.
+	for actor, prompt in pullPrompts do
+		prompt.Enabled = actor.Parent ~= nil
+			and Roster.isAlive(actor)
+			and actor:GetAttribute(Config.combat.proneAttribute) == true
 	end
 end
 
@@ -1132,6 +1173,7 @@ function ItemService.start(
 		sheets[player] = nil
 		stealPrompts[player] = nil
 		givePrompts[player] = nil
+		pullPrompts[player] = nil
 	end)
 	local acc = 0
 	RunService.Heartbeat:Connect(function(dt: number)

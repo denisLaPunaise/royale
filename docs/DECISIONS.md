@@ -318,3 +318,25 @@ laissé l'autonomie, l'assistant a fixé ces valeurs (toutes dans
   relèvent pas, ne donnent pas, et n'ouvrent un cocon que par hasard.
 - **L'écran** : tous les textes du haut se réduisent pour tenir sur un
   petit écran.
+
+## 12 novembre 2026 (nuit) — les gestes, choix pris sans Josh
+
+- **S'allonger** : B maintenu 0,4 s, à l'arrêt ou en marchant (un appui
+  court s'accroupit toujours, mais au moment où l'on relâche). On rampe à
+  4 studs/s, le bassin presque au sol. B ou courir relève. Sans animation
+  pour l'instant : le corps s'enfonce (bloc des animations).
+- **Tirer par les pieds** : X maintenu 1 s sur quelqu'un d'allongé.
+  L'invite s'affiche « Tirer ». Il est sorti de 4 studs vers celui qui
+  tire, et reste au sol 1 s.
+- **La porte dans la figure** : c'est R2 quand on est caché, déjà fait
+  (tout le monde autour tombe). Les portes des maisons ne s'ouvrent pas
+  dans la carte, donc rien de plus.
+- **Les signaux** (croix haut et bas) : « ⚠ DANGER » en rouge et « ▼ ICI »
+  en bleu, avec le nom de celui qui signale, là où il regarde (400 studs
+  au plus). Ils restent 6 s, visibles à travers les murs, seulement par
+  soi et ses coéquipiers. Au plus un signal par seconde, et seulement en
+  vie dans la partie.
+- **La carte** (croix gauche) : un carré au centre de l'écran, avec le
+  cercle actuel en blanc, le prochain en rouge, soi en jaune et ses
+  coéquipiers en bleu. Pas de dessin de la carte dessous pour l'instant.
+- **L'émote** (croix droite) : le salut de Roblox (« wave »).

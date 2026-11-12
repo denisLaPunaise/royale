@@ -302,3 +302,25 @@ l'écran, le cocon vu de près, l'écran de victoire d'équipe.
 5. Les objets lancés (bouteille, filet…) ne touchent jamais un ami.
 6. La fin : quand il ne reste que ton équipe, vous avez gagné, tous.
 
+## Les gestes (nuit du 12 novembre 2026)
+
+**Vérifié seul dans Studio** :
+- un bot allongé fait apparaître l'invite « Tirer » ; un autre bot l'a
+  tiré : sorti de 3 studs, au sol, plus allongé ;
+- un signal « ICI » envoyé par le joueur s'affiche chez lui ;
+- la carte s'ouvre, avec les deux cercles, moi et mes coéquipiers. Le grand
+  cercle débordait du cadre et le texte du haut passait dessus : corrigé,
+  mais pas revu.
+
+**Jamais essayé à la manette** : B maintenu pour s'allonger, ramper, se
+relever ; la croix (signaux, carte, émote) ; « Tirer » sur un ami.
+
+**À regarder en jouant, dans l'ordre :**
+
+1. B maintenu : tu t'allonges ? Tu rampes sous un camion ? (Le corps
+   s'enfonce dans le sol en attendant l'animation.)
+2. Un ami allongé : X maintenu « Tirer » le sort de son recoin.
+3. Croix haut ou bas en regardant un endroit : tes amis voient le signal ?
+4. Croix gauche : la carte se lit ? Il manque le dessin des zones ?
+5. Croix droite : ton personnage salue.
+

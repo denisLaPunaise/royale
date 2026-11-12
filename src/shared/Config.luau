@@ -565,6 +565,12 @@ Config.movement = {
 	mantleHeight = 9,
 	mantleReach = 3,
 	mantleSeconds = 0.45,
+	-- S'allonger (B maintenu a l'arret) et ramper : tres lent, la tete au
+	-- ras du sol (sous un camion, derriere un trottoir). Le bassin descend
+	-- presque jusqu'au sol (la hauteur de hanche d'un corps standard est ~2).
+	proneHoldSeconds = 0.4,
+	proneSpeed = 4,
+	proneHipDrop = 1.9,
 }
 
 --------------------------------------------------------------------------------
@@ -650,6 +656,12 @@ Config.combat = {
 	-- Les attributs publies sur le participant (le client et les bots lisent).
 	-- Au sol jusqu'a cette heure du serveur.
 	downAttribute = "AuSol",
+	-- Allonge (vrai) : on peut le tirer par les pieds.
+	proneAttribute = "Allonge",
+	-- Tirer par les pieds (X maintenu sur quelqu'un d'allonge, CONCEPT.md) :
+	-- en une seconde, il est sorti de `back` studs vers celui qui tire, et
+	-- au sol `fall` s, reveille et a decouvert.
+	pull = { seconds = 1, distance = 7, back = 4, fall = 1, text = "Tirer" },
 	-- Vrai pendant un K.O. (pas pendant une simple chute).
 	koAttribute = "KO",
 	-- Sur le porteur : le nom de celui qu'il porte ; sur le porte : vrai.
@@ -1549,6 +1561,52 @@ Config.remotes = {
 	projectile = "Projectile",
 	-- Le Regard vole : le point vise (x, z).
 	steer = "Pilote",
+	-- Un signal a ses coequipiers : (sorte, position). Le serveur le renvoie
+	-- a l'equipe : (sorte, position, nom).
+	signal = "Signal",
+}
+
+--------------------------------------------------------------------------------
+-- LES SIGNAUX, LA CARTE, L'EMOTE (CONCEPT.md, Les boutons de la manette)
+--------------------------------------------------------------------------------
+
+Config.signals = {
+	-- Croix haut et bas : « Danger ! » et « Ici ! », la ou l'on regarde,
+	-- vus par ses coequipiers a travers les murs.
+	seconds = 6,
+	-- Au plus loin (studs) : au-dela, le regard ne touche rien de precis.
+	range = 400,
+	-- Un signal par personne et par seconde au plus.
+	cooldown = 1,
+	kinds = {
+		danger = { text = "⚠ DANGER", color = { 255, 80, 60 } },
+		here = { text = "▼ ICI", color = { 90, 200, 255 } },
+	},
+	-- L'etiquette a l'ecran (pixels).
+	tagWidth = 160,
+	tagHeight = 44,
+}
+
+Config.map = {
+	-- Croix gauche : la carte, le cercle actuel, le prochain, soi et ses
+	-- coequipiers. Sa taille a l'ecran, en part de la plus petite dimension.
+	screenFraction = 0.7,
+	dotSize = 12,
+	refreshSeconds = 0.1,
+	-- Au-dessus des autres ecrans (qui sont a 0).
+	displayOrder = 5,
+	-- Le fond sombre, le cercle actuel en blanc casse, le prochain en rouge
+	-- (comme l'Oeil), soi en jaune ; les coequipiers ont leur bleu.
+	background = { 20, 16, 16 },
+	current = { 240, 232, 220 },
+	upcoming = { 255, 90, 70 },
+	me = { 255, 220, 90 },
+}
+
+Config.emote = {
+	-- Croix droite : une emote de Roblox (le script d'animation du joueur
+	-- la joue).
+	name = "wave",
 }
 
 return Config
