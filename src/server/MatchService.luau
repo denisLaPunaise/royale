@@ -44,6 +44,7 @@ local ReprisService = require(script.Parent.ReprisService)
 local SignalService = require(script.Parent.SignalService)
 local SquadService = require(script.Parent.SquadService)
 local RemoteGuard = require(script.Parent.RemoteGuard)
+local ShopService = require(script.Parent.ShopService)
 local Roster = require(script.Parent.Roster)
 local Sfx = require(script.Parent.Sfx)
 local World = require(script.Parent.World)
@@ -161,8 +162,12 @@ local function drop(players: { Roster.Actor })
 		local fire = Instance.new("Fire")
 		fire.Heat = M.cometFireHeat
 		fire.Size = M.cometFireSize
-		fire.Color = Color3.fromRGB(255, 120, 40)
-		fire.SecondaryColor = Color3.fromRGB(120, 20, 10)
+		-- La comete portee (un cosmetique), sinon la braise de base.
+		local skin = if player:IsA("Player") then ShopService.equipped(player, "comet") else nil
+		local c1 = if skin then skin.color else M.cometColor
+		local c2 = if skin then skin.color2 else M.cometColor2
+		fire.Color = Color3.fromRGB(c1[1], c1[2], c1[3])
+		fire.SecondaryColor = Color3.fromRGB(c2[1], c2[2], c2[3])
 		fire.Parent = root
 		local facing = CFrame.lookAt(
 			origin,
@@ -477,6 +482,7 @@ end
 function MatchService.start()
 	Players.CharacterAutoLoads = false
 	ProfileService.start()
+	ShopService.start(remote(Config.remotes.shop))
 	BotService.start()
 	CombatService.start(remote(Config.remotes.gesture))
 	EyePowerService.start()

@@ -202,7 +202,10 @@ function GestureView.start()
 			local humanoid = character and character:FindFirstChildOfClass("Humanoid")
 			if humanoid then
 				local ok, err = pcall(function()
-					humanoid:PlayEmote(Config.emote.name)
+					-- L'emote portee (un cosmetique), sinon le salut.
+					local id = player:GetAttribute(Config.cosmetics.attributePrefix .. "emote")
+					local def = if typeof(id) == "string" then Config.cosmetics.items[id] else nil
+					humanoid:PlayEmote(if def then def.emote else Config.emote.name)
 				end)
 				if not ok then
 					warn("[Royale] Emote : " .. tostring(err))

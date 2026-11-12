@@ -26,6 +26,7 @@ local suites = {
 	{ name = "Les paris", run = require("./specs/bets") },
 	{ name = "Le salon", run = require("./specs/lobby") },
 	{ name = "La progression", run = require("./specs/progression") },
+	{ name = "La boutique", run = require("./specs/shop") },
 	{ name = "Regles branchees", run = require("./specs/wiring") },
 }
 

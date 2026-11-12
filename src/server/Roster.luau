@@ -55,10 +55,18 @@ local function publish()
 		if typeof(team) == "number" then
 			teamOf[actor] = team
 		end
-		table.insert(
-			list,
-			{ n = Roster.nameOf(actor), t = teamOf[actor] or 0, a = aliveSet[actor] == true }
-		)
+		-- Le titre porte (un cosmetique), s'il y en a un.
+		local titleId = actor.Parent
+			and actor:GetAttribute(Config.cosmetics.attributePrefix .. "title")
+		local title = if typeof(titleId) == "string" and Config.cosmetics.items[titleId]
+			then Config.cosmetics.items[titleId].title
+			else nil
+		table.insert(list, {
+			n = Roster.nameOf(actor),
+			t = teamOf[actor] or 0,
+			a = aliveSet[actor] == true,
+			ti = title,
+		})
 	end
 	workspace:SetAttribute(
 		Config.match.listAttribute,

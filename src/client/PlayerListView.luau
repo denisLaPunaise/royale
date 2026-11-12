@@ -109,6 +109,7 @@ function PlayerListView.start()
 				else rgb(PL.out)
 			row.Text = (if solo then "" else string.format("[%d] ", e.t))
 				.. e.n
+				.. (if typeof(e.ti) == "string" then " « " .. e.ti .. " »" else "")
 				.. (if e.a then "" else " — aspiré")
 			row.LayoutOrder = i
 			row.Parent = frame

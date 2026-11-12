@@ -138,8 +138,14 @@ Rokit, StyLua, Selene, Lune, GitHub Actions, tous les chiffres dans
   jamais d'écriture si la lecture échoue, verrou de session entre serveurs),
   logique pure `Progression`, récompenses de fin de partie
   (`SquadService.track` / `placeOf`).
-- **Ensuite** : la boutique et le
-  passe (programme : `docs/PROGRAMME-NUIT.md`).
+- **12 novembre 2026 (nuit), la boutique** : `ShopService` (boutique du
+  jour, tirages aux règles de Roblox, crédits et passe en Robux, passe de
+  saison), logique pure `Shop`, `Config.cosmetics` / `shop` / `pass` (prix
+  provisoires), `ShopView` ; cosmétiques appliqués (comète, traînée,
+  cocon, émote, titre).
+- **Ensuite** : ce que Josh dira du rapport du matin
+  (`docs/PROGRAMME-NUIT.md`) ; les numéros des produits Robux ; une file
+  d'attente entre salons.
 
 ## La place et la recette
 

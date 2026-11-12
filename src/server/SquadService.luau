@@ -24,6 +24,7 @@ local Squads = require(Royale:WaitForChild("Squads"))
 local CombatService = require(script.Parent.CombatService)
 local EyeService = require(script.Parent.EyeService)
 local Roster = require(script.Parent.Roster)
+local ShopService = require(script.Parent.ShopService)
 local World = require(script.Parent.World)
 
 local SquadService = {}
@@ -206,7 +207,9 @@ function SquadService.cocoon(actor: Roster.Actor): boolean
 	p.Shape = Enum.PartType.Ball
 	p.Size = Vector3.new(size.X, size.X, size.X)
 	p.Material = Enum.Material.Slate
-	p.Color = rgb(CC.color)
+	-- La couleur de cocon portee (un cosmetique), sinon la couleur de base.
+	local skin = if actor:IsA("Player") then ShopService.equipped(actor, "cocoon") else nil
+	p.Color = rgb(if skin then skin.color else CC.color)
 	p.Anchored = true
 	p.CanCollide = true
 	-- Une boule etiree, debout : une sphere prend le plus petit cote, on

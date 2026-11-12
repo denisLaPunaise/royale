@@ -123,6 +123,18 @@ Config.controls = {
 			leaveGroup = { gamepad = "ButtonB", keyboard = "Backspace" },
 			robloxInvite = { gamepad = "DPadUp", keyboard = "I" },
 			playerList = { gamepad = "ButtonR3", keyboard = "Tab" },
+			-- La boutique (avec les tirages, le passe et ses cosmetiques).
+			shop = { gamepad = "DPadLeft", keyboard = "O" },
+		},
+		-- Dans le panneau de la boutique : on choisit a la croix, on change
+		-- d'onglet avec L1 / R1, A achete ou equipe, B ferme.
+		shopPanel = {
+			up = { gamepad = "DPadUp", keyboard = "Up" },
+			down = { gamepad = "DPadDown", keyboard = "Down" },
+			previousTab = { gamepad = "ButtonL1", keyboard = "Q" },
+			nextTab = { gamepad = "ButtonR1", keyboard = "R" },
+			confirm = { gamepad = "ButtonA", keyboard = "Return" },
+			close = { gamepad = "ButtonB", keyboard = "Backspace" },
 		},
 		-- En portant un joueur K.O. au-dessus de sa tete.
 		carrying = {
@@ -206,6 +218,9 @@ Config.match = {
 	-- La comete : feu orange, sombre au bout ; l'impact souffle sans blesser.
 	cometFireSize = 8,
 	cometFireHeat = 20,
+	-- Sans cosmetique : orange vif, sombre au bout.
+	cometColor = { 255, 120, 40 },
+	cometColor2 = { 120, 20, 10 },
 	impactRadius = 6,
 	-- Les attributs de Workspace que lit l'interface.
 	phaseAttribute = "Phase",
@@ -1543,6 +1558,198 @@ Config.progression = {
 }
 
 --------------------------------------------------------------------------------
+-- LA BOUTIQUE, LES TIRAGES, LE PASSE — cosmetiques seulement (CONCEPT.md)
+--------------------------------------------------------------------------------
+
+-- PRIX PROVISOIRES (Josh decidera) : tout est a regler. Aucun achat ne donne
+-- de puissance : ce ne sont que des apparences.
+--
+-- Les emplacements : la comete du depart (ses couleurs de feu), une trainee
+-- derriere soi, la couleur de son cocon, l'emote de la croix droite, un
+-- titre (dans la liste des joueurs).
+Config.cosmetics = {
+	slots = { "comet", "trail", "cocoon", "emote", "title" },
+	slotNames = {
+		comet = "Comète",
+		trail = "Traînée",
+		cocoon = "Cocon",
+		emote = "Émote",
+		title = "Titre",
+	},
+	-- Prix en credits, par rarete (PROVISOIRE).
+	prices = { common = 150, rare = 400, epic = 900, legendary = 1800 },
+	items = {
+		cometEmber = {
+			name = "Braise",
+			slot = "comet",
+			rarity = "common",
+			color = { 255, 120, 40 },
+			color2 = { 120, 20, 10 },
+		},
+		cometFrost = {
+			name = "Givre",
+			slot = "comet",
+			rarity = "rare",
+			color = { 140, 220, 255 },
+			color2 = { 30, 60, 140 },
+		},
+		cometVoid = {
+			name = "Néant",
+			slot = "comet",
+			rarity = "epic",
+			color = { 170, 60, 255 },
+			color2 = { 20, 0, 40 },
+		},
+		cometGold = {
+			name = "Or de l'Œil",
+			slot = "comet",
+			rarity = "legendary",
+			color = { 255, 210, 80 },
+			color2 = { 160, 60, 0 },
+		},
+		trailAsh = { name = "Cendre", slot = "trail", rarity = "common", color = { 120, 115, 110 } },
+		trailBlood = { name = "Sang", slot = "trail", rarity = "rare", color = { 180, 20, 20 } },
+		trailSpirit = {
+			name = "Esprit",
+			slot = "trail",
+			rarity = "epic",
+			color = { 120, 255, 200 },
+		},
+		trailRift = {
+			name = "Fissure",
+			slot = "trail",
+			rarity = "legendary",
+			color = { 255, 60, 30 },
+		},
+		cocoonMoss = {
+			name = "Mousse",
+			slot = "cocoon",
+			rarity = "common",
+			color = { 70, 110, 50 },
+		},
+		cocoonBone = { name = "Os", slot = "cocoon", rarity = "rare", color = { 220, 210, 190 } },
+		cocoonGlass = {
+			name = "Verre noir",
+			slot = "cocoon",
+			rarity = "epic",
+			color = { 30, 30, 40 },
+		},
+		emoteCheer = { name = "Victoire", slot = "emote", rarity = "common", emote = "cheer" },
+		emoteLaugh = { name = "Rire", slot = "emote", rarity = "common", emote = "laugh" },
+		emotePoint = { name = "Pointer", slot = "emote", rarity = "rare", emote = "point" },
+		emoteDance = { name = "Danse", slot = "emote", rarity = "epic", emote = "dance" },
+		emoteDance2 = {
+			name = "Danse folle",
+			slot = "emote",
+			rarity = "legendary",
+			emote = "dance2",
+		},
+		titleSurvivor = {
+			name = "Survivant",
+			slot = "title",
+			rarity = "common",
+			title = "Survivant",
+		},
+		titleShadow = { name = "Ombre", slot = "title", rarity = "rare", title = "Ombre" },
+		titleUnseen = { name = "Invisible", slot = "title", rarity = "epic", title = "L'Invisible" },
+		titleEyeless = {
+			name = "Sans regard",
+			slot = "title",
+			rarity = "legendary",
+			title = "Celui qu'il ne voit pas",
+		},
+	},
+	-- L'attribut d'un joueur par emplacement equipe : « Cosmetique_comet »...
+	attributePrefix = "Cosmetique_",
+	-- La trainee : sa hauteur (studs), le temps qu'elle reste, sa lueur.
+	trail = { height = 2, lifetime = 0.6, lightEmission = 0.6, transparency = 0.3 },
+}
+
+Config.shop = {
+	-- La boutique tournante : ce nombre d'objets, changes chaque jour (UTC) ;
+	-- le coin permanent garde les classiques.
+	daily = 4,
+	permanent = { "cometEmber", "trailAsh", "emoteCheer", "titleSurvivor" },
+	-- Les tirages : une selection a part (CONCEPT.md), toutes les chances
+	-- egales. En credits, le prix est la valeur moyenne de la selection
+	-- (calcule, jamais recopie) ; en fragments, 20 (Config.progression).
+	drawPool = {
+		"cometFrost",
+		"cometVoid",
+		"trailBlood",
+		"trailSpirit",
+		"cocoonBone",
+		"cocoonGlass",
+		"emotePoint",
+		"emoteDance",
+		"titleShadow",
+		"titleUnseen",
+	},
+	-- Un doublon rend cette part de son prix en credits.
+	duplicateRefund = 0.5,
+	-- Les paquets de credits en Robux (produits de developpeur). Un id a 0 :
+	-- pas encore cree par Josh sur Roblox, le paquet ne s'affiche pas.
+	creditPacks = {
+		{ credits = 500, productId = 0, robux = 49 },
+		{ credits = 1200, productId = 0, robux = 99 },
+		{ credits = 3000, productId = 0, robux = 199 },
+	},
+	-- Attributs : sur Workspace, la boutique du jour (JSON) ; sur le joueur,
+	-- ce qu'il a et porte, et son passe (JSON).
+	worldAttribute = "BoutiqueJour",
+	playerAttribute = "BoutiqueEtat",
+	-- La boutique change a minuit (UTC) : on la republie a ce rythme (s).
+	refreshSeconds = 60,
+	-- L'ecran (pixels) et ses couleurs ; par-dessus tout ; les recompenses
+	-- du passe montrees d'avance.
+	displayOrder = 6,
+	passPreview = 6,
+	panelWidth = 560,
+	rowHeight = 30,
+	textSize = 20,
+	background = { 20, 16, 16 },
+	selected = { 255, 170, 90 },
+}
+
+Config.pass = {
+	-- Une saison d'environ 8 semaines (CONCEPT.md). Le passe premium se
+	-- rachete chaque saison : un produit de developpeur par saison (id a 0 :
+	-- pas encore cree, PROVISOIRE).
+	season = 1,
+	tiers = 30,
+	-- L'XP de passe par palier (l'XP d'une partie compte aussi pour le passe).
+	tierXp = 300,
+	premiumProductId = 0,
+	premiumRobux = 499,
+	-- Le premium donne un peu plus d'XP de compte (CONCEPT.md), jamais de
+	-- puissance.
+	premiumXpBonus = 0.2,
+	-- Les recompenses : par palier, gratuites ou premium. Un objet du
+	-- catalogue, ou des credits.
+	free = {
+		[2] = { credits = 50 },
+		[5] = { item = "cocoonMoss" },
+		[8] = { credits = 100 },
+		[12] = { item = "emoteLaugh" },
+		[16] = { credits = 150 },
+		[20] = { item = "titleShadow" },
+		[25] = { credits = 200 },
+		[30] = { item = "trailBlood" },
+	},
+	premium = {
+		[1] = { item = "cometFrost" },
+		[3] = { credits = 100 },
+		[6] = { item = "trailSpirit" },
+		[10] = { item = "emoteDance" },
+		[14] = { credits = 250 },
+		[18] = { item = "cocoonGlass" },
+		[22] = { item = "titleUnseen" },
+		[26] = { credits = 400 },
+		[30] = { item = "cometGold" },
+	},
+}
+
+--------------------------------------------------------------------------------
 -- LES BOTS — invisibles, pour que la partie paraisse toujours pleine
 --------------------------------------------------------------------------------
 
@@ -1766,6 +1973,9 @@ Config.remotes = {
 	-- Le salon : (action, argument) — inviter (joueur), accepter (chef),
 	-- quitter son groupe, changer de mode, se dire pret.
 	lobby = "Salon",
+	-- La boutique : (action, argument) — acheter, equiper, tirer (fragments
+	-- ou credits), acheter des credits ou le passe (Robux).
+	shop = "Boutique",
 	-- Un elimine parie : (celui qu'il regarde, Player ou Model). Ou quitte :
 	-- (rien) avec le remote `quit`.
 	bet = "Pari",

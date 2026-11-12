@@ -438,3 +438,37 @@ la fin. Dans Studio, la partie se joue sur place.
   jusqu'à 12 s qu'il soit lâché.
 - **À l'écran** : niveau, XP, crédits et fragments dans le panneau du
   salon, et le gain de la dernière partie au retour.
+
+## 12 novembre 2026 (nuit) — la boutique, les tirages, le passe (PRIX PROVISOIRES)
+
+Josh : « tout faire », avec des choix de l'assistant, revus au rapport.
+
+- **Les cosmétiques** : rien que des apparences, faites sans nouveaux
+  modèles 3D. Cinq emplacements : la comète du départ (couleurs du feu),
+  une traînée derrière soi, la couleur de son cocon, l'émote de la croix
+  droite (danses et gestes de Roblox) et un titre (dans la liste des
+  joueurs). Il y en a 20 en tout.
+- **Les prix (provisoires)** : commun 150 crédits, rare 400, épique 900,
+  légendaire 1800.
+- **La boutique** : 4 objets qui changent chaque jour (minuit UTC, les
+  mêmes pour tout le monde), et un coin permanent de 4 classiques.
+- **Les tirages** : une sélection à part de 10 objets, toutes les chances
+  égales (10 % chacun), affichées dans l'onglet avant d'acheter. En
+  fragments : 20. En crédits : la valeur moyenne de la sélection (650,
+  calculée). Chaque tirage donne un objet ; un doublon rend la moitié de
+  son prix. Le tirage en crédits est coupé là où Roblox interdit les
+  tirages payants, et aussi si la règle ne peut pas être lue.
+- **Les crédits en Robux** : trois paquets (500, 1200, 3000 crédits pour
+  49, 99, 199 R$, provisoires). Il faut que tu crées les produits sur
+  Roblox et que tu me donnes leurs numéros ; en attendant, ils ne
+  s'affichent pas. Un achat n'est compté qu'une fois, et jamais sur un
+  profil illisible : Roblox le représentera plus tard.
+- **Le passe de saison** : 30 paliers de 300 XP de passe (l'XP des
+  parties), avec une piste gratuite (crédits, 4 cosmétiques) et une piste
+  premium (crédits, 6 cosmétiques). Le premium coûte 499 R$ (provisoire),
+  se rachète chaque saison, donne +20 % d'XP de compte, et ses paliers
+  déjà atteints tombent tout de suite. Lui aussi attend son numéro de
+  produit.
+- **L'écran** : croix gauche au salon. On navigue à la croix, L1 / R1
+  changent d'onglet, A choisit, B ferme. C'est notre navigation, pas
+  celle de Roblox, pour qu'elle marche pareil au clavier.

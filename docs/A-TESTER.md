@@ -451,3 +451,41 @@ aux services d'API ». Ensuite, je pourrai tester la sauvegarde.
    ou Studio avec l'accès aux API).
 3. Les gains te paraissent-ils justes ? Trop lents, trop rapides ?
 
+## La boutique, les tirages, le passe (nuit du 12 novembre 2026)
+
+**Vérifié par le calcul** (`tests/specs/shop.luau`) : la boutique du jour
+(la même partout, elle change le lendemain, jamais un permanent), les
+règles des tirages (tout affiché, chances égales, total 100 %, chaque
+tirage donne quelque chose, prix à la valeur moyenne), le passe (paliers,
+récompenses qui existent, fini en une saison).
+
+**Vérifié seul dans Studio** (avec 3000 crédits et 40 fragments donnés par
+une sonde) :
+- la boutique s'ouvre avec la croix gauche ;
+- acheter « Invisible » (900) avec A ;
+- un tirage aux fragments a donné la traînée « Esprit » ; un tirage en
+  crédits (650) a donné « Sang » ;
+- équiper un titre et une traînée : la traînée est posée sur le
+  personnage ;
+- l'onglet des tirages affiche les 10 chances (10 % chacune).
+
+**Vu à l'écran** : les onglets Boutique, Tirages et Passe. Le panneau
+débordait d'une petite fenêtre : corrigé (il rétrécit et défile).
+
+**Jamais vérifié** : un achat en Robux (les produits ne sont pas créés),
+la comète, le cocon et l'émote portés en partie, le titre dans la liste,
+et la navigation avec une vraie manette (envoyée comme des touches).
+
+**À faire par toi** : créer sur Roblox les produits de développeur (3
+paquets de crédits, le passe premium de la saison 1) et me donner leurs
+numéros, puis fixer les vrais prix.
+
+**À regarder en jouant :**
+
+1. Croix gauche au salon : la boutique s'ouvre ; la croix, L1 / R1, A et B
+   marchent à la manette ?
+2. Achète une comète, porte-la, lance une partie : ton feu change de
+   couleur à la chute ?
+3. Une traînée te suit ? Ton titre apparaît dans la liste (R3) ?
+4. L'onglet Tirages : les chances se lisent bien avant d'acheter ?
+5. Les prix te conviennent ? (Tout est provisoire.)

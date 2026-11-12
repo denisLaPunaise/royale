@@ -29,6 +29,8 @@ type Entry = { data: any, readable: boolean, dirty: boolean }
 
 local profiles: { [Player]: Entry } = {}
 local loadedListeners: { (Player) -> () } = {}
+-- Appeles avec l'XP de chaque partie (le passe de saison).
+local grantedListeners: { (Player, number) -> () } = {}
 local store: DataStore? = nil
 
 local function getStore(): DataStore?
@@ -123,12 +125,13 @@ end
 
 -- Sauvegarder (et lacher le profil si `release`). Jamais pour un profil
 -- illisible.
-local function save(player: Player, release: boolean)
+local function save(player: Player, release: boolean): boolean
 	local entry = profiles[player]
 	local ds = getStore()
 	if entry == nil or not entry.readable or ds == nil then
-		return
+		return false
 	end
+	local written = false
 	local data = table.clone(entry.data)
 	data.session = if release then nil else { job = game.JobId, at = now() }
 	local ok, err = pcall(function()
@@ -142,14 +145,16 @@ local function save(player: Player, release: boolean)
 				-- Un autre serveur l'a pris entre-temps : ne pas l'ecraser.
 				return nil
 			end
+			written = true
 			return data
 		end)
 	end)
-	if ok then
+	if ok and written then
 		entry.dirty = false
-	else
+	elseif not ok then
 		warn("[Royale] Sauvegarde du profil de " .. player.Name .. " : " .. tostring(err))
 	end
+	return ok and written
 end
 
 local function load(player: Player)
@@ -164,6 +169,22 @@ local function load(player: Player)
 	for _, listener in loadedListeners do
 		task.spawn(listener, player)
 	end
+end
+
+function ProfileService.onGranted(listener: (Player, number) -> ())
+	table.insert(grantedListeners, listener)
+end
+
+-- Le profil a-t-il ete lu ? (Sinon, rien ne doit etre accorde qui coute de
+-- l'argent : il ne serait jamais sauvegarde.)
+function ProfileService.readable(player: Player): boolean
+	local entry = profiles[player]
+	return entry ~= nil and entry.readable
+end
+
+-- Sauvegarder tout de suite (un achat en Robux) : vrai si c'est ecrit.
+function ProfileService.saveNow(player: Player): boolean
+	return save(player, false)
 end
 
 function ProfileService.onLoaded(listener: (Player) -> ())
@@ -202,7 +223,15 @@ function ProfileService.grant(player: Player, result: Progression.Result)
 		return
 	end
 	local reward = Progression.reward(result, P, Config.bets.rewardCredits)
+	-- Le passe premium de la saison : un peu plus d'XP de compte (jamais de
+	-- puissance, CONCEPT.md).
+	if typeof(d.pass) == "table" and d.pass.premium == Config.pass.season then
+		reward.xp = math.floor(reward.xp * (1 + Config.pass.premiumXpBonus))
+	end
 	d.xp += reward.xp
+	for _, listener in grantedListeners do
+		task.spawn(listener, player, reward.xp)
+	end
 	d.credits += reward.credits
 	d.fragments += reward.fragments
 	d.matches += 1
