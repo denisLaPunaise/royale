@@ -143,6 +143,10 @@ Rokit, StyLua, Selene, Lune, GitHub Actions, tous les chiffres dans
   saison), logique pure `Shop`, `Config.cosmetics` / `shop` / `pass` (prix
   provisoires), `ShopView` ; cosmétiques appliqués (comète, traînée,
   cocon, émote, titre).
+- **13 novembre 2026 (nuit), défis et classement** : `ChallengeService`
+  (logique pure `Challenges`, onglet Défis de la boutique),
+  `LeaderboardService` (victoires, panneau du salon) ; la carte dessine les
+  zones ; les bots ouvrent les cocons de leurs coéquipiers.
 - **Ensuite** : ce que Josh dira du rapport du matin
   (`docs/PROGRAMME-NUIT.md`) ; les numéros des produits Robux ; une file
   d'attente entre salons.

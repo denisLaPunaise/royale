@@ -494,4 +494,8 @@ avancer le passe »), sans détail :
   fois.
 - **À l'écran** : un onglet « Défis » dans la boutique (croix gauche au
   salon).
+- **Le classement** : le nombre de victoires (OrderedDataStore
+  `RoyaleVictoires1`), sur un grand panneau de pierre au bord du salon, les
+  10 meilleurs, mis à jour toutes les 2 minutes. Une victoire ne compte que
+  pour un profil lisible ; un classement illisible affiche « indisponible ».
 

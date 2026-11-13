@@ -551,3 +551,12 @@ de passe), les défis de la semaine avancent, et le passe atteint le palier
 **À regarder en jouant** : l'onglet Défis de la boutique, et le message
 « Défi du jour réussi » quand il tombe en pleine partie.
 
+## Le classement (nuit du 13 novembre 2026)
+
+**Vu à l'écran dans Studio** : le panneau au bord du salon. Sans accès aux
+API, il affiche « indisponible pour l'instant » : jamais un faux classement
+vide.
+
+**À regarder** (jeu publié, ou Studio avec l'accès aux API) : gagne une
+partie, attends 2 minutes au salon, ton nom apparaît.
+

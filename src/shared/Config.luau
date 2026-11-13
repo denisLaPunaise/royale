@@ -1699,6 +1699,19 @@ Config.challenges = {
 	attribute = "Defis",
 }
 
+-- Le classement (CONCEPT.md) : les victoires, dans un OrderedDataStore, sur
+-- un panneau du salon (mis a jour toutes les 2 minutes : le DataStore
+-- limite les lectures).
+Config.leaderboard = {
+	store = "RoyaleVictoires1",
+	size = 10,
+	refreshSeconds = 120,
+	boardWidth = 18,
+	boardHeight = 14,
+	boardInset = 6,
+	pixelsPerStud = 30,
+}
+
 Config.shop = {
 	-- La boutique tournante : ce nombre d'objets, changes chaque jour (UTC) ;
 	-- le coin permanent garde les classiques.
