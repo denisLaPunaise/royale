@@ -59,6 +59,9 @@ local random = Random.new()
 
 local phase = "Attente"
 local aims: { [Roster.Actor]: Vector2 } = {}
+-- La derniere position de chacun au-dessus du vide (pour savoir d'ou il
+-- tombe).
+local lastSeen: { [Roster.Actor]: Vector3 } = {}
 local durations: { number } = {}
 for _, r in Config.regards do
 	table.insert(durations, r.seconds)
@@ -227,6 +230,7 @@ local function resetAll()
 	HidingService.clear()
 	BotService.clear()
 	Roster.clear()
+	table.clear(lastSeen)
 	workspace:SetAttribute(M.winnerAttribute, nil)
 	workspace:SetAttribute(M.regardAttribute, nil)
 	workspace:SetAttribute(M.regardTitleAttribute, nil)
@@ -295,6 +299,16 @@ local function playOnce(humans: { Player }, mode: string, groups: { { Player } }
 		if index ~= regardIndex then
 			regardIndex = index
 			ZoneService.announce(index, Roster.count(), now)
+			-- Assez de cachettes dans le prochain cercle pour ceux qui restent.
+			local upcoming = ZoneService.upcoming()
+			if upcoming then
+				HidingService.fillCircle(
+					upcoming.x,
+					upcoming.z,
+					upcoming.radius,
+					math.ceil(Config.hiding.circleFill[index] * Roster.count())
+				)
+			end
 			workspace:SetAttribute(M.regardAttribute, index)
 			ItemService.onRegard(index)
 			EyePowerService.onRegard(index)
@@ -330,6 +344,25 @@ local function playOnce(humans: { Player }, mode: string, groups: { { Player } }
 			not open and left <= Config.eye.warningSeconds
 		)
 		EyeService.step(dt, regard, open, burst, true)
+		-- Tombe hors du monde (ou deja sans corps) : l'Oeil le prend, sinon la
+		-- partie ne finit jamais. On note d'ou il est tombe, pour boucher le
+		-- trou dans la carte.
+		for _, actor in Roster.alive() do
+			local root = Roster.rootOf(actor)
+			if root == nil or root.Position.Y < M.voidBelow then
+				local from = lastSeen[actor]
+				warn(
+					string.format(
+						"[Royale] %s est tombé hors du monde (vu en dernier à %s)",
+						Roster.nameOf(actor),
+						if from then string.format("%d, %d, %d", from.X, from.Y, from.Z) else "?"
+					)
+				)
+				Roster.take(actor)
+			elseif root.Position.Y > M.voidBelow / 2 then
+				lastSeen[actor] = root.Position
+			end
+		end
 		-- Les Repris : a chaque fermeture, et a chaque rafale quand il ne se
 		-- ferme plus (CONCEPT.md).
 		if

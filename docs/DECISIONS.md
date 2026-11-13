@@ -548,3 +548,48 @@ avancer le passe »), sans détail :
   vers l'Œil. L'originale est rangée et **remise en place à la fin de
   chaque partie** : la carte n'est jamais abîmée d'une partie à l'autre.
 
+## Équilibrage par les parties de bots (13 novembre 2026)
+
+Josh : « assez dur et dynamique, mais pas tout le monde mort dans la
+première zone ». Une trentaine de parties de bots complètes, mesurées par un
+banc jetable (qui tombe, à quel Regard, pourquoi, combien de cachettes dans
+le cercle). La cible est la fiche : environ 20 → 14 → 10 → 6 → 3 en vie au
+début des Regards, 15 à 25 minutes.
+
+- **La montée de l'Œil est régulière.** Les valeurs de départ ne prenaient
+  presque personne aux Regards 1 et 2, puis tout le monde au 3 (20 → 19 →
+  6). Faisceaux : 1 pour 7, 6, 6, 6, 4 joueurs ; erreur de visée 45, 34,
+  28, 28, 12 studs ; poursuite 12, 15, 15, 15, 22 ; plein regard 2 s
+  partout. Au Regard 4 : ouvert 35 s, fermé 12 s, mémoire 2,5 s,
+  6 arrachages, méfiance en 55 s.
+- **Pourquoi le Regard 4 a tant bougé** : le Ventre ferme, être aspiré
+  devient définitif, et il entend les coups. Un faisceau plus rapide que
+  la marche (17) attrapait tous ceux qu'il voyait : 14 → 2 en vie en
+  trois minutes.
+- **Finale** : visée 12 studs (au lieu de 5) et 2 s (au lieu de 1,6) ; la
+  vitesse reste la course (22), la fiche et l'adrénaline l'exigent. Elle
+  durait 20 s ; elle dure maintenant environ une minute.
+- **Des cachettes dans chaque nouveau cercle** (nouvelle règle). Posées au
+  hasard sur toute la carte, il en restait 4 dans le cercle du Regard 3
+  pour 12 joueurs : la partie devenait des chaises musicales. À chaque
+  cercle annoncé, le jeu complète jusqu'à 1,5 / 1,3 / 1,1 / 0,9 / 0,7
+  cachette par joueur en vie (toutes sortes comptées), sur les emplacements
+  libres de la carte, jamais à moins de 80 studs d'un joueur : personne ne
+  la voit apparaître.
+- **Les Repris envoyés contre un campeur flairé ne comptent plus dans le
+  plafond** (au plus 2 autour de lui). À 3 joueurs, le plafond n'en
+  laissait qu'un : trois bots plantés hors de vue ont fait durer une finale
+  plus de 10 minutes. **À voir avec Josh** si ça ne suffit pas avec de vrais
+  joueurs : par exemple l'Œil qui tourne dans le ciel pendant la finale,
+  pour qu'aucun mur ne protège éternellement.
+- **Deux bugs trouvés par le banc** : un participant en cocon pouvait
+  entrer dans un égout voisin, puis tombait sous la carte quand on ouvrait
+  le cocon (on ne se cache plus depuis un cocon, et ouvrir un cocon ne
+  lâche plus quelqu'un de caché) ; un participant tombé sous la carte n'était
+  jamais pris, et la partie ne finissait plus (sous -100 studs, l'Œil le
+  prend, et la console dit d'où il est tombé).
+- **Selon le niveau** (chance d'erreur des bots à chaque ouverture : 0,08 /
+  0,2 / 0,35) : les prudents vont en finale (18 min), les normaux souvent,
+  les maladroits finissent au Regard 4 (15 min). Personne n'est balayé au
+  Regard 1 : le Ventre rend une deuxième chance.
+

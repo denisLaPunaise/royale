@@ -652,3 +652,27 @@ la 3D (sa fenêtre était sans doute en arrière-plan). Les Repris dans la
 carte, le cocon de près, les égouts et l'arrachage des couverts restent à
 voir en jouant.
 
+## L'équilibrage (13 novembre 2026)
+
+**Vérifié seul dans Studio, avec des bots** : une trentaine de parties
+complètes. Réglages finaux : en vie au début des Regards environ
+20 → 17 → 14 → 10 → 3 (bots normaux), 17 à 18 minutes ; la finale se joue
+(environ une minute). Escouade : la partie finit souvent au Regard 4, quand
+il ne reste qu'une équipe. La vraie sauvegarde marche dans Studio (niveau,
+XP, crédits gardés après un arrêt et une relance).
+
+**Jamais vu** : de vrais joueurs. Les bots ne jouent pas comme vous : ils
+ne marchent pas exprès quand l'Œil entend la course, ils ne se parlent pas.
+
+**À regarder, dans l'ordre** :
+1. Le Regard 1 : on a le temps de se poser, de fouiller ? Trop calme ?
+2. Le Regard 3 (« Il entend la course ») : c'est là que ça devient dur.
+   Trop dur d'un coup ?
+3. Le Regard 4 : être aspiré est définitif. On tient jusqu'à la finale ?
+4. La finale : combien de temps elle dure ? Quelqu'un arrive-t-il à se
+   planquer derrière un mur sans jamais être délogé ? (Si oui, dis-le : on
+   en reparle.)
+5. Les cachettes dans le cercle : on en trouve encore au Regard 3 et 4 ?
+   Tu en as vu une apparaître sous tes yeux ? (Ça ne devrait pas.)
+6. La durée totale : 15 à 18 minutes, c'est bien ?
+

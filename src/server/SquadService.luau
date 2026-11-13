@@ -160,7 +160,9 @@ local function open(cocoon: Cocoon, taken: boolean)
 	cocoon.part:Destroy()
 	cocoon.actor:SetAttribute(SQ.cocoonAttribute, nil)
 	local root = Roster.rootOf(cocoon.actor)
-	if root and not taken then
+	-- Cache, c'est sa cachette qui le tient (detache, il tomberait de la ou
+	-- elle le range, sous la route pour un egout).
+	if root and not taken and cocoon.actor:GetAttribute(Config.hiding.hiddenAttribute) == nil then
 		root.Anchored = false
 	end
 end

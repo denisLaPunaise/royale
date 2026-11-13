@@ -116,4 +116,9 @@ function ZoneService.current(): Circle
 	return current
 end
 
+-- Le prochain cercle annonce (nil une fois atteint).
+function ZoneService.upcoming(): Circle?
+	return target
+end
+
 return ZoneService

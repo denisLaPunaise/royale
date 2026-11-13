@@ -147,9 +147,19 @@ Rokit, StyLua, Selene, Lune, GitHub Actions, tous les chiffres dans
   (logique pure `Challenges`, onglet Défis de la boutique),
   `LeaderboardService` (victoires, panneau du salon) ; la carte dessine les
   zones ; les bots ouvrent les cocons de leurs coéquipiers.
-- **Ensuite** : ce que Josh dira du rapport du matin
-  (`docs/PROGRAMME-NUIT.md`) ; les numéros des produits Robux ; une file
-  d'attente entre salons.
+- **13 novembre 2026, l'équilibrage** : Josh a activé l'accès aux API dans
+  Studio (la sauvegarde marche) et publié. Une trentaine de parties de bots
+  mesurées (`tools/banc/`) : montée de l'Œil régulière, Regard 4 et finale
+  adoucis, cachettes ajoutées dans chaque nouveau cercle
+  (`HidingService.fillCircle`, `Config.hiding.circleFill`), Repris des
+  flairés hors plafond ; deux bugs (cocon + égout, chute hors du monde,
+  `Config.match.voidBelow`). Détail dans `docs/DECISIONS.md`.
+- **Prochaine tâche (décidé avec Josh le 13 novembre 2026)** : créer les
+  produits Robux avec Josh (3 paquets de crédits et le passe premium,
+  `Config.shop.creditPacks` et `Config.pass.premiumProductId` valent 0).
+  Il les crée sur create.roblox.com (Monétisation → Produits de
+  développeur), donne les numéros et les vrais prix ; on ajuste les
+  crédits. Ensuite : une file d'attente entre salons.
 
 ## La place et la recette
 
@@ -168,6 +178,16 @@ Rokit, StyLua, Selene, Lune, GitHub Actions, tous les chiffres dans
   qu'avec « l'accès de Studio aux services d'API » (réglage de sécurité de
   Josh). Sans lui, le profil est marqué illisible et rien n'est écrit.
 
+- **Le banc d'équilibrage** (`tools/banc/Banc.luau`) : le copier dans
+  `src/server/RecetteJetable/` (ignoré par Git), poser l'attribut
+  `BancPlan` de Workspace (« solo,squad,duo:0.35 » : le mode et, après les
+  deux-points, la chance d'erreur des bots), injecter un `Script` qui fait
+  `require(...RecetteJetable.Banc)()`, et un `LocalScript` client (dans un
+  `ScreenGui` à `ResetOnSpawn` faux, sinon il meurt au premier
+  personnage) qui envoie `mode` et `ready` au remote `Salon`. Le bilan
+  s'accumule en JSON dans l'attribut `BancBilan`. Une partie dure environ
+  17 minutes : **pas plus de 3 parties par lancement** (Studio a planté
+  après plusieurs heures de jeu).
 - **Mettre les bots en pause pour une mesure** : poser l'attribut `Phase` de
   Workspace sur autre chose que `Partie` (ils ne pensent qu'en `Partie`), puis
   le remettre. Sinon un bot frappé retourne se cacher entre deux coups.

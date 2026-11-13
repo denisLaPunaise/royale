@@ -224,6 +224,11 @@ Config.match = {
 	firstOpenDelay = 20,
 	-- L'ecran de victoire, avant le retour au salon.
 	endSeconds = 12,
+	-- Tombe sous la carte (studs) : l'Oeil le prend. Le sol le plus bas de
+	-- la carte est a -18 (mesure au rayon) ; Roblox detruit le corps a
+	-- -500 et un bot sans corps ne mourait jamais (finale sans fin, vue au
+	-- banc d'equilibrage du 13 novembre 2026).
+	voidBelow = -100,
 	-- Avant la visee (et sur un serveur de partie, en attendant les
 	-- arrivants), on se pose pres du centre, dans ce rayon (studs).
 	waitRadius = 80,
@@ -254,16 +259,20 @@ Config.match = {
 --------------------------------------------------------------------------------
 
 -- Repères : la marche fait 14 studs/s, la course 22.
+-- Equilibrage du 13 novembre 2026, mesure sur des parties de bots (docs/
+-- DECISIONS.md) : les valeurs de depart ne prenaient presque personne aux
+-- Regards 1 et 2, puis tout le monde au 3 (20 -> 19 -> 6 en vie). La visee
+-- et le nombre de faisceaux montent maintenant regulierement.
 Config.regards = {
 	{
 		title = "Il s'éveille",
 		seconds = 300,
-		playersPerBeam = 8,
+		playersPerBeam = 7,
 		openSeconds = 30,
 		closedSeconds = 20,
 		chaseSpeed = 12,
 		memorySeconds = 1,
-		aimError = 60,
+		aimError = 45,
 		ripsPerBurst = 3,
 		beamRadius = 14,
 		fillSeconds = 2,
@@ -276,12 +285,12 @@ Config.regards = {
 	{
 		title = "Il voit plus loin",
 		seconds = 270,
-		playersPerBeam = 7,
+		playersPerBeam = 6,
 		openSeconds = 35,
 		closedSeconds = 15,
 		chaseSpeed = 15,
 		memorySeconds = 1.5,
-		aimError = 40,
+		aimError = 34,
 		ripsPerBurst = 4,
 		beamRadius = 16,
 		fillSeconds = 2,
@@ -297,12 +306,13 @@ Config.regards = {
 		playersPerBeam = 6,
 		openSeconds = 40,
 		closedSeconds = 12,
-		chaseSpeed = 18,
+		-- Pas plus vite que la marche : une erreur se rattrape encore.
+		chaseSpeed = 15,
 		memorySeconds = 2,
-		aimError = 25,
+		aimError = 28,
 		ripsPerBurst = 6,
 		beamRadius = 18,
-		fillSeconds = 1.8,
+		fillSeconds = 2,
 		hears = "course",
 		announceSeconds = 65,
 		outsideFillSeconds = 11,
@@ -312,19 +322,25 @@ Config.regards = {
 	{
 		title = "Il entend les coups",
 		seconds = 210,
-		playersPerBeam = 5,
-		openSeconds = 45,
-		closedSeconds = 8,
-		chaseSpeed = 20,
-		memorySeconds = 3,
-		aimError = 15,
-		ripsPerBurst = 8,
+		-- Mesure : a 6 ou 7 en vie, l'ancien Regard 4 (1 faisceau pour 5, 45 s
+		-- ouvert, 8 s ferme, 15 studs d'erreur) finissait la partie en deux
+		-- minutes, sans finale. Il tue encore plus vite par joueur que le 3 :
+		-- il entend les coups, et ses pouvoirs se sont accumules.
+		playersPerBeam = 6,
+		openSeconds = 35,
+		closedSeconds = 12,
+		-- La marche : un faisceau plus rapide (17) attrapait tous ceux qu'il
+		-- voyait, et au Regard 4 c'est definitif (14 -> 2 en vie au banc).
+		chaseSpeed = 15,
+		memorySeconds = 2.5,
+		aimError = 28,
+		ripsPerBurst = 6,
 		beamRadius = 20,
-		fillSeconds = 1.8,
+		fillSeconds = 2,
 		hears = "coups",
 		announceSeconds = 55,
 		outsideFillSeconds = 8,
-		suspicionSeconds = 45,
+		suspicionSeconds = 55,
 		solidFalls = false,
 	},
 	{
@@ -336,12 +352,15 @@ Config.regards = {
 		-- Ouvert en permanence : `closedSeconds` a 0 ne ferme jamais.
 		openSeconds = 60,
 		closedSeconds = 0,
+		-- Mesure : pile sur soi (5 studs) et 1,6 s, la finale a 3 ou 4 durait
+		-- 20 s a 1 min au banc, la fiche en voulait environ 3. La vitesse reste
+		-- celle de la course (la fiche, et l'adrenaline ne doit pas la battre).
 		chaseSpeed = 22,
 		memorySeconds = 3.5,
-		aimError = 5,
+		aimError = 12,
 		ripsPerBurst = 12,
 		beamRadius = 22,
-		fillSeconds = 1.6,
+		fillSeconds = 2,
 		hears = "tout",
 		announceSeconds = 45,
 		outsideFillSeconds = 5,
@@ -554,6 +573,14 @@ Config.hiding = {
 	spotsPerPlayer = 4,
 	-- Jamais moins (une partie a 2 vrais joueurs garde une carte vivante).
 	minSpots = 60,
+	-- A chaque cercle annonce, au moins ce nombre de cachettes par joueur en
+	-- vie a l'interieur (par Regard) : large au debut, serre en finale (les
+	-- arrachages font le reste). Sans cela il en restait 4 pour 12 joueurs
+	-- au Regard 3 (banc d'equilibrage du 13 novembre 2026).
+	circleFill = { 1.5, 1.3, 1.1, 0.9, 0.7 },
+	-- Une cachette ajoutee n'apparait jamais a moins de ceci d'un joueur
+	-- (studs) : personne ne la voit surgir.
+	fillAwayFrom = 80,
 	-- Une cachette se marque des qu'on y entre ; l'Oeil vient la chercher a sa
 	-- prochaine ouverture, jamais pendant celle ou l'on s'y cache.
 	-- Il garde ses marques ce nombre d'ouvertures, puis oublie.

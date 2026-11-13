@@ -20,7 +20,7 @@ return function(t: harness.Harness)
 
 	t.section("Les Regards")
 	t.equal("5 Regards", #R, 5)
-	t.equal("24 joueurs au Regard 1 : 3 faisceaux", Regards.beamCount(R[1], 24, 1), 3)
+	t.equal("21 joueurs au Regard 1 : 3 faisceaux", Regards.beamCount(R[1], 21, 1), 3)
 	t.equal("5 joueurs au Regard 1 : 1 faisceau", Regards.beamCount(R[1], 5, 1), 1)
 	t.equal("8 joueurs au Regard 5 : 2 faisceaux", Regards.beamCount(R[5], 8, 1), 2)
 	t.equal("1 joueur : toujours au moins 1 faisceau", Regards.beamCount(R[5], 1, 1), 1)

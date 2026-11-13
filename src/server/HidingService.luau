@@ -61,6 +61,8 @@ export type Spot = {
 local spots: { Spot } = {}
 local byPlayer: { [Roster.Actor]: Spot } = {}
 local placed: Folder? = nil
+-- Les emplacements deja occupes cette partie (on n'y pose pas deux fois).
+local usedAnchors: { [BasePart]: boolean } = {}
 local random = Random.new()
 -- Le numero de la derniere ouverture de l'Oeil (tenu par EyeService).
 local burstSerial = 0
@@ -155,6 +157,10 @@ local function busy(player: Roster.Actor): boolean
 	return (typeof(down) == "number" and workspace:GetServerTimeNow() < down)
 		or player:GetAttribute(C.carryingAttribute) ~= nil
 		or player:GetAttribute(C.carriedAttribute) ~= nil
+		-- Dans un cocon, on attend qu'on nous ouvre (vu au banc d'equilibrage :
+		-- un bot en cocon entrait dans un egout voisin, puis tombait sous la
+		-- carte a l'ouverture du cocon).
+		or player:GetAttribute(Config.squads.cocoonAttribute) == true
 end
 
 local function enter(player: Roster.Actor, spot: Spot)
@@ -253,11 +259,44 @@ function HidingService.clear()
 	end
 	table.clear(spots)
 	table.clear(byPlayer)
+	table.clear(usedAnchors)
 	if placed then
 		placed:Destroy()
 		placed = nil
 	end
 	burstSerial = 0
+end
+
+-- Pose une cachette sur cet emplacement de la carte (son prefab, une
+-- variante au hasard). Vrai si elle est posee.
+local function placeAt(anchor: Instance, folder: Folder): boolean
+	if not anchor:IsA("BasePart") or usedAnchors[anchor] then
+		return false
+	end
+	local prefab = anchor:GetAttribute("Prefab")
+	if typeof(prefab) ~= "string" then
+		return false
+	end
+	local variants = variantsOf(prefab)
+	if #variants == 0 then
+		return false
+	end
+	local template = variants[random:NextInteger(1, #variants)]
+	local model = template:Clone()
+	local socle = model.PrimaryPart
+	if socle == nil then
+		model:Destroy()
+		return false
+	end
+	local offset = socle.CFrame:ToObjectSpace(model:GetPivot())
+	model:PivotTo(anchor.CFrame * offset)
+	model.Name = prefab
+	model.Parent = folder
+	if makeSpot(model, false) then
+		usedAnchors[anchor] = true
+		return true
+	end
+	return false
 end
 
 -- Une nouvelle partie : pose les cachettes pour `players` joueurs.
@@ -285,29 +324,7 @@ function HidingService.setup(players: number)
 		if count >= wanted then
 			break
 		end
-		if not anchor:IsA("BasePart") then
-			continue
-		end
-		local prefab = anchor:GetAttribute("Prefab")
-		if typeof(prefab) ~= "string" then
-			continue
-		end
-		local variants = variantsOf(prefab)
-		if #variants == 0 then
-			continue
-		end
-		local template = variants[random:NextInteger(1, #variants)]
-		local model = template:Clone()
-		local socle = model.PrimaryPart
-		if socle == nil then
-			model:Destroy()
-			continue
-		end
-		local offset = socle.CFrame:ToObjectSpace(model:GetPivot())
-		model:PivotTo(anchor.CFrame * offset)
-		model.Name = prefab
-		model.Parent = folder
-		if makeSpot(model, false) then
+		if placeAt(anchor, folder) then
 			count += 1
 		end
 	end
@@ -359,6 +376,71 @@ function HidingService.setup(players: number)
 			sewers
 		)
 	)
+end
+
+-- Un cercle s'annonce (x, z, rayon) : on complete les cachettes a
+-- l'interieur jusqu'a `wanted` (toutes sortes comptees, solides et egouts
+-- compris). Mesure au banc d'equilibrage du 13 novembre 2026 : posees au
+-- hasard sur toute la carte, il en restait 4 dans le cercle du Regard 3
+-- pour 12 joueurs, et la partie finissait en chaises musicales. Jamais a
+-- moins de `fillAwayFrom` studs d'un joueur : personne ne la voit apparaitre.
+function HidingService.fillCircle(x: number, z: number, radius: number, wanted: number): number
+	local folder = placed
+	local anchors = World.anchors
+	if folder == nil or anchors == nil then
+		return 0
+	end
+	local function inside(p: Vector3): boolean
+		local dx, dz = p.X - x, p.Z - z
+		return dx * dx + dz * dz <= radius * radius
+	end
+	local have = 0
+	for _, spot in spots do
+		if not spot.ripping and inside(spot.inside.Position) then
+			have += 1
+		end
+	end
+	local watchers: { Vector3 } = {}
+	for _, actor in Roster.alive() do
+		local root = Roster.rootOf(actor)
+		if root then
+			table.insert(watchers, root.Position)
+		end
+	end
+	local pool = anchors:GetChildren()
+	for i = #pool, 2, -1 do
+		local j = random:NextInteger(1, i)
+		pool[i], pool[j] = pool[j], pool[i]
+	end
+	local added = 0
+	for _, anchor in pool do
+		if have + added >= wanted then
+			break
+		end
+		if not anchor:IsA("BasePart") or usedAnchors[anchor] or not inside(anchor.Position) then
+			continue
+		end
+		local seen = false
+		for _, at in watchers do
+			if (at - anchor.Position).Magnitude < H.fillAwayFrom then
+				seen = true
+				break
+			end
+		end
+		if not seen and placeAt(anchor, folder) then
+			added += 1
+		end
+	end
+	if added > 0 then
+		print(
+			string.format(
+				"[Royale] %d cachettes ajoutées dans le prochain cercle (%d en tout)",
+				added,
+				have + added
+			)
+		)
+	end
+	return added
 end
 
 -- Entrer dans la cachette `model` : le chemin de l'invite, et celui des

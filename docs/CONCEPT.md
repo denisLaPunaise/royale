@@ -91,6 +91,8 @@ Bien caché, on n'est jamais aspiré directement, mais une cachette n'est jamais
 | Annonce du prochain cercle | 90 s | 80 s | 65 s | 55 s | 45 s |
 | Jauge hors zone pleine en | 20 s | 15 s | 11 s | 8 s | 5 s |
 
+**Réglées le 13 novembre par une trentaine de parties de bots** (visée, faisceaux, poursuite, Regard 4 et finale) : les valeurs du jeu sont dans `Config.luau`, le pourquoi dans `DECISIONS.md` (« Équilibrage par les parties de bots »).
+
 **Choisi par l'assistant (12 novembre) : 5 Regards**, chacun avec **un changement qu'on annonce à l'écran** (la ligne « Ce qu'on annonce ») : tout monte un peu à chaque Regard, mais une chose se remarque à coup sûr. Voir `DECISIONS.md`.
 
 **Validé (12 novembre) : la fin se fait par l'Œil, pas par la zone.** Au Regard 5, le dernier cercle reste fixe : l'Œil ne se ferme plus, arrache les cachettes une à une et les cachettes solides s'effondrent, jusqu'à ce qu'il ne reste qu'un joueur ou une équipe. Pas de cercle qui se referme jusqu'à rien (Josh). Si les derniers sont aspirés en même temps, celui qui l'est en dernier gagne.

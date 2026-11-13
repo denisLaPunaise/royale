@@ -502,8 +502,21 @@ local function onFlagged(actor: Roster.Actor)
 	if root == nil or typeof(regard) ~= "number" then
 		return
 	end
-	local room = Horde.cap(Roster.count(), R.capRatio) - living()
-	local count = math.clamp(room, 0, R.flaggedSend)
+	-- Hors plafond : avec 3 joueurs en vie le plafond n'en laissait qu'un, et
+	-- en finale plus rien ne delogeait un campeur dans un recoin (finale de
+	-- plus de 5 minutes au banc d'equilibrage du 13 novembre 2026). On compte
+	-- seulement ceux qui sont deja autour de lui.
+	local nearby = 0
+	for _, agent in agents do
+		if
+			agent.model.Parent
+			and not agent.dying
+			and (agent.root.Position - root.Position).Magnitude <= R.spawnMax
+		then
+			nearby += 1
+		end
+	end
+	local count = math.max(R.flaggedSend - nearby, 0)
 	if count > 0 then
 		recrache(count, regard, root.Position)
 	end
