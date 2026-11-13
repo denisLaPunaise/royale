@@ -643,3 +643,12 @@ couverts) : aucune erreur ; deux couverts arrachés au-dessus de campeurs
 flairés ; au retour au salon, la carte compte exactement ses 31 105 pièces
 (tout est remis en place).
 
+**Huitième partie complète** (solo, après la correction des allers-retours
+des bots) : aucune erreur, environ 18 minutes ; au retour au salon, le
+monde compte exactement le même nombre d'objets qu'avant (35 464).
+
+**Pas pu regarder à l'écran en fin de nuit** : Studio ne redessinait plus
+la 3D (sa fenêtre était sans doute en arrière-plan). Les Repris dans la
+carte, le cocon de près, les égouts et l'arrachage des couverts restent à
+voir en jouant.
+

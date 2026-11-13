@@ -56,9 +56,10 @@ Chaque bloc : code, tests, essai seul dans Studio, `A-TESTER.md`,
 
 ### En une phrase
 
-Tout le programme est fait, commité et poussé, plus des bonus. Sept parties
-complètes jouées par les bots (solo, duo, cinq escouades) n'ont montré
-aucune erreur du jeu. Le jeu à la manette, à plusieurs et une fois publié
+Tout le programme est fait, commité et poussé, plus des bonus. Huit parties
+complètes jouées par les bots (deux solo, un duo, cinq escouades) n'ont
+montré aucune erreur du jeu, et le monde revient intact au salon après
+chacune. Le jeu à la manette, à plusieurs et une fois publié
 reste à vérifier par toi.
 
 ### Ce qui a été fait cette nuit (dans l'ordre)
@@ -153,6 +154,9 @@ reste à vérifier par toi.
 - **Les sons** : je ne peux pas écouter.
 - **La fluidité réelle** : dans Studio, le serveur tourne à environ 41
   images par seconde, avec le client sur la même machine.
+- **Beaucoup de choses à l'écran** : Repris dans la carte, cocon, égouts,
+  arrachage des couverts, traînées. En fin de nuit, Studio ne redessinait
+  plus la 3D (fenêtre en arrière-plan).
 
 ### Ce que je te demande (toi seul peux le faire)
 
