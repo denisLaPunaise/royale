@@ -153,6 +153,21 @@ Rokit, StyLua, Selene, Lune, GitHub Actions, tous les chiffres dans
 
 ## La place et la recette
 
+- **La CI refuse aussi les avertissements de Selene** (vu la nuit du 12
+  novembre : sept poussées rouges pour un `UDim2.new` simplifiable). Avant de
+  commiter, lire la ligne des avertissements (`selene src ... | tail -3`), pas
+  seulement la dernière.
+- **Le salon et le Ventre se construisent au démarrage du serveur**
+  (`LobbyService`, `GoulagService`) : ils ne sont pas dans la place. Pour
+  les photographier en mode édition, on peut `require` un clone de leur
+  module (avec une copie fraîche de `Config`, le pont garde l'ancienne en
+  cache), puis **effacer** le dossier et l'attribut `Phase` posés sur
+  Workspace. Attention : `LobbyService.start` lance des boucles qui
+  restent tant que Studio est ouvert.
+- **Les sauvegardes** (profils, classement) ne marchent dans Studio
+  qu'avec « l'accès de Studio aux services d'API » (réglage de sécurité de
+  Josh). Sans lui, le profil est marqué illisible et rien n'est écrit.
+
 - **Mettre les bots en pause pour une mesure** : poser l'attribut `Phase` de
   Workspace sur autre chose que `Partie` (ils ne pensent qu'en `Partie`), puis
   le remettre. Sinon un bot frappé retourne se cacher entre deux coups.
