@@ -110,6 +110,9 @@ reste à vérifier par toi.
   vacarme ;
 - les égouts : sous les plaques de la ville, on descend et on ressort par la
   plaque vers laquelle on regarde ;
+- la méfiance arrache ce qui couvre le recoin d'un campeur (un auvent, un
+  toit de garage), remis en place à la fin de la partie ;
+- quitter quand on est éliminé ramène tout de suite au salon ;
 - le petit tutoriel (les cachettes en vitrine et un panneau « Comment
   jouer ») ;
 - l'effet d'aspiration (lueur colorée, aussi en cosmétique) et la pose de
