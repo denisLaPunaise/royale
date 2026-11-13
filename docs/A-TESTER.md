@@ -601,3 +601,8 @@ vacarme.
 on a le temps de fuir ? Un conteneur trop fort ? Les bots meurent-ils trop
 dans les buissons ?
 
+**Quitter (B) quand on est éliminé** : dans Studio, on retourne tout de suite
+au salon pendant que la partie continue (vérifié : B envoyé comme une
+touche). Dans le jeu publié, c'est une téléportation vers un salon, jamais
+vérifiée.
+

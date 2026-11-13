@@ -526,6 +526,13 @@ function MatchService.start()
 			if not ok then
 				warn("[Royale] Retour au salon impossible : " .. tostring(err))
 			end
+		else
+			-- Dans Studio, la partie se joue ici : il retourne tout de suite
+			-- au salon (le salon ne relance rien tant qu'elle dure).
+			-- Plus participant pour l'ecran (l'attribut fait afficher le salon).
+			player:SetAttribute(M.aliveAttribute, nil)
+			LobbyService.setAway({ player }, false)
+			LobbyService.place(player)
 		end
 	end)
 	if isMatchServer() then
