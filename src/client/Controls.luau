@@ -463,7 +463,9 @@ function Controls.start()
 		if not hidden() then
 			return Enum.ContextActionResult.Pass
 		end
-		leaveRemote:FireServer()
+		-- Ou l'on regarde : d'un egout, on ressort par la plaque dans cette
+		-- direction.
+		leaveRemote:FireServer(workspace.CurrentCamera.CFrame.LookVector)
 		return Enum.ContextActionResult.Sink
 	end, false, table.unpack(keys(hiddenCtx.leave)))
 end

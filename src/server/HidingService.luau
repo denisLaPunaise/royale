@@ -194,7 +194,7 @@ local function makeSpot(model: Model, solid: boolean): Spot?
 	end
 	local holder = if #exits > 0 then exits[1] else inside
 	local prompt = Instance.new("ProximityPrompt")
-	prompt.ActionText = "Se cacher"
+	prompt.ActionText = H.actionText[(string.gsub(model.Name, "%d+$", ""))] or H.defaultAction
 	prompt.ObjectText = model.Name
 	prompt.HoldDuration = H.enterHoldSeconds
 	prompt.MaxActivationDistance = H.promptDistance
@@ -319,7 +319,46 @@ function HidingService.setup(players: number)
 			end
 		end
 	end
-	print(string.format("[Royale] %d cachettes posées, plus les cachettes solides", count))
+	-- Les plaques d'egout de la carte (CONCEPT.md : « ressort plus loin :
+	-- traverser une rue sans etre vu ») : sous chacune, une cachette etroite.
+	local sewers = 0
+	for _, part in root:GetDescendants() do
+		if part:IsA("BasePart") and part.Name == H.sewer.coverName then
+			local model = Instance.new("Model")
+			model.Name = H.sewer.name
+			local top = part.Position
+			local inside = Instance.new("Part")
+			inside.Name = W.inside
+			inside.Size = Vector3.one * 2
+			inside.Anchored = true
+			inside.CanCollide = false
+			inside.CanQuery = false
+			inside.Transparency = 1
+			inside.CFrame = CFrame.new(top - Vector3.new(0, H.sewer.depth, 0))
+			inside.Parent = model
+			local exit = Instance.new("Part")
+			exit.Name = W.exit
+			exit.Size = Vector3.one * 2
+			exit.Anchored = true
+			exit.CanCollide = false
+			exit.CanQuery = false
+			exit.Transparency = 1
+			exit.CFrame = CFrame.new(top + Vector3.new(0, 1, 0))
+			exit.Parent = model
+			model.Parent = folder
+			-- Solide : elle fait partie de la carte, on ne l'arrache pas.
+			if makeSpot(model, true) then
+				sewers += 1
+			end
+		end
+	end
+	print(
+		string.format(
+			"[Royale] %d cachettes posées, %d égouts, plus les cachettes solides",
+			count,
+			sewers
+		)
+	)
 end
 
 -- Entrer dans la cachette `model` : le chemin de l'invite, et celui des
@@ -338,10 +377,53 @@ function HidingService.isHidden(player: Roster.Actor): boolean
 	return byPlayer[player] ~= nil
 end
 
-function HidingService.leave(player: Roster.Actor)
+-- La plaque ou ressortir d'un egout : la plus proche dans la direction
+-- regardee (`look`), a portee ; sans direction, une voisine au hasard.
+local function sewerExit(from: Spot, look: Vector3?): Spot?
+	local here = from.inside.Position
+	local best, bestScore = nil, -math.huge
+	for _, spot in spots do
+		if spot == from or spot.kind ~= H.sewer.name or spot.ripping then
+			continue
+		end
+		local delta =
+			Vector3.new(spot.inside.Position.X - here.X, 0, spot.inside.Position.Z - here.Z)
+		local d = delta.Magnitude
+		if d <= 0 or d > H.sewer.range then
+			continue
+		end
+		local score
+		if look then
+			local flat = Vector3.new(look.X, 0, look.Z)
+			local dot = if flat.Magnitude > 0 then flat.Unit:Dot(delta.Unit) else 0
+			if dot < H.sewer.minDot then
+				continue
+			end
+			-- Dans l'axe d'abord, puis la plus proche.
+			score = dot * H.sewer.range - d
+		else
+			score = random:NextNumber()
+		end
+		if score > bestScore then
+			best, bestScore = spot, score
+		end
+	end
+	return best
+end
+
+-- Sortir de sa cachette. D'un egout, on ressort par la plaque vers
+-- laquelle on regarde (`look`, la camera du joueur), ou par la meme.
+function HidingService.leave(player: Roster.Actor, look: Vector3?)
 	local spot = byPlayer[player]
-	if spot then
-		release(player, spot, false)
+	if spot == nil then
+		return
+	end
+	local target = if spot.kind == H.sewer.name then sewerExit(spot, look) else nil
+	release(player, spot, false)
+	local root = Roster.rootOf(player)
+	if target and root then
+		root.CFrame = CFrame.new(target.exits[1].Position + Vector3.new(0, 2, 0))
+		print(string.format("[Royale] %s ressort d'un égout plus loin", Roster.nameOf(player)))
 	end
 end
 

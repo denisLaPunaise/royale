@@ -108,6 +108,8 @@ reste à vérifier par toi.
 - les cachettes à mécanique : le buisson ne couvre qu'à moitié, la voiture
   a deux portières, le conteneur se ferme de l'intérieur mais fait un
   vacarme ;
+- les égouts : sous les plaques de la ville, on descend et on ressort par la
+  plaque vers laquelle on regarde ;
 - le petit tutoriel (les cachettes en vitrine et un panneau « Comment
   jouer ») ;
 - l'effet d'aspiration (lueur colorée, aussi en cosmétique) et la pose de

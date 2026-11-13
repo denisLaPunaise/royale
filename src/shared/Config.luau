@@ -559,11 +559,20 @@ Config.hiding = {
 		CryptChapelle = 2,
 		Wagon = 2,
 		Conteneur = 2,
+		-- Etroit : on y croise les autres (CONCEPT.md).
+		Egout = 2,
 	},
 	-- A plusieurs, on se tient cote a cote, a cette distance (studs).
 	seatSpacing = 2,
 	-- Un abri ferme (voiture, armoire, casier...) : une seule personne.
 	defaultCapacity = 1,
+	-- L'invite : son texte, par sorte de cachette.
+	defaultAction = "Se cacher",
+	actionText = { Egout = "Descendre dans l'égout" },
+	-- Les egouts : sous chaque plaque de la carte (`coverName`), a `depth`
+	-- studs ; on ressort par une autre plaque a moins de `range` studs, dans
+	-- la direction regardee (au moins `minDot` d'alignement).
+	sewer = { name = "Egout", coverName = "PlaqueEgout", depth = 6, range = 160, minDot = 0.3 },
 	-- Les cachettes a mecanique (CONCEPT.md) :
 	-- un buisson, des roseaux couvrent a moitie : l'Oeil y voit cette part
 	-- (la jauge monte, lentement, si un faisceau reste dessus) ;

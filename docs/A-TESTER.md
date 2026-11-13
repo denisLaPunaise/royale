@@ -606,3 +606,16 @@ au salon pendant que la partie continue (vérifié : B envoyé comme une
 touche). Dans le jeu publié, c'est une téléportation vers un salon, jamais
 vérifiée.
 
+## Les égouts (nuit du 13 novembre 2026)
+
+**Vérifié seul dans Studio** : 30 égouts posés sous les plaques de la
+ville. Un bot y descend, il est caché (l'Œil voit 0), il ressort par la
+plaque qu'il regarde, à 26 studs.
+
+**Jamais vu** : l'invite « Descendre dans l'égout » à l'écran, ni toi qui
+choisis ta sortie en tournant la tête.
+
+**À regarder** : en ville, trouve une plaque (disque métallique sur la
+route), X pour descendre, tourne la tête vers une autre plaque, X : tu
+ressors là-bas ? C'est trop fort contre l'Œil ?
+

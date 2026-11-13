@@ -530,4 +530,13 @@ avancer le passe »), sans détail :
   - Pas encore faits : la plaque d'égout (il faut des tunnels dans la
     carte) et l'armoire qui protège quand le toit est arraché (les toits ne
     s'arrachent pas dans ce jeu).
+- **Les égouts** (la plaque d'égout de la fiche) : sous chaque plaque que
+  la recette pose sur les routes de la ville (30 sur la carte), une
+  cachette étroite (2 places), posée à chaque partie. X « Descendre dans
+  l'égout » ; on y est invisible pour l'Œil. En sortant (X), on ressort par
+  la plaque la plus proche dans la direction où l'on regarde, à moins de
+  160 studs (sinon par la même) : on traverse une rue sans être vu, sans
+  savoir ce qui attend dehors. Elles ne s'arrachent pas (comme une
+  cachette solide) ; au dernier Regard, elles s'effondrent comme les
+  autres.
 

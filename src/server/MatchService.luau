@@ -527,8 +527,9 @@ function MatchService.start()
 		end)
 	)
 	remote(Config.remotes.leave).OnServerEvent:Connect(
-		RemoteGuard.wrap(Config.remotes.leave, function(player: Player)
-			HidingService.leave(player)
+		RemoteGuard.wrap(Config.remotes.leave, function(player: Player, look: any)
+			-- La direction regardee (pour ressortir d'un egout plus loin).
+			HidingService.leave(player, if typeof(look) == "Vector3" then look else nil)
 		end)
 	)
 	-- Un elimine qui quitte : retour au salon (un serveur public dans le jeu
