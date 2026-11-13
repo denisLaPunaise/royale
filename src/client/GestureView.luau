@@ -150,6 +150,58 @@ function GestureView.start()
 	gui.DisplayOrder = MP.displayOrder
 	gui.Parent = player:WaitForChild("PlayerGui")
 	local frame, toMap = buildMap(gui)
+	-- Les zones, mesurees une fois sur la carte construite (jamais recopiees
+	-- de la recette) : l'etendue de leurs pieces, et leur nom au milieu.
+	local zonesDrawn = false
+	local function drawZones()
+		if zonesDrawn then
+			return
+		end
+		zonesDrawn = true
+		local root = workspace:FindFirstChild(Config.world.folder)
+		local zones = root and root:FindFirstChild(Config.world.zones)
+		if zones == nil then
+			return
+		end
+		local half = Config.world.half
+		for name, label in MP.zoneNames do
+			local folder = zones:FindFirstChild(name)
+			if folder == nil then
+				continue
+			end
+			local minX, maxX, minZ, maxZ = math.huge, -math.huge, math.huge, -math.huge
+			for _, d in folder:GetDescendants() do
+				if d:IsA("BasePart") then
+					local p = d.Position
+					minX, maxX = math.min(minX, p.X), math.max(maxX, p.X)
+					minZ, maxZ = math.min(minZ, p.Z), math.max(maxZ, p.Z)
+				end
+			end
+			if minX < maxX then
+				local box = Instance.new("Frame")
+				box.Name = "Zone_" .. name
+				box.AnchorPoint = Vector2.new(0.5, 0.5)
+				box.Position = toMap(Vector3.new((minX + maxX) / 2, 0, (minZ + maxZ) / 2))
+				box.Size = UDim2.fromScale((maxX - minX) / (half * 2), (maxZ - minZ) / (half * 2))
+				box.BackgroundColor3 = rgb(MP.zoneColor)
+				box.BackgroundTransparency = MP.zoneTransparency
+				box.BorderSizePixel = 0
+				box.ZIndex = 0
+				box.Parent = frame
+				local text = Instance.new("TextLabel")
+				text.BackgroundTransparency = 1
+				text.Size = UDim2.fromScale(1, 1)
+				text.Font = (Enum.Font :: any)[Config.view.font]
+				text.TextScaled = true
+				text.TextColor3 = rgb(MP.zoneText)
+				text.Text = label
+				local limit = Instance.new("UITextSizeConstraint")
+				limit.MaxTextSize = MP.zoneTextSize
+				limit.Parent = text
+				text.Parent = box
+			end
+		end
+	end
 	local current = circleFrame(frame, "Cercle", rgb(MP.current))
 	local nextOne = circleFrame(frame, "Prochain", rgb(MP.upcoming))
 	local dots: { [Instance]: Frame } = {}
@@ -193,6 +245,9 @@ function GestureView.start()
 	ContextActionService:BindAction("RoyaleCarte", function(_, state: Enum.UserInputState)
 		if state == Enum.UserInputState.Begin then
 			frame.Visible = not frame.Visible
+			if frame.Visible then
+				drawZones()
+			end
 		end
 		return Enum.ContextActionResult.Sink
 	end, false, table.unpack(keys(onFoot.map)))

@@ -511,3 +511,31 @@ Corrigé grâce à elle :
   cachette pour ça. Vérifié : deux cocons ouverts par des bots, 3 et 5 s
   après leur apparition.
 
+**Partie en escouade complète** : une quinzaine de cocons, presque tous
+ouverts par des coéquipiers bots. Mon équipe a fini 2e (+80 XP, +20
+crédits, +1 fragment, juste). « Gagnant » n'annonçait que le survivant de
+l'équipe : corrigé, toute l'équipe est annoncée.
+
+**Partie en duo complète** : 18 min, la première à atteindre le Regard 5.
+Le finale (l'Œil ne se ferme plus) a duré environ 1 minute ; les cachettes
+solides se sont effondrées une à une, et la victoire annonçait les deux
+noms du duo. Aucune erreur.
+
+**Pas de fuite** : après deux parties, le monde compte exactement le même
+nombre d'objets (35 287) au retour au salon.
+
+**Charge du serveur dans Studio** : environ 41 images par seconde (pire
+image : 60 ms), Œil ouvert ou fermé. Dans Studio, le serveur et le client
+partagent la même machine : à revérifier dans le jeu publié.
+
+**Une erreur vue, causée par ma sonde** (ma fonction de mesure renvoyait
+trois valeurs) : la partie s'est arrêtée et tout le monde est revenu au
+salon, proprement. Le jeu se protège donc d'une erreur en pleine partie.
+
+**La carte** (croix gauche) dessine maintenant les zones avec leur nom,
+mesurées sur la carte construite (rien de recopié).
+
+**Un avertissement ancien** au démarrage (« 203785492 : Asset type does
+not match ») vient de la place, pas du code : introuvable dans les
+propriétés habituelles, et sans effet visible.
+

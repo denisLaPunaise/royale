@@ -176,6 +176,9 @@ Config.controls = {
 -- verifie ces noms au demarrage et dit ce qui manque.
 Config.world = {
 	folder = "Carte",
+	-- Les zones de la carte, un dossier chacune (pour les dessiner sur la
+	-- carte de l'ecran).
+	zones = "Zones",
 	sky = "Ciel",
 	eye = "Oeil",
 	lids = "Paupieres",
@@ -2020,6 +2023,23 @@ Config.map = {
 	refreshSeconds = 0.1,
 	-- Au-dessus des autres ecrans (qui sont a 0).
 	displayOrder = 5,
+	-- Les zones dessinees (dossiers de Carte.Zones) et leur nom a l'ecran.
+	-- Les liaisons, la campagne et la vegetation n'en sont pas.
+	zoneNames = {
+		Cratere = "Cratère",
+		Banlieue = "Banlieue",
+		FeteForaine = "Fête foraine",
+		Lycee = "Lycée",
+		PortEchoue = "Port échoué",
+		Marais = "Marais",
+		GareDeTriage = "Gare de triage",
+		Hypermarche = "Hypermarché",
+		QuartierSuspendu = "Quartier suspendu",
+	},
+	zoneColor = { 120, 110, 100 },
+	zoneTransparency = 0.8,
+	zoneText = { 220, 210, 200 },
+	zoneTextSize = 16,
 	-- Le fond sombre, le cercle actuel en blanc casse, le prochain en rouge
 	-- (comme l'Oeil), soi en jaune ; les coequipiers ont leur bleu.
 	background = { 20, 16, 16 },
