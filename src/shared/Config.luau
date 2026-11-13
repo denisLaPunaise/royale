@@ -1550,6 +1550,10 @@ Config.lobby = {
 	-- Le serveur de partie attend les arrivants au plus ce temps, puis joue
 	-- avec ceux qui sont la (les bots completent).
 	arrivalSeconds = 25,
+	-- La fin d'une partie : le retour au salon reessaie ce nombre de fois,
+	-- espacees (s), avant de demander au joueur de relancer.
+	returnAttempts = 4,
+	returnRetrySeconds = 10,
 	-- Les modes, dans l'ordre ou Y les fait defiler.
 	modes = { "solo", "duo", "squad" },
 	modeNames = { solo = "Solo", duo = "Duo", squad = "Escouade" },

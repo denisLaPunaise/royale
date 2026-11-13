@@ -469,15 +469,30 @@ local function serveMatch()
 	if not ok2 then
 		warn("[Royale] La partie s'est arrêtée sur une erreur : " .. tostring(err2))
 	end
-	-- Retour au salon : un serveur public de la meme place.
-	local back = realPlayers()
-	if #back > 0 then
+	-- Retour au salon : un serveur public de la meme place. Une
+	-- teleportation peut echouer : on reessaie, puis on dit au joueur de
+	-- relancer (un serveur de partie vide ne doit pas le garder).
+	for attempt = 1, Config.lobby.returnAttempts do
+		local back = realPlayers()
+		if #back == 0 then
+			return
+		end
 		local sent, why = pcall(function()
 			TeleportService:TeleportAsync(game.PlaceId, back)
 		end)
 		if not sent then
-			warn("[Royale] Retour au salon impossible : " .. tostring(why))
+			warn(
+				string.format(
+					"[Royale] Retour au salon impossible (essai %d) : %s",
+					attempt,
+					tostring(why)
+				)
+			)
 		end
+		task.wait(Config.lobby.returnRetrySeconds)
+	end
+	for _, player in realPlayers() do
+		player:Kick("La partie est finie. Relance le jeu pour revenir au salon.")
 	end
 end
 
