@@ -1504,6 +1504,32 @@ Config.lobby = {
 	radius = 70,
 	-- Les colonnes brisees qui font la ruine.
 	columns = 10,
+	-- Le petit tutoriel : les cachettes en vitrine sur un arc (degres), et
+	-- le panneau « Comment jouer ».
+	tutorial = {
+		maxSpots = 9,
+		radius = 50,
+		arcStart = 200,
+		arcStep = 17,
+		-- L'etiquette, en studs.
+		tagWidth = 9,
+		tagHeight = 3,
+		tagAbove = 7,
+		tagDistance = 60,
+		boardWidth = 22,
+		boardHeight = 14,
+		boardInset = 6,
+		pixelsPerStud = 30,
+		lines = {
+			"COMMENT JOUER",
+			"• L'Œil s'ouvre et se ferme. Ouvert, ne reste pas dans sa lumière.",
+			"• Cache-toi : X près d'une cachette (elles sont ici, apprends-les).",
+			"• B : s'accroupir ; B maintenu : s'allonger ; B en courant : glisser.",
+			"• Fouille les meubles (X maintenu). L1/R1 choisir, L2 utiliser.",
+			"• R2 frapper, Y pousser. Aspiré ? Le Ventre : une seule chance.",
+			"• Reste dans le cercle. La dernière équipe en vie gagne.",
+		},
+	},
 	-- Un groupe : 4 au plus (l'escouade), invite en maintenant X sur
 	-- quelqu'un ; l'invitation attend une reponse ce temps.
 	maxGroup = 4,

@@ -570,3 +570,12 @@ tous les deux.
 buisson, à trois sous un abri. Ça se voit trop de dehors ? Les places par
 cachette sont-elles justes ?
 
+## Le petit tutoriel (nuit du 13 novembre 2026)
+
+**Vu à l'écran** : les 9 cachettes en vitrine au bord du salon, avec leur
+nom et leurs places, le panneau « Comment jouer » en face du classement.
+Les étiquettes se chevauchaient de loin : corrigé (taille en studs).
+
+**À regarder** : un ami qui découvre le jeu comprend-il avec la vitrine et
+le panneau ? Faut-il un vrai tutoriel guidé ?
+

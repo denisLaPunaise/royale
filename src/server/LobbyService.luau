@@ -243,6 +243,106 @@ local function build()
 	end
 end
 
+-- Le petit tutoriel (CONCEPT.md : les cachettes ne s'affichent pas, « un
+-- petit tutoriel les presente au debut ») : un exemplaire de chaque
+-- cachette sur un arc du salon, avec son nom et ses places, et un panneau
+-- « Comment jouer ».
+local function tutorial()
+	local library = World.prefabs
+	local T = LB.tutorial
+	local shown = 0
+	if library then
+		local seen: { [string]: boolean } = {}
+		local models: { Model } = {}
+		for _, m in library:GetChildren() do
+			local kind = string.gsub(m.Name, "%d+$", "")
+			if m:IsA("Model") and not seen[kind] and m.PrimaryPart then
+				seen[kind] = true
+				table.insert(models, m)
+			end
+		end
+		table.sort(models, function(a, b)
+			return a.Name < b.Name
+		end)
+		for i, source in models do
+			if i > T.maxSpots then
+				break
+			end
+			-- Un arc au nord du salon, face au centre.
+			local a = math.rad(T.arcStart + (i - 1) * T.arcStep)
+			local at = ORIGIN + Vector3.new(math.cos(a) * T.radius, 0, math.sin(a) * T.radius)
+			local model = source:Clone()
+			local socle = model.PrimaryPart :: BasePart
+			local facing = CFrame.lookAt(at, Vector3.new(ORIGIN.X, at.Y, ORIGIN.Z))
+			model:PivotTo(facing * socle.CFrame:ToObjectSpace(model:GetPivot()))
+			-- Une vitrine : rien n'y entre, et on ne s'y cogne pas.
+			for _, d in model:GetDescendants() do
+				if d:IsA("BasePart") then
+					d.Anchored = true
+					d.CanCollide = false
+					d.CanQuery = false
+				elseif d:IsA("ProximityPrompt") or d:IsA("Script") then
+					d:Destroy()
+				end
+			end
+			model.Parent = folder
+			local kind = string.gsub(source.Name, "%d+$", "")
+			local places = Config.hiding.capacity[kind] or Config.hiding.defaultCapacity
+			local tag = Instance.new("BillboardGui")
+			-- En studs : l'etiquette rapetisse avec la distance (en pixels,
+			-- elles se chevauchaient de loin, vu en image).
+			tag.Size = UDim2.fromScale(T.tagWidth, T.tagHeight)
+			tag.StudsOffset = Vector3.new(0, T.tagAbove, 0)
+			tag.LightInfluence = 0
+			tag.MaxDistance = T.tagDistance
+			tag.Adornee = socle
+			local label = Instance.new("TextLabel")
+			label.BackgroundTransparency = 1
+			label.Size = UDim2.fromScale(1, 1)
+			label.Font = (Enum.Font :: any)[Config.view.font]
+			label.TextScaled = true
+			label.TextColor3 = rgb(LB.colors.lantern)
+			label.TextStrokeTransparency = 0.3
+			label.Text =
+				string.format("%s\n%s", kind, if places > 1 then places .. " places" else "1 place")
+			label.Parent = tag
+			tag.Parent = model
+			shown += 1
+		end
+	end
+	-- Le panneau, face au classement.
+	local at = ORIGIN + Vector3.new(0, T.boardHeight / 2 + 1, LB.radius - T.boardInset)
+	local board = part(
+		"CommentJouer",
+		Vector3.new(T.boardWidth, T.boardHeight, 1),
+		CFrame.lookAt(at, Vector3.new(ORIGIN.X, at.Y, ORIGIN.Z)),
+		rgb(LB.colors.dark),
+		Enum.Material.Slate
+	)
+	local gui = Instance.new("SurfaceGui")
+	gui.Face = Enum.NormalId.Front
+	gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+	gui.PixelsPerStud = T.pixelsPerStud
+	gui.LightInfluence = 0
+	gui.Parent = board
+	local text = Instance.new("TextLabel")
+	text.BackgroundTransparency = 1
+	text.Size = UDim2.fromScale(1, 1)
+	text.Font = (Enum.Font :: any)[Config.view.font]
+	text.TextScaled = true
+	text.TextWrapped = true
+	text.TextXAlignment = Enum.TextXAlignment.Left
+	text.TextYAlignment = Enum.TextYAlignment.Top
+	text.TextColor3 = rgb(LB.colors.lantern)
+	text.Text = table.concat(T.lines, "\n")
+	local pad = Instance.new("UIPadding")
+	pad.PaddingLeft = UDim.new(0.04, 0)
+	pad.PaddingTop = UDim.new(0.04, 0)
+	pad.Parent = text
+	text.Parent = gui
+	return shown
+end
+
 -- Un point ou se poser dans le salon.
 function LobbyService.spot(): Vector3
 	local a = random:NextNumber(0, math.pi * 2)
@@ -439,6 +539,7 @@ function LobbyService.start(
 )
 	onLaunch = launcher
 	build()
+	print(string.format("[Royale] Salon : %d cachettes en vitrine", tutorial()))
 	workspace:SetAttribute(Config.match.phaseAttribute, "Salon")
 	remote.OnServerEvent:Connect(RemoteGuard.wrap(Config.remotes.lobby, action))
 	local function joined(player: Player)

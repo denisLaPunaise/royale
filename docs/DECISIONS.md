@@ -506,4 +506,9 @@ avancer le passe »), sans détail :
   On se tient côte à côte. Pousser ou un Rampant fait sortir le premier
   entré ; l'arrachage fait sortir tout le monde. N'importe qui peut entrer,
   pas seulement un coéquipier : on peut tomber sur quelqu'un.
+- **Le petit tutoriel** (la fiche : les cachettes ne s'affichent pas, « un
+  petit tutoriel les présente au début ») : une vitrine dans le salon, avec
+  un exemplaire de chaque cachette, son nom et ses places, et un panneau
+  « Comment jouer » qui résume l'Œil, les cachettes, les postures, la
+  fouille, le combat, le Ventre et la victoire.
 
