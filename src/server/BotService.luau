@@ -533,6 +533,13 @@ local function think(bot: Bot, now: number)
 			or leaving
 			or (not open and not warning and now >= bot.hiddenUntil)
 		then
+			-- Il l'evite un moment : sinon il y rentrait aussitot (vu en
+			-- partie : 39 entrees en 3 minutes dans le camion du port, dont
+			-- l'entree est dans le cercle mais pas l'interieur).
+			local spot = HidingService.spotOf(bot.model)
+			if spot and (flaired or outside or leaving) then
+				bot.avoid[spot.model] = now + B.avoidSeconds
+			end
 			HidingService.leave(bot.model)
 			bot.goal = nil
 		end

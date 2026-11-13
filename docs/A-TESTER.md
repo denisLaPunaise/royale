@@ -630,3 +630,11 @@ campeur flairé (il faut camper 90 s au même endroit au Regard 1).
 **À regarder** : reste longtemps sous un auvent ou un porche sans bouger :
 « Il te sent… », puis l'auvent s'envole à l'ouverture suivante ?
 
+**Bots qui entraient et sortaient sans arrêt** (trouvé en comptant) : en 3
+minutes, 78 entrées dans les cachettes, dont 39 dans le seul camion du port
+(son entrée est dans le cercle, pas son intérieur : le bot y entrait, en
+ressortait aussitôt, et recommençait). Ils évitent maintenant 30 s une
+cachette qu'ils ont dû quitter : 24 entrées en 3 minutes, 19 s cachés en
+moyenne. Les égouts ne téléportent plus que ceux qui regardent une
+direction (les joueurs).
+

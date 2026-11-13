@@ -126,6 +126,9 @@ reste à vérifier par toi.
 - Les bots n'ouvraient jamais le cocon d'un coéquipier, donc un joueur avec
   des bots dans son équipe n'aurait jamais été délivré.
 - La victoire n'annonçait que le survivant, pas toute l'équipe.
+- Des bots entraient et sortaient sans arrêt d'une même cachette (39 fois
+  en 3 minutes dans le camion du port), et se téléportaient d'égout en
+  égout.
 - Au K.O., le corps passait sous le sol.
 - Plusieurs textes débordaient d'une petite fenêtre : le haut de l'écran,
   la boutique, l'annonce des pouvoirs, la carte.
