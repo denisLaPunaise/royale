@@ -54,4 +54,115 @@ Chaque bloc : code, tests, essai seul dans Studio, `A-TESTER.md`,
 
 ## Rapport du matin
 
-(à remplir)
+### En une phrase
+
+Tout le programme est fait, commité et poussé, plus cinq bonus. Cinq parties
+complètes jouées par les bots (solo, duo, trois escouades) n'ont montré
+aucune erreur du jeu. Le jeu à la manette, à plusieurs et une fois publié
+reste à vérifier par toi.
+
+### Ce qui a été fait cette nuit (dans l'ordre)
+
+1. **Les Repris** : Errant (il crie, un faisceau vient), Rampant (il
+   t'arrache de ta cachette), Hurleur (l'Œil entend, les autres
+   accourent), Coureur (il grogne puis plaque). Ils tombent à chaque
+   fermeture de l'Œil, avec un plafond, et ne tuent jamais.
+2. **Le goulag, « le Ventre de l'Œil »** : une salle sombre, des cages, des
+   duels sur des plateformes dans le vide, à la batte. La plateforme
+   s'effrite, puis vient la mort subite. Une seule chance par partie,
+   fermé aux deux derniers cercles. Nombre impair : un « Repris du
+   Ventre » à la batte.
+3. **Les escouades** : solo, duo, escouade de 4. Coéquipiers en bleu à
+   travers les murs, liste de l'équipe en bas à gauche, relever un ami
+   K.O., lui donner un objet. Revenu du Ventre, on est dans un cocon qu'un
+   coéquipier ouvre en 3 coups avant que l'Œil ne le trouve. La victoire
+   va à l'équipe entière.
+4. **Les gestes** : s'allonger et ramper (B maintenu), tirer par les pieds
+   (X maintenu), signaux « Danger / Ici » à la croix, la carte (croix
+   gauche, avec les zones), une émote (croix droite).
+5. **Les éliminés** : regarder d'abord ses coéquipiers, parier sur un
+   joueur (jamais sur un ami Roblox), quitter.
+6. **La liste des joueurs** (R3) : les bots y passent pour des joueurs.
+7. **Les animations** : accroupi, ramper, K.O. et porté, générées puis
+   regardées une à une. Les corps K.O. ne passent plus sous le sol.
+8. **Les sons** de Survivor : l'Œil, l'ambiance, le cœur au Ventre, les
+   coups, la fouille, les Repris.
+9. **Le salon** : une place en ruine flottante. On y forme son groupe (X
+   maintenu sur quelqu'un), on choisit le mode (Y), on se dit prêt (R2).
+   Les invitations Roblox marchent. Dans le jeu publié, le départ envoie
+   les joueurs sur un serveur de partie ; dans Studio, la partie se joue
+   sur place.
+10. **La progression** : XP, niveaux, crédits, fragments, sauvegarde. Si
+    la lecture d'un profil échoue, rien n'est jamais écrit.
+11. **La boutique** (croix gauche au salon) : la boutique du jour et les
+    permanents, les tirages (toutes les chances affichées avant, égales),
+    le passe de saison gratuit et premium. Les cosmétiques changent la
+    comète, la traînée, le cocon, l'émote et le titre. **Tous les prix sont
+    provisoires.**
+
+**Bonus** (manques de la fiche) :
+- les défis quotidiens et hebdomadaires (onglet Défis) ;
+- le classement des victoires (panneau du salon) ;
+- se cacher à plusieurs dans les grandes cachettes ;
+- le petit tutoriel (les cachettes en vitrine et un panneau « Comment
+  jouer ») ;
+- les zones sur la carte.
+
+### Les bugs trouvés en testant, et corrigés
+
+- La caméra du spectateur traversait les murs (écran noir).
+- Un Rampant arrachait le même bot 4 fois de suite.
+- Les bots n'ouvraient jamais le cocon d'un coéquipier, donc un joueur avec
+  des bots dans son équipe n'aurait jamais été délivré.
+- La victoire n'annonçait que le survivant, pas toute l'équipe.
+- Au K.O., le corps passait sous le sol.
+- Plusieurs textes débordaient d'une petite fenêtre : le haut de l'écran,
+  la boutique, l'annonce des pouvoirs, la carte.
+- Y ne changeait pas le mode au salon (le bouton « pousser » l'avalait).
+- « Restants : 0 » s'affichait au salon.
+
+### Ce que je n'ai PAS pu vérifier
+
+- **La manette** : les boutons ont été envoyés comme des touches ; il faut
+  ta vraie manette.
+- **À plusieurs** : inviter, accepter, jouer ensemble. Je suis seul dans
+  Studio.
+- **L'envoi vers les serveurs de partie** (impossible dans Studio) : c'est
+  le premier test à faire après avoir publié.
+- **La sauvegarde** : Studio la refuse sans l'accès aux API. Le jeu se
+  protège (profil illisible = rien d'écrit), mais la vraie sauvegarde n'a
+  jamais tourné.
+- **Les achats en Robux** : les produits n'existent pas encore.
+- **Les sons** : je ne peux pas écouter.
+- **La fluidité réelle** : dans Studio, le serveur tourne à environ 41
+  images par seconde, avec le client sur la même machine.
+
+### Ce que je te demande (toi seul peux le faire)
+
+1. **Activer l'accès aux API dans Studio** : Paramètres du jeu → Sécurité →
+   « Activer l'accès de Studio aux services d'API ». C'est un réglage de
+   sécurité, je n'y ai pas touché. Ensuite, je pourrai tester la
+   sauvegarde et le classement.
+2. **Regarder les textures de la carte** : depuis que Studio a été rouvert
+   cette nuit, 16 avertissements « pas la permission » apparaissent, autant
+   que les textures des matières générées (asphalte, béton, brique, bois).
+   Vérifie que tu es connecté au bon compte.
+3. **Créer les produits Robux** (3 paquets de crédits et le passe premium
+   de la saison 1) et me donner leurs numéros. Fixe aussi les vrais prix.
+4. **Publier, puis jouer à deux ou plus**, manette en main, en suivant
+   `docs/A-TESTER.md`.
+
+### Par où commencer en jouant (le plus utile d'abord)
+
+1. Le salon : les panneaux, Y, R2, puis la croix gauche (la boutique).
+2. Une partie en escouade avec tes amis : les repères bleus, relever,
+   donner, les signaux.
+3. Se faire aspirer : le Ventre, un duel, puis revenir dans un cocon.
+4. Les Repris : les voir tomber, un Coureur qui grogne avant de plaquer.
+5. B maintenu (ramper), la carte (croix gauche), la liste (R3).
+6. Tes impressions : trop dur, trop facile, trop long ? Les parties de bots
+   durent 15 à 18 minutes et finissent souvent au Regard 4.
+
+Les choix pris sans toi sont tous dans `docs/DECISIONS.md` (sections « nuit
+du 12 » et « 13 novembre »). Les points à regarder, bloc par bloc, sont
+dans `docs/A-TESTER.md`.
