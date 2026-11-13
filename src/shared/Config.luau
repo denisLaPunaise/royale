@@ -1619,13 +1619,14 @@ Config.progression = {
 -- derriere soi, la couleur de son cocon, l'emote de la croix droite, un
 -- titre (dans la liste des joueurs).
 Config.cosmetics = {
-	slots = { "comet", "trail", "cocoon", "emote", "title" },
+	slots = { "comet", "trail", "cocoon", "emote", "title", "capture" },
 	slotNames = {
 		comet = "Comète",
 		trail = "Traînée",
 		cocoon = "Cocon",
 		emote = "Émote",
 		title = "Titre",
+		capture = "Aspiration",
 	},
 	-- Prix en credits, par rarete (PROVISOIRE).
 	prices = { common = 150, rare = 400, epic = 900, legendary = 1800 },
@@ -1709,9 +1710,32 @@ Config.cosmetics = {
 			rarity = "legendary",
 			title = "Celui qu'il ne voit pas",
 		},
+		captureSoul = {
+			name = "Âme bleue",
+			slot = "capture",
+			rarity = "rare",
+			color = { 90, 170, 255 },
+		},
+		captureGold = {
+			name = "Poussière d'or",
+			slot = "capture",
+			rarity = "epic",
+			color = { 255, 200, 60 },
+		},
+		captureVoid = {
+			name = "Trou noir",
+			slot = "capture",
+			rarity = "legendary",
+			color = { 30, 0, 60 },
+		},
 	},
 	-- L'attribut d'un joueur par emplacement equipe : « Cosmetique_comet »...
 	attributePrefix = "Cosmetique_",
+	-- L'aspiration sans cosmetique : rouge, comme l'Oeil ; la lueur et la
+	-- trainee qui montent avec celui qu'on aspire.
+	captureDefault = { 255, 60, 40 },
+	captureFill = 0.4,
+	captureTrail = 0.8,
 	-- La trainee : sa hauteur (studs), le temps qu'elle reste, sa lueur.
 	trail = { height = 2, lifetime = 0.6, lightEmission = 0.6, transparency = 0.3 },
 }
@@ -1775,6 +1799,8 @@ Config.shop = {
 		"emoteDance",
 		"titleShadow",
 		"titleUnseen",
+		"captureSoul",
+		"captureGold",
 	},
 	-- Un doublon rend cette part de son prix en credits.
 	duplicateRefund = 0.5,
@@ -2149,6 +2175,9 @@ Config.emote = {
 	-- Croix droite : une emote de Roblox (le script d'animation du joueur
 	-- la joue).
 	name = "wave",
+	-- La pose de victoire (CONCEPT.md) : les gagnants jouent leur emote
+	-- portee, sinon celle-ci, au debut de l'ecran de fin.
+	victory = "cheer",
 }
 
 return Config

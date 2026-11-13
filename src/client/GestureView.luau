@@ -270,6 +270,35 @@ function GestureView.start()
 		return Enum.ContextActionResult.Sink
 	end, false, table.unpack(keys(onFoot.emote)))
 
+	-- La pose de victoire : a l'ecran de fin, si l'on fait partie des
+	-- gagnants, son emote se joue une fois.
+	local celebrated = false
+	workspace:GetAttributeChangedSignal(Config.match.phaseAttribute):Connect(function()
+		local phase = workspace:GetAttribute(Config.match.phaseAttribute)
+		if phase ~= "Fin" then
+			celebrated = false
+			return
+		end
+		local winners = workspace:GetAttribute(Config.match.winnerAttribute)
+		if celebrated or typeof(winners) ~= "string" then
+			return
+		end
+		for name in string.gmatch(winners, "[^,]+") do
+			if string.match(name, "^%s*(.-)%s*$") == player.DisplayName then
+				celebrated = true
+				local character = player.Character
+				local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+				local id = player:GetAttribute(Config.cosmetics.attributePrefix .. "emote")
+				local def = if typeof(id) == "string" then Config.cosmetics.items[id] else nil
+				if humanoid then
+					pcall(function()
+						humanoid:PlayEmote(if def then def.emote else Config.emote.victory)
+					end)
+				end
+			end
+		end
+	end)
+
 	local acc = 0
 	RunService.RenderStepped:Connect(function(dt: number)
 		acc += dt

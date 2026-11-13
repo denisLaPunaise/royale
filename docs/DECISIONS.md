@@ -511,4 +511,10 @@ avancer le passe »), sans détail :
   un exemplaire de chaque cachette, son nom et ses places, et un panneau
   « Comment jouer » qui résume l'Œil, les cachettes, les postures, la
   fouille, le combat, le Ventre et la victoire.
+- **L'effet d'aspiration** (la fiche : « effet de capture ») : quand l'Œil
+  prend quelqu'un, une lueur et une traînée montent avec lui, rouges par
+  défaut. Trois cosmétiques changent leur couleur (Âme bleue, Poussière
+  d'or, Trou noir) ; deux d'entre eux sont dans les tirages.
+- **La pose de victoire** (la fiche) : à l'écran de fin, chaque gagnant
+  joue son émote portée, sinon « cheer ».
 

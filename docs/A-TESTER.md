@@ -579,3 +579,14 @@ Les étiquettes se chevauchaient de loin : corrigé (taille en studs).
 **À regarder** : un ami qui découvre le jeu comprend-il avec la vitrine et
 le panneau ? Faut-il un vrai tutoriel guidé ?
 
+## L'effet d'aspiration et la pose de victoire (nuit du 13 novembre 2026)
+
+**Vérifié seul dans Studio** : avec « Poussière d'or » porté, la lueur
+apparaît quand l'Œil m'aspire, sans erreur.
+
+**Jamais vu** : la traînée à l'écran, et la pose de victoire (il faut
+gagner soi-même).
+
+**À regarder** : quand un ami est aspiré, la lueur se voit de loin ? Quand
+tu gagnes, ton personnage fait-il sa pose ?
+

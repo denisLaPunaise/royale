@@ -206,6 +206,37 @@ function Roster.take(actor: Actor)
 	if character and root then
 		local eye = Config.eye
 		Sfx.at("aspiration", root.Position)
+		-- L'effet d'aspiration : une lueur et une trainee, a la couleur de
+		-- son cosmetique (CONCEPT.md : « effet de capture »), sinon rouge.
+		local CO = Config.cosmetics
+		local id = actor:GetAttribute(CO.attributePrefix .. "capture")
+		local def = if typeof(id) == "string" then CO.items[id] else nil
+		local c = if def then def.color else CO.captureDefault
+		local color = Color3.fromRGB(c[1], c[2], c[3])
+		local glow = Instance.new("Highlight")
+		glow.FillColor = color
+		glow.OutlineColor = color
+		glow.FillTransparency = CO.captureFill
+		glow.Parent = character
+		local a0 = Instance.new("Attachment")
+		a0.Position = Vector3.new(0, 1, 0)
+		a0.Parent = root
+		local a1 = Instance.new("Attachment")
+		a1.Position = Vector3.new(0, -1, 0)
+		a1.Parent = root
+		local trail = Instance.new("Trail")
+		trail.Attachment0 = a0
+		trail.Attachment1 = a1
+		trail.Color = ColorSequence.new(color)
+		trail.LightEmission = 1
+		trail.Lifetime = CO.captureTrail
+		trail.Parent = root
+		task.delay(eye.suctionSeconds, function()
+			glow:Destroy()
+			trail:Destroy()
+			a0:Destroy()
+			a1:Destroy()
+		end)
 		root.Anchored = true
 		local goal = root.CFrame
 			* CFrame.new(0, eye.suctionHeight, 0)
