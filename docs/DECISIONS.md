@@ -539,4 +539,12 @@ avancer le passe »), sans détail :
   savoir ce qui attend dehors. Elles ne s'arrachent pas (comme une
   cachette solide) ; au dernier Regard, elles s'effondrent comme les
   autres.
+- **Ce qui couvre un recoin s'arrache** (la méfiance de la fiche : un
+  campeur flairé voit l'Œil arracher « ce qui couvre son recoin », et
+  seulement s'il n'y a rien, des Repris arrivent). C'est la première pièce
+  au-dessus de lui, à moins de 40 studs, qui cache vraiment et ne dépasse
+  pas 40 studs (un auvent, un toit de garage, une planche de ponton, jamais
+  un immeuble ni le terrain). Elle tremble 1,5 s, puis une copie s'envole
+  vers l'Œil. L'originale est rangée et **remise en place à la fin de
+  chaque partie** : la carte n'est jamais abîmée d'une partie à l'autre.
 

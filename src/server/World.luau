@@ -153,6 +153,100 @@ function World.seenFactor(character: Model, slant: number?): number
 	return math.max(slanted(head.Position, ignore, slant), slanted(root.Position, ignore, slant))
 end
 
+-- Ce qui couvre un recoin (CONCEPT.md : « ce qui couvre son recoin ») : la
+-- premiere piece au-dessus de `at`, qui cache vraiment (ni vitre, ni
+-- buisson), pas trop grande (on n'arrache pas un immeuble), pas le terrain.
+local coverParams = RaycastParams.new()
+coverParams.FilterType = Enum.RaycastFilterType.Exclude
+coverParams.RespectCanCollide = false
+
+function World.coverAbove(at: Vector3, ignore: { Instance }): BasePart?
+	local R = Config.world.roofRip
+	local filter = table.clone(alwaysIgnored)
+	for _, instance in ignore do
+		table.insert(filter, instance)
+	end
+	coverParams.FilterDescendantsInstances = filter
+	local hit = workspace:Raycast(at, Vector3.new(0, R.reach, 0), coverParams)
+	local part = hit and hit.Instance
+	if part == nil or not part:IsA("BasePart") or part:IsA("Terrain") then
+		return nil
+	end
+	if
+		part.Transparency >= Config.eye.seeThroughTransparency
+		or part:GetAttribute(W.coverAttribute) ~= nil
+	then
+		return nil
+	end
+	local size = part.Size
+	if math.max(size.X, size.Y, size.Z) > R.maxSize then
+		return nil
+	end
+	return part
+end
+
+-- Les pieces arrachees cette partie, a remettre (la carte n'est pas dans
+-- Git : elle ne doit jamais rester abimee d'une partie a l'autre).
+local ripped: { { part: BasePart, parent: Instance } } = {}
+
+-- L'Oeil arrache cette piece : elle tremble, puis une copie s'envole et
+-- s'efface ; l'originale est rangee jusqu'a la fin de la partie.
+function World.ripCover(part: BasePart)
+	local R = Config.world.roofRip
+	local parent = part.Parent
+	if parent == nil then
+		return
+	end
+	local base = part.CFrame
+	task.spawn(function()
+		local ends = os.clock() + R.shakeSeconds
+		while os.clock() < ends and part.Parent do
+			part.CFrame = base
+				* CFrame.new(
+					math.random() * R.shake - R.shake / 2,
+					0,
+					math.random() * R.shake - R.shake / 2
+				)
+			task.wait()
+		end
+		part.CFrame = base
+		if part.Parent == nil then
+			return
+		end
+		local flying = part:Clone()
+		for _, child in flying:GetChildren() do
+			if
+				not child:IsA("Texture")
+				and not child:IsA("Decal")
+				and not child:IsA("SurfaceAppearance")
+			then
+				child:Destroy()
+			end
+		end
+		flying.Anchored = false
+		flying.CanCollide = false
+		flying.CanQuery = false
+		flying.Parent = workspace
+		flying.AssemblyLinearVelocity = (World.eyeOrigin - base.Position).Unit * R.lift
+		flying.AssemblyAngularVelocity =
+			Vector3.new(math.random() * 4, math.random() * 4, math.random() * 4)
+		game:GetService("TweenService")
+			:Create(flying, TweenInfo.new(R.fadeSeconds), { Transparency = 1 })
+			:Play()
+		game:GetService("Debris"):AddItem(flying, R.fadeSeconds)
+		table.insert(ripped, { part = part, parent = parent })
+		part.Parent = nil
+	end)
+end
+
+-- Fin de partie : tout ce qui a ete arrache revient a sa place.
+function World.restoreCovers()
+	for _, entry in ripped do
+		entry.part.Parent = entry.parent
+	end
+	table.clear(ripped)
+end
+
 -- Le sol sous un point (le plus haut solide), ou nil au-dessus du vide.
 local groundParams = RaycastParams.new()
 groundParams.FilterType = Enum.RaycastFilterType.Exclude

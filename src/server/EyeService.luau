@@ -456,8 +456,22 @@ function EyeService.step(dt: number, regard: any, open: boolean, burst: number, 
 				continue
 			end
 			local spot = HidingService.spotOf(player)
+			local head = Roster.characterOf(player)
+			local cover = if spot == nil and head
+				then World.coverAbove(
+					(positions[player] or Vector3.zero) + Vector3.new(0, 1, 0),
+					{ head }
+				)
+				else nil
 			if spot then
 				HidingService.rip(spot, regard.solidFalls)
+			elseif cover then
+				-- Ce qui couvre son recoin s'envole (CONCEPT.md).
+				Sfx.at("aspiration", cover.Position)
+				World.ripCover(cover)
+				print(
+					string.format("[Royale] L'Œil arrache ce qui couvre %s", Roster.nameOf(player))
+				)
 			else
 				for _, callback in flaggedCallbacks do
 					task.spawn(callback, player)

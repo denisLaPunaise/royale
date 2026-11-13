@@ -214,6 +214,7 @@ end
 -- Tout remettre a zero (avant une partie, et apres, pour que le monde ne
 -- garde ni bots, ni Repris, ni cachettes).
 local function resetAll()
+	World.restoreCovers()
 	EyeService.reset()
 	EyePowerService.reset()
 	ZoneService.reset()

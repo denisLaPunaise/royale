@@ -176,6 +176,18 @@ Config.controls = {
 -- verifie ces noms au demarrage et dit ce qui manque.
 Config.world = {
 	folder = "Carte",
+	-- Arracher ce qui couvre un recoin (un campeur flaire, CONCEPT.md) :
+	-- la premiere piece a moins de `reach` studs au-dessus de lui, si elle
+	-- ne depasse pas `maxSize` studs (un auvent, un toit de garage, pas un
+	-- immeuble). Elle tremble, puis s'envole et s'efface.
+	roofRip = {
+		reach = 40,
+		maxSize = 40,
+		shakeSeconds = 1.5,
+		shake = 0.6,
+		lift = 80,
+		fadeSeconds = 3,
+	},
 	-- Les zones de la carte, un dossier chacune (pour les dessiner sur la
 	-- carte de l'ecran).
 	zones = "Zones",

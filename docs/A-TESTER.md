@@ -619,3 +619,14 @@ choisis ta sortie en tournant la tête.
 route), X pour descendre, tourne la tête vers une autre plaque, X : tu
 ressors là-bas ? C'est trop fort contre l'Œil ?
 
+## Arracher ce qui couvre un recoin (nuit du 13 novembre 2026)
+
+**Vérifié seul dans Studio** : un bot sous un ponton du marais ; la planche
+au-dessus de lui a été trouvée, arrachée, puis remise en place.
+
+**Jamais vu** : l'arrachage à l'écran (le tremblement, l'envol), et un vrai
+campeur flairé (il faut camper 90 s au même endroit au Regard 1).
+
+**À regarder** : reste longtemps sous un auvent ou un porche sans bouger :
+« Il te sent… », puis l'auvent s'envole à l'ouverture suivante ?
+
