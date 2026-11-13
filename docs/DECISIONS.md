@@ -498,4 +498,12 @@ avancer le passe »), sans détail :
   `RoyaleVictoires1`), sur un grand panneau de pierre au bord du salon, les
   10 meilleurs, mis à jour toutes les 2 minutes. Une victoire ne compte que
   pour un profil lisible ; un classement illisible affiche « indisponible ».
+- **Se cacher à plusieurs** (la fiche : « on peut être plusieurs » dans un
+  volume, « la cave a plusieurs places ») : un buisson, des roseaux, des
+  caisses, un wagon, un conteneur ou une crypte prennent 2 personnes ; un
+  abri, un dessous de pont ou le dessous des gradins, 3. Les abris fermés
+  (voiture, armoire, casier, benne, tôle, carton) restent à une personne.
+  On se tient côte à côte. Pousser ou un Rampant fait sortir le premier
+  entré ; l'arrachage fait sortir tout le monde. N'importe qui peut entrer,
+  pas seulement un coéquipier : on peut tomber sur quelqu'un.
 

@@ -546,6 +546,24 @@ Config.hiding = {
 	-- prochaine ouverture, jamais pendant celle ou l'on s'y cache.
 	-- Il garde ses marques ce nombre d'ouvertures, puis oublie.
 	markBursts = 3,
+	-- Combien de personnes une cachette accueille (CONCEPT.md : on peut etre
+	-- plusieurs dans un volume, la cave a plusieurs places). Par nom de
+	-- modele sans son numero ; les autres (abris fermes) : une seule.
+	capacity = {
+		Buisson = 2,
+		Roseaux = 2,
+		Abri = 3,
+		Caisses = 2,
+		DessousDePont = 3,
+		SousLesGradins = 3,
+		CryptChapelle = 2,
+		Wagon = 2,
+		Conteneur = 2,
+	},
+	-- A plusieurs, on se tient cote a cote, a cette distance (studs).
+	seatSpacing = 2,
+	-- Un abri ferme (voiture, armoire, casier...) : une seule personne.
+	defaultCapacity = 1,
 	-- Combien de temps l'invite met a s'ouvrir (maintenir X).
 	enterHoldSeconds = 0.3,
 	promptDistance = 7,

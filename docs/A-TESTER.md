@@ -560,3 +560,13 @@ vide.
 **À regarder** (jeu publié, ou Studio avec l'accès aux API) : gagne une
 partie, attends 2 minutes au salon, ton nom apparaît.
 
+## Se cacher à plusieurs (nuit du 13 novembre 2026)
+
+**Vérifié seul dans Studio** : deux bots entrent dans le même buisson, côte
+à côte (à 2 studs) ; le troisième est refusé ; l'arrachage les fait sortir
+tous les deux.
+
+**À regarder en jouant (avec tes amis)** : cachez-vous à deux dans un
+buisson, à trois sous un abri. Ça se voit trop de dehors ? Les places par
+cachette sont-elles justes ?
+

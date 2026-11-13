@@ -36,7 +36,10 @@ export type Spot = {
 	inside: BasePart,
 	exits: { BasePart },
 	solid: boolean,
-	occupant: Roster.Actor?,
+	-- Ceux qui y sont : un abri ferme n'en prend qu'un, un volume (buisson,
+	-- roseaux, abri, dessous de pont...) plusieurs (CONCEPT.md).
+	occupants: { Roster.Actor },
+	capacity: number,
 	-- Le numero de l'ouverture pendant laquelle (ou apres laquelle) on y est
 	-- entre pour la derniere fois ; nil : pas marquee.
 	mark: number?,
@@ -88,10 +91,24 @@ local function nearestExit(spot: Spot, from: Vector3): BasePart
 	return best
 end
 
+-- La place d'un occupant dans la cachette : le premier au centre, les
+-- suivants a cote (on se tient serres dans un buisson).
+local function seat(spot: Spot, index: number): CFrame
+	if index <= 1 then
+		return spot.inside.CFrame
+	end
+	local side = if index % 2 == 0 then 1 else -1
+	local step = math.floor(index / 2) * H.seatSpacing
+	return spot.inside.CFrame * CFrame.new(side * step, 0, 0)
+end
+
 local function release(player: Roster.Actor, spot: Spot, grace: boolean)
 	byPlayer[player] = nil
-	spot.occupant = nil
-	spot.prompt.Enabled = not spot.ripping
+	local i = table.find(spot.occupants, player)
+	if i then
+		table.remove(spot.occupants, i)
+	end
+	spot.prompt.Enabled = not spot.ripping and #spot.occupants < spot.capacity
 	player:SetAttribute(H.hiddenAttribute, nil)
 	local root = Roster.rootOf(player)
 	if root then
@@ -123,7 +140,7 @@ end
 local function enter(player: Roster.Actor, spot: Spot)
 	if
 		not Roster.isAlive(player)
-		or spot.occupant
+		or #spot.occupants >= spot.capacity
 		or spot.ripping
 		or byPlayer[player]
 		or busy(player)
@@ -134,14 +151,16 @@ local function enter(player: Roster.Actor, spot: Spot)
 	if root == nil then
 		return
 	end
-	spot.occupant = player
-	spot.since = os.clock()
+	table.insert(spot.occupants, player)
+	if #spot.occupants == 1 then
+		spot.since = os.clock()
+	end
 	spot.mark = burstSerial
-	spot.prompt.Enabled = false
+	spot.prompt.Enabled = #spot.occupants < spot.capacity
 	byPlayer[player] = spot
 	player:SetAttribute(H.hiddenAttribute, spot.model.Name)
 	root.Anchored = true
-	root.CFrame = spot.inside.CFrame
+	root.CFrame = seat(spot, #spot.occupants)
 	for _, callback in enterCallbacks do
 		callback(player, spot)
 	end
@@ -168,7 +187,8 @@ local function makeSpot(model: Model, solid: boolean): Spot?
 		inside = inside,
 		exits = exits,
 		solid = solid,
-		occupant = nil,
+		occupants = {},
+		capacity = H.capacity[(string.gsub(model.Name, "%d+$", ""))] or H.defaultCapacity,
 		bell = false,
 		trap = false,
 		barricadedUntil = 0,
@@ -334,13 +354,12 @@ function HidingService.ripCandidates(
 		end
 	end
 	local function rank(spot: Spot): number
-		local occupant = spot.occupant
-		if occupant and flagged[occupant] then
-			return 0
-		elseif occupant then
-			return 1
+		for _, occupant in spot.occupants do
+			if flagged[occupant] then
+				return 0
+			end
 		end
-		return 2
+		return if #spot.occupants > 0 then 1 else 2
 	end
 	table.sort(out, function(a, b)
 		local ra, rb = rank(a), rank(b)
@@ -360,7 +379,7 @@ end
 function HidingService.freeSpots(): { { model: Model, at: Vector3 } }
 	local out = {}
 	for _, spot in spots do
-		if spot.occupant == nil and not spot.ripping and spot.model.Parent then
+		if #spot.occupants < spot.capacity and not spot.ripping and spot.model.Parent then
 			local at = if #spot.exits > 0 then spot.exits[1].Position else spot.inside.Position
 			table.insert(out, { model = spot.model, at = at })
 		end
@@ -388,10 +407,11 @@ function HidingService.spotNear(at: Vector3, range: number): (Spot?, Vector3?)
 	return best, bestAt
 end
 
--- Deloge l'occupant (la poussee sur un abri) : il sort, sans le repit de
--- l'arrachage (c'est un joueur qui l'a trouve, pas l'Oeil). Rend qui est sorti.
+-- Deloge un occupant (la poussee sur un abri, le Rampant) : le premier
+-- entre sort, sans le repit de l'arrachage (c'est un joueur qui l'a trouve,
+-- pas l'Oeil). Rend qui est sorti.
 function HidingService.evict(spot: Spot): Roster.Actor?
-	local occupant = spot.occupant
+	local occupant = spot.occupants[1]
 	if occupant and os.clock() < spot.barricadedUntil then
 		return nil
 	end
@@ -463,8 +483,7 @@ function HidingService.rip(spot: Spot, solidFalls: boolean)
 		-- elle s'effondre (on en est chasse, et on n'y rentre plus).
 		spot.ripping = true
 		spot.prompt.Enabled = false
-		local occupant = spot.occupant
-		if occupant then
+		for _, occupant in table.clone(spot.occupants) do
 			release(occupant, spot, true)
 		end
 		print("[Royale] Une cachette solide s'effondre : " .. spot.model.Name)
@@ -492,8 +511,7 @@ function HidingService.rip(spot: Spot, solidFalls: boolean)
 			return
 		end
 		model:PivotTo(base)
-		local occupant = spot.occupant
-		if occupant then
+		for _, occupant in table.clone(spot.occupants) do
 			release(occupant, spot, true)
 		end
 		local toward = World.eyeOrigin
@@ -532,8 +550,11 @@ end)
 Players.PlayerRemoving:Connect(function(player: Player)
 	local spot = byPlayer[player]
 	if spot then
-		spot.occupant = nil
-		spot.prompt.Enabled = not spot.ripping
+		local i = table.find(spot.occupants, player)
+		if i then
+			table.remove(spot.occupants, i)
+		end
+		spot.prompt.Enabled = not spot.ripping and #spot.occupants < spot.capacity
 		byPlayer[player] = nil
 	end
 end)
