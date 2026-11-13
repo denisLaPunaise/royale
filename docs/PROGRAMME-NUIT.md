@@ -56,8 +56,8 @@ Chaque bloc : code, tests, essai seul dans Studio, `A-TESTER.md`,
 
 ### En une phrase
 
-Tout le programme est fait, commité et poussé, plus des bonus. Six parties
-complètes jouées par les bots (solo, duo, quatre escouades) n'ont montré
+Tout le programme est fait, commité et poussé, plus des bonus. Sept parties
+complètes jouées par les bots (solo, duo, cinq escouades) n'ont montré
 aucune erreur du jeu. Le jeu à la manette, à plusieurs et une fois publié
 reste à vérifier par toi.
 

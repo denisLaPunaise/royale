@@ -638,3 +638,8 @@ cachette qu'ils ont dû quitter : 24 entrées en 3 minutes, 19 s cachés en
 moyenne. Les égouts ne téléportent plus que ceux qui regardent une
 direction (les joueurs).
 
+**Septième partie complète** (après les égouts et l'arrachage des
+couverts) : aucune erreur ; deux couverts arrachés au-dessus de campeurs
+flairés ; au retour au salon, la carte compte exactement ses 31 105 pièces
+(tout est remis en place).
+
