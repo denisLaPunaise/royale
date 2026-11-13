@@ -165,7 +165,15 @@ function Hud.start()
 		-- Le Regard et l'Oeil.
 		local index = workspace:GetAttribute(M.regardAttribute)
 		local title = workspace:GetAttribute(M.regardTitleAttribute)
-		if phase == "Partie" and typeof(index) == "number" and typeof(title) == "string" then
+		-- Seulement pour ceux qui jouent cette partie (au salon, l'attribut
+		-- n'existe pas).
+		local inGame = inMatch ~= nil
+		if
+			inGame
+			and phase == "Partie"
+			and typeof(index) == "number"
+			and typeof(title) == "string"
+		then
 			regard.Text = string.format(
 				"Regard %d — %s%s",
 				index,
@@ -192,12 +200,14 @@ function Hud.start()
 		end
 		local P = Config.eyePowers
 		local list = workspace:GetAttribute(P.listAttribute)
-		powers.Text = if phase == "Partie" and typeof(list) == "string"
+		powers.Text = if inGame
+				and phase == "Partie"
+				and typeof(list) == "string"
 			then "Ses pouvoirs : " .. list
 			else ""
 		power.Text = ""
 		local last = workspace:GetAttribute(P.announceAttribute)
-		if phase == "Partie" and typeof(last) == "string" then
+		if inGame and phase == "Partie" and typeof(last) == "string" then
 			local name, text, at = string.match(last, "^(.-)|(.-)|(.+)$")
 			local t = tonumber(at)
 			if name and text and t and now - t < P.announceSeconds then
@@ -207,7 +217,9 @@ function Hud.start()
 		local count = workspace:GetAttribute(M.aliveAttribute)
 		-- Seulement pendant une partie (au salon, le compte vaut 0).
 		local playing = phase == "Visee" or phase == "Chute" or phase == "Partie" or phase == "Fin"
-		alive.Text = if typeof(count) == "number" and playing
+		alive.Text = if typeof(count) == "number"
+				and playing
+				and inGame
 			then string.format("Restants : %d", count)
 			else ""
 
