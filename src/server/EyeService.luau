@@ -26,6 +26,7 @@ local Targeting = require(Royale:WaitForChild("Targeting"))
 
 local HidingService = require(script.Parent.HidingService)
 local Roster = require(script.Parent.Roster)
+local Sfx = require(script.Parent.Sfx)
 local World = require(script.Parent.World)
 local ZoneService = require(script.Parent.ZoneService)
 
@@ -217,6 +218,18 @@ function EyeService.onFlagged(callback: (actor: Roster.Actor) -> ())
 	table.insert(flaggedCallbacks, callback)
 end
 
+-- Le vacarme d'une cachette qui s'ouvre (le conteneur) : l'Oeil l'entend a
+-- tout Regard, et tout le monde aussi.
+local function clang(_actor: Roster.Actor, spot: HidingService.Spot)
+	local seconds = HidingService.noiseOf(spot)
+	if seconds > 0 then
+		EyeService.noise(spot.inside.Position, seconds, true)
+		Sfx.at("coup", spot.inside.Position)
+	end
+end
+HidingService.onEnter(clang)
+HidingService.onRelease(clang)
+
 function EyeService.reset()
 	table.clear(comebacks)
 	table.clear(lures)
@@ -382,8 +395,10 @@ function EyeService.step(dt: number, regard: any, open: boolean, burst: number, 
 		local hidden = HidingService.isHidden(player)
 		local veiled = effect(player, FX.veiledAttribute)
 			or (ignoredUntil[player] ~= nil and now < (ignoredUntil[player] :: number))
-		local sight = if hidden or veiled
+		-- Cache : rien d'un abri ferme, une partie dans un buisson.
+		local sight = if veiled
 			then 0
+			elseif hidden then HidingService.coverOf(player)
 			else World.seenFactor(Roster.characterOf(player) :: Model, regard.slantElevation)
 		local lit = false
 		if lightsOn then

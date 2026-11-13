@@ -40,6 +40,9 @@ export type Spot = {
 	-- roseaux, abri, dessous de pont...) plusieurs (CONCEPT.md).
 	occupants: { Roster.Actor },
 	capacity: number,
+	-- Sa sorte (le nom du modele sans son numero) : ses mecaniques en
+	-- dependent (CONCEPT.md, les cachettes a mecanique).
+	kind: string,
 	-- Le numero de l'ouverture pendant laquelle (ou apres laquelle) on y est
 	-- entre pour la derniere fois ; nil : pas marquee.
 	mark: number?,
@@ -102,7 +105,19 @@ local function seat(spot: Spot, index: number): CFrame
 	return spot.inside.CFrame * CFrame.new(side * step, 0, 0)
 end
 
-local function release(player: Roster.Actor, spot: Spot, grace: boolean)
+local function farthestExit(spot: Spot, from: Vector3): BasePart
+	local best = spot.exits[1]
+	local bestD = -math.huge
+	for _, e in spot.exits do
+		local d = (e.Position - from).Magnitude
+		if d > bestD then
+			best, bestD = e, d
+		end
+	end
+	return best
+end
+
+local function release(player: Roster.Actor, spot: Spot, grace: boolean, awayFrom: Vector3?)
 	byPlayer[player] = nil
 	local i = table.find(spot.occupants, player)
 	if i then
@@ -112,7 +127,12 @@ local function release(player: Roster.Actor, spot: Spot, grace: boolean)
 	player:SetAttribute(H.hiddenAttribute, nil)
 	local root = Roster.rootOf(player)
 	if root then
-		local exit = if #spot.exits > 0 then nearestExit(spot, root.Position) else spot.inside
+		-- Delogee, on sort par le cote oppose a celui qui pousse (la voiture
+		-- a deux portieres, CONCEPT.md) ; sinon par la sortie la plus proche.
+		local exit = if #spot.exits == 0
+			then spot.inside
+			elseif awayFrom then farthestExit(spot, awayFrom)
+			else nearestExit(spot, root.Position)
 		root.Anchored = false
 		root.CFrame = CFrame.new(exit.Position + Vector3.new(0, 1, 0))
 			* (exit.CFrame - exit.CFrame.Position)
@@ -189,6 +209,7 @@ local function makeSpot(model: Model, solid: boolean): Spot?
 		solid = solid,
 		occupants = {},
 		capacity = H.capacity[(string.gsub(model.Name, "%d+$", ""))] or H.defaultCapacity,
+		kind = (string.gsub(model.Name, "%d+$", "")),
 		bell = false,
 		trap = false,
 		barricadedUntil = 0,
@@ -410,15 +431,34 @@ end
 -- Deloge un occupant (la poussee sur un abri, le Rampant) : le premier
 -- entre sort, sans le repit de l'arrachage (c'est un joueur qui l'a trouve,
 -- pas l'Oeil). Rend qui est sorti.
-function HidingService.evict(spot: Spot): Roster.Actor?
+-- `from` : la ou se tient celui qui pousse (nil : un objet, un Repris). Un
+-- conteneur se ferme de l'interieur : on ne le force pas en poussant.
+function HidingService.evict(spot: Spot, from: Vector3?): Roster.Actor?
 	local occupant = spot.occupants[1]
 	if occupant and os.clock() < spot.barricadedUntil then
 		return nil
 	end
+	if occupant and from and H.sealed[spot.kind] then
+		return nil
+	end
 	if occupant then
-		release(occupant, spot, false)
+		release(occupant, spot, false, from)
 	end
 	return occupant
+end
+
+-- Ce que l'Oeil voit de quelqu'un dans cette cachette : rien d'un abri
+-- ferme, une partie dans un buisson (« un faisceau qui reste dessus finit
+-- par voir », CONCEPT.md).
+function HidingService.coverOf(player: Roster.Actor): number
+	local spot = byPlayer[player]
+	return if spot then H.seenInside[spot.kind] or 0 else 0
+end
+
+-- Le bruit d'une cachette quand on y entre ou en sort (le conteneur fait un
+-- vacarme), en secondes d'ecoute pour l'Oeil ; 0 sinon.
+function HidingService.noiseOf(spot: Spot): number
+	return H.noisy[spot.kind] or 0
 end
 
 -- Appele quand un participant entre dans une cachette, ou en sort (de

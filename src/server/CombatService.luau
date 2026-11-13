@@ -427,7 +427,7 @@ local function shove(actor: Roster.Actor, root: BasePart)
 	-- Sur un abri : on deloge celui qui y est.
 	local spot = HidingService.spotNear(root.Position, Config.hiding.promptDistance)
 	if spot then
-		local out = HidingService.evict(spot)
+		local out = HidingService.evict(spot, root.Position)
 		local outRoot = out and Roster.rootOf(out)
 		if outRoot then
 			impulse(outRoot, forward * C.shoveSpeed + Vector3.new(0, C.shoveLift, 0))

@@ -517,4 +517,17 @@ avancer le passe »), sans détail :
   d'or, Trou noir) ; deux d'entre eux sont dans les tirages.
 - **La pose de victoire** (la fiche) : à l'écran de fin, chaque gagnant
   joue son émote portée, sinon « cheer ».
+- **Les cachettes à mécanique** (la liste de départ de la fiche), celles
+  qui ne demandent pas de toucher à la carte :
+  - **buisson, roseaux** : ils couvrent à moitié. L'Œil voit 35 % de
+    celui qui est dedans : un faisceau qui reste dessus remplit la jauge,
+    lentement (environ 6 s au Regard 1). Ce n'est pas « bien caché » ;
+  - **voiture** : délogé, on sort par la portière opposée à celui qui
+    pousse ;
+  - **conteneur** : il se ferme de l'intérieur (on ne le force pas en
+    poussant ; un Repris ou un objet le peuvent), mais il fait un vacarme à
+    l'entrée et à la sortie, que l'Œil entend 4 s à tout Regard.
+  - Pas encore faits : la plaque d'égout (il faut des tunnels dans la
+    carte) et l'armoire qui protège quand le toit est arraché (les toits ne
+    s'arrachent pas dans ce jeu).
 

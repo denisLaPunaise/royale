@@ -590,3 +590,14 @@ gagner soi-même).
 **À regarder** : quand un ami est aspiré, la lueur se voit de loin ? Quand
 tu gagnes, ton personnage fait-il sa pose ?
 
+## Les cachettes à mécanique (nuit du 13 novembre 2026)
+
+**Vérifié seul dans Studio** : dans un buisson, l'Œil voit 35 % ; délogé
+d'une voiture, on sort par la portière d'en face (à 1 stud d'elle, à 10 de
+celui qui pousse) ; un conteneur ne s'ouvre pas en poussant et fait 4 s de
+vacarme.
+
+**À regarder** : se cacher dans un buisson pendant qu'un faisceau passe :
+on a le temps de fuir ? Un conteneur trop fort ? Les bots meurent-ils trop
+dans les buissons ?
+

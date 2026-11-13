@@ -564,6 +564,14 @@ Config.hiding = {
 	seatSpacing = 2,
 	-- Un abri ferme (voiture, armoire, casier...) : une seule personne.
 	defaultCapacity = 1,
+	-- Les cachettes a mecanique (CONCEPT.md) :
+	-- un buisson, des roseaux couvrent a moitie : l'Oeil y voit cette part
+	-- (la jauge monte, lentement, si un faisceau reste dessus) ;
+	seenInside = { Buisson = 0.35, Roseaux = 0.35 },
+	-- un conteneur se ferme de l'interieur : on ne l'ouvre pas en poussant ;
+	sealed = { Conteneur = true },
+	-- mais il fait un vacarme a l'ouverture : l'Oeil l'entend ce temps (s).
+	noisy = { Conteneur = 4 },
 	-- Combien de temps l'invite met a s'ouvrir (maintenir X).
 	enterHoldSeconds = 0.3,
 	promptDistance = 7,
