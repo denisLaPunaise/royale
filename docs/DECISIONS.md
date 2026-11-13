@@ -481,3 +481,17 @@ Josh : « tout faire », avec des choix de l'assistant, revus au rapport.
 - **Le Rampant se repose 15 s** après avoir arraché quelqu'un.
 - **La caméra du spectateur** s'arrête devant les murs.
 
+## 13 novembre 2026 (nuit) — les défis, choix pris sans Josh
+
+La fiche les annonçait (« des défis quotidiens et hebdomadaires qui font
+avancer le passe »), sans détail :
+- **3 défis par jour, 3 par semaine**, les mêmes pour tout le monde. Ils
+  sont tirés parmi 8 sortes : jouer, atteindre le Regard 3, gagner,
+  fouiller, mettre K.O., détruire des Repris, revenir du Ventre, ouvrir le
+  cocon d'un coéquipier.
+- **Ceux de la semaine** demandent 5 fois plus et rapportent 3 fois plus.
+- **Un défi du jour** rapporte 150 XP de passe et 15 crédits, une seule
+  fois.
+- **À l'écran** : un onglet « Défis » dans la boutique (croix gauche au
+  salon).
+

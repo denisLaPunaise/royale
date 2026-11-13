@@ -33,6 +33,7 @@ local CombatService = require(script.Parent.CombatService)
 local EyeService = require(script.Parent.EyeService)
 local HidingService = require(script.Parent.HidingService)
 local ItemService = require(script.Parent.ItemService)
+local ChallengeService = require(script.Parent.ChallengeService)
 local Roster = require(script.Parent.Roster)
 local Sfx = require(script.Parent.Sfx)
 local World = require(script.Parent.World)
@@ -277,7 +278,7 @@ local function vanish(agent: Agent, rise: boolean)
 	end)
 end
 
-local function onHit(id: string, _by: Roster.Actor, push: Vector3)
+local function onHit(id: string, by: Roster.Actor, push: Vector3)
 	for _, agent in agents do
 		if agent.id == id and not agent.dying then
 			agent.hits += 1
@@ -295,6 +296,7 @@ local function onHit(id: string, _by: Roster.Actor, push: Vector3)
 			if agent.hits >= agent.kind.hits then
 				-- Un Repris tue lache un objet commun (CONCEPT.md).
 				ItemService.dropCommon(agent.root.Position)
+				ChallengeService.record(by, "repris")
 				print(string.format("[Royale] Un %s est detruit", agent.kind.name))
 				vanish(agent, false)
 			end

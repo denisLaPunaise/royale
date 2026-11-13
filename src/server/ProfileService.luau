@@ -30,7 +30,7 @@ type Entry = { data: any, readable: boolean, dirty: boolean }
 local profiles: { [Player]: Entry } = {}
 local loadedListeners: { (Player) -> () } = {}
 -- Appeles avec l'XP de chaque partie (le passe de saison).
-local grantedListeners: { (Player, number) -> () } = {}
+local grantedListeners: { (Player, number, any) -> () } = {}
 local store: DataStore? = nil
 
 local function getStore(): DataStore?
@@ -171,7 +171,7 @@ local function load(player: Player)
 	end
 end
 
-function ProfileService.onGranted(listener: (Player, number) -> ())
+function ProfileService.onGranted(listener: (Player, number, any) -> ())
 	table.insert(grantedListeners, listener)
 end
 
@@ -230,7 +230,7 @@ function ProfileService.grant(player: Player, result: Progression.Result)
 	end
 	d.xp += reward.xp
 	for _, listener in grantedListeners do
-		task.spawn(listener, player, reward.xp)
+		task.spawn(listener, player, reward.xp, result)
 	end
 	d.credits += reward.credits
 	d.fragments += reward.fragments

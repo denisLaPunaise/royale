@@ -1672,6 +1672,33 @@ Config.cosmetics = {
 	trail = { height = 2, lifetime = 0.6, lightEmission = 0.6, transparency = 0.3 },
 }
 
+-- Les defis (CONCEPT.md : quotidiens et hebdomadaires, ils font avancer le
+-- passe). Les hebdomadaires sont les memes defis, en plus long et mieux
+-- payes. Choix de l'assistant, a regler.
+Config.challenges = {
+	daily = 3,
+	weekly = 3,
+	-- Les hebdomadaires demandent `weeklyFactor` fois plus, et rapportent
+	-- `weeklyRewardFactor` fois plus.
+	weeklyFactor = 5,
+	weeklyRewardFactor = 3,
+	-- Recompense d'un defi quotidien : de l'XP de passe et des credits.
+	passXp = 150,
+	credits = 15,
+	list = {
+		play = { text = "Jouer %d partie(s)", stat = "match", goal = 2 },
+		regard3 = { text = "Atteindre le Regard 3 (%d fois)", stat = "regard3", goal = 1 },
+		win = { text = "Gagner %d partie(s)", stat = "win", goal = 1 },
+		search = { text = "Fouiller %d meubles", stat = "search", goal = 8 },
+		knockout = { text = "Mettre %d joueurs K.O.", stat = "knockout", goal = 3 },
+		repris = { text = "Détruire %d Repris", stat = "repris", goal = 3 },
+		belly = { text = "Revenir du Ventre (%d fois)", stat = "belly", goal = 1 },
+		cocoon = { text = "Ouvrir le cocon d'un coéquipier (%d fois)", stat = "cocoon", goal = 1 },
+	},
+	-- Attribut du joueur : ses defis et leur avancement (JSON, pour l'ecran).
+	attribute = "Defis",
+}
+
 Config.shop = {
 	-- La boutique tournante : ce nombre d'objets, changes chaque jour (UTC) ;
 	-- le coin permanent garde les classiques.

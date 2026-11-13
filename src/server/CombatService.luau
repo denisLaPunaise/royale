@@ -29,6 +29,7 @@ local Melee = require(Royale:WaitForChild("Melee"))
 local EyeService = require(script.Parent.EyeService)
 local HidingService = require(script.Parent.HidingService)
 local RemoteGuard = require(script.Parent.RemoteGuard)
+local ChallengeService = require(script.Parent.ChallengeService)
 local Roster = require(script.Parent.Roster)
 local Sfx = require(script.Parent.Sfx)
 
@@ -377,6 +378,7 @@ local function hit(actor: Roster.Actor, root: BasePart)
 			Sfx.at("coup", targetRoot)
 		end
 		if ko then
+			ChallengeService.record(actor, "knockout")
 			print(
 				string.format(
 					"[Royale] %s met %s K.O.",

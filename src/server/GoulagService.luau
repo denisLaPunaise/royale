@@ -24,6 +24,7 @@ local Duels = require(Royale:WaitForChild("Duels"))
 local CombatService = require(script.Parent.CombatService)
 local HidingService = require(script.Parent.HidingService)
 local ReprisService = require(script.Parent.ReprisService)
+local ChallengeService = require(script.Parent.ChallengeService)
 local Roster = require(script.Parent.Roster)
 local SquadService = require(script.Parent.SquadService)
 local World = require(script.Parent.World)
@@ -305,6 +306,7 @@ end
 local function save(actor: Roster.Actor)
 	remove(actor)
 	CombatService.reset(actor)
+	ChallengeService.record(actor, "belly")
 	-- En escouade : dans un cocon, pres d'un coequipier en vie.
 	if SquadService.cocoon(actor) then
 		return

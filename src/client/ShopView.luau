@@ -26,7 +26,7 @@ local SH = Config.shop
 local PA = Config.pass
 local V = Config.view
 local K = Config.controls.contexts.shopPanel
-local TABS = { "Boutique", "Tirages", "Passe", "Mes cosmétiques", "Crédits" }
+local TABS = { "Boutique", "Tirages", "Passe", "Défis", "Mes cosmétiques", "Crédits" }
 
 type Row = { text: string, action: string?, arg: any? }
 
@@ -78,7 +78,7 @@ function ShopView.start()
 	frame.Position = UDim2.fromScale(0.5, 0.5)
 	-- Large au plus de `panelWidth`, et jamais plus que l'ecran (vu en image :
 	-- il debordait d'une petite fenetre).
-	frame.Size = UDim2.new(0.95, 0, 0.8, 0)
+	frame.Size = UDim2.fromScale(0.95, 0.8)
 	frame.BackgroundColor3 = rgb(SH.background)
 	frame.BackgroundTransparency = 0.1
 	frame.BorderSizePixel = 0
@@ -248,6 +248,30 @@ function ShopView.start()
 					end
 				end
 			end
+		elseif name == "Défis" then
+			local defis = decode(player:GetAttribute(Config.challenges.attribute)) or {}
+			for _, part in { { "Aujourd'hui", defis.daily }, { "Cette semaine", defis.weekly } } do
+				table.insert(out, { text = "— " .. part[1] .. " —" })
+				for _, c in part[2] or {} do
+					table.insert(out, {
+						text = string.format(
+							"%s%s : %d / %d",
+							if c.done then "✓ " else "",
+							c.text,
+							c.progress,
+							c.goal
+						),
+					})
+				end
+			end
+			table.insert(out, {
+				text = string.format(
+					"Un défi du jour : %d XP de passe et %d crédits (la semaine : x%d)",
+					Config.challenges.passXp,
+					Config.challenges.credits,
+					Config.challenges.weeklyRewardFactor
+				),
+			})
 		elseif name == "Mes cosmétiques" then
 			local ids: { string } = {}
 			for id in owned do
@@ -444,6 +468,11 @@ function ShopView.start()
 	RunService.Heartbeat:Connect(function()
 		if open and player:GetAttribute(Config.match.aliveAttribute) ~= nil then
 			close()
+		end
+	end)
+	player:GetAttributeChangedSignal(Config.challenges.attribute):Connect(function()
+		if open then
+			render()
 		end
 	end)
 	player:GetAttributeChangedSignal(SH.playerAttribute):Connect(function()

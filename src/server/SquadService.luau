@@ -23,6 +23,7 @@ local Squads = require(Royale:WaitForChild("Squads"))
 
 local CombatService = require(script.Parent.CombatService)
 local EyeService = require(script.Parent.EyeService)
+local ChallengeService = require(script.Parent.ChallengeService)
 local Roster = require(script.Parent.Roster)
 local ShopService = require(script.Parent.ShopService)
 local World = require(script.Parent.World)
@@ -177,6 +178,7 @@ local function onCocoonHit(id: string, by: Roster.Actor, _push: Vector3)
 					)
 				)
 				open(cocoon, false)
+				ChallengeService.record(by, "cocoon")
 			end
 			return
 		end

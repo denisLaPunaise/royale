@@ -539,3 +539,15 @@ mesurées sur la carte construite (rien de recopié).
 not match ») vient de la place, pas du code : introuvable dans les
 propriétés habituelles, et sans effet visible.
 
+## Les défis (nuit du 13 novembre 2026)
+
+**Vérifié par le calcul** (`tests/specs/challenges.luau`) et **seul dans
+Studio** : 3 défis du jour et 3 de la semaine apparaissent. Après 8
+fouilles, 3 K.O. et 3 Repris détruits (signalés par le même chemin que le
+jeu) puis une victoire : deux défis du jour réussis (+30 crédits, +300 XP
+de passe), les défis de la semaine avancent, et le passe atteint le palier
+1.
+
+**À regarder en jouant** : l'onglet Défis de la boutique, et le message
+« Défi du jour réussi » quand il tombe en pleine partie.
+

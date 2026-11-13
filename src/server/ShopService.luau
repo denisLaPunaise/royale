@@ -326,6 +326,11 @@ local function processReceipt(receipt: any): Enum.ProductPurchaseDecision
 	return Enum.ProductPurchaseDecision.PurchaseGranted
 end
 
+-- De l'XP de passe venue d'ailleurs (les defis).
+function ShopService.addPassXp(player: Player, xp: number)
+	onMatchXp(player, xp)
+end
+
 -- Ce qu'un joueur porte dans cet emplacement (l'objet du catalogue), ou nil.
 function ShopService.equipped(player: Player, slot: string): any?
 	local id = player:GetAttribute(CO.attributePrefix .. slot)

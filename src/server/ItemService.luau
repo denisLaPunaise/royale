@@ -34,6 +34,7 @@ local CombatService = require(script.Parent.CombatService)
 local EyeService = require(script.Parent.EyeService)
 local HidingService = require(script.Parent.HidingService)
 local RemoteGuard = require(script.Parent.RemoteGuard)
+local ChallengeService = require(script.Parent.ChallengeService)
 local Roster = require(script.Parent.Roster)
 local Sfx = require(script.Parent.Sfx)
 local SquadService = require(script.Parent.SquadService)
@@ -234,6 +235,7 @@ function ItemService.trySearch(actor: Roster.Actor, part: BasePart): string?
 	end
 	EyeService.noise(part.Position, L.searchNoiseSeconds, false)
 	Sfx.at("fouille", part)
+	ChallengeService.record(actor, "search")
 	if not filled[part] then
 		notify(actor, "Rien ici.")
 		return nil
