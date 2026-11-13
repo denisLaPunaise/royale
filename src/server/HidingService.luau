@@ -418,7 +418,11 @@ function HidingService.leave(player: Roster.Actor, look: Vector3?)
 	if spot == nil then
 		return
 	end
-	local target = if spot.kind == H.sewer.name then sewerExit(spot, look) else nil
+	-- Seulement en regardant quelque part (un joueur) : sans direction (un
+	-- bot, sortir en force), on ressort par la meme plaque. Vu en partie :
+	-- les bots entraient et sortaient sans cesse, teleportes d'une plaque a
+	-- l'autre (82 fois en 4 minutes).
+	local target = if spot.kind == H.sewer.name and look then sewerExit(spot, look) else nil
 	release(player, spot, false)
 	local root = Roster.rootOf(player)
 	if target and root then
