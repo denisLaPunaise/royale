@@ -56,8 +56,8 @@ Chaque bloc : code, tests, essai seul dans Studio, `A-TESTER.md`,
 
 ### En une phrase
 
-Tout le programme est fait, commité et poussé, plus cinq bonus. Cinq parties
-complètes jouées par les bots (solo, duo, trois escouades) n'ont montré
+Tout le programme est fait, commité et poussé, plus des bonus. Six parties
+complètes jouées par les bots (solo, duo, quatre escouades) n'ont montré
 aucune erreur du jeu. Le jeu à la manette, à plusieurs et une fois publié
 reste à vérifier par toi.
 
@@ -103,9 +103,15 @@ reste à vérifier par toi.
 **Bonus** (manques de la fiche) :
 - les défis quotidiens et hebdomadaires (onglet Défis) ;
 - le classement des victoires (panneau du salon) ;
-- se cacher à plusieurs dans les grandes cachettes ;
+- se cacher à plusieurs dans les grandes cachettes (buisson à 2, abri à
+  3…) ;
+- les cachettes à mécanique : le buisson ne couvre qu'à moitié, la voiture
+  a deux portières, le conteneur se ferme de l'intérieur mais fait un
+  vacarme ;
 - le petit tutoriel (les cachettes en vitrine et un panneau « Comment
   jouer ») ;
+- l'effet d'aspiration (lueur colorée, aussi en cosmétique) et la pose de
+  victoire ;
 - les zones sur la carte.
 
 ### Les bugs trouvés en testant, et corrigés
@@ -120,6 +126,9 @@ reste à vérifier par toi.
   la boutique, l'annonce des pouvoirs, la carte.
 - Y ne changeait pas le mode au salon (le bouton « pousser » l'avalait).
 - « Restants : 0 » s'affichait au salon.
+- La vérification automatique de GitHub est restée rouge sur 7 poussées de
+  la nuit : de simples avertissements d'analyse que je ne voyais pas. Tout
+  est corrigé et elle est verte.
 
 ### Ce que je n'ai PAS pu vérifier
 
