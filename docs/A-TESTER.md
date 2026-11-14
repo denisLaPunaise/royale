@@ -737,3 +737,58 @@ Vues en image dans Studio, la lueur jamais vue bouger par toi.
 2. **La lueur qui court** du trou vers le bout des branches : jolie, trop
    rapide, trop clignotante ?
 3. **Au salon**, pareil sur l'Œil du salon.
+
+## Les achats en Robux (14 novembre 2026)
+
+Les produits existent et leurs prix sont bons (vérifié depuis Studio).
+L'achat lui-même n'a pas été fait : la fenêtre d'achat de Roblox ne se
+pilote pas d'ici.
+
+1. **Dans Studio** (achat de test, gratuit) : lance une partie, ouvre la
+   boutique, achète le paquet de 500 crédits, confirme : ton total doit
+   monter de 500 et un message « +500 crédits, merci ! » apparaître.
+2. **Le passe premium**, pareil : « Passe premium débloqué ! » et les
+   récompenses premium déjà atteintes tombent tout de suite.
+3. Relance le jeu : les crédits sont toujours là (sauvegardés).
+
+## Les avatars neutres (14 novembre 2026)
+
+1. **Avec tes amis** : tout le monde a un corps simple aux couleurs unies,
+   sans accessoire. Arrivez-vous à vous reconnaître (chacun garde toujours
+   les mêmes couleurs) ?
+2. Distingue-t-on encore les bots des joueurs ? (Le but : non.)
+
+## Les nouvelles apparences (14 novembre 2026)
+
+Vues en vitrine dans Studio : les comètes (à leur vraie vitesse), les
+cocons, les aspirations immobiles. **Pas vus** : les traînées en mouvement,
+les cocons clairs après la correction de lumière, les émotes jouées par le
+bouton, l'écran des chances (Studio s'est bloqué au lancement d'une
+partie).
+
+1. **Le tirage** : la liste des chances se lit-elle (par rareté) ?
+2. **Les comètes** à l'arrivée : spectaculaires ? Une légendaire se
+   distingue-t-elle d'une commune ?
+3. **Les traînées** : jolies en courant, et coupées quand tu es caché ?
+4. **Les cocons** clairs (Os, Mousse) : plus de blanc brûlé ?
+5. **Les émotes** (croix droite) : elles se jouent, et s'arrêtent quand tu
+   bouges ?
+6. **Le passe** : un objet à chaque palier premium, ça donne envie ?
+
+## Les légendaires signés et la batte (14 novembre 2026)
+
+Vu en image après la relance de Studio : **les battes en main** (tenue
+corrigée : elle pendait comme une canne, elle est maintenant levée), le
+**trou noir**, les cocons **L'Œil clos** (sa fente) et **Cœur battant**.
+Puis, Studio relancé par Josh : le blanc des yeux corrigé (il bavait en
+boule aveuglante), la Batte de l'Œil (son œil regarde autour), l'anneau
+d'Or de l'Œil, les traces au sol (craquelures, empreintes de néant, petits
+yeux), la supernova, le grand œil, et l'écran des chances (0,71 % par
+légendaire). Les comètes signature n'ont été vues qu'au ralenti : à leur
+vraie vitesse, à toi de juger.
+
+1. **La batte en main** au Ventre : bien tenue dans la main, pas de travers
+   ni dans le bras ? (Le seul réglage à retoucher : `holdTilt`.)
+2. **Les effets signature** : l'anneau doré, l'œil de la comète, la
+   paupière et le battement des cocons, les traces au sol, le trou noir.
+3. **Les traces au sol** ne doivent jamais apparaître quand tu es caché.

@@ -704,3 +704,68 @@ Josh a vu des fissures qui flottaient : parties d'un cercle fixe, elles
 commençaient parfois au-delà d'un bord noir étroit. Elles partent
 maintenant juste après la lèvre du trou ; mesuré au rayon, les 18 départs
 sont posés sur le bord noir.
+
+## Les produits Robux (14 novembre 2026, avec Josh)
+
+Josh a créé les quatre produits de développeur. Prix choisis avec lui, au
+rythme du jeu gratuit (une légendaire, ~12 jours de jeu, revient à ~4 €) :
+500 crédits à 99 R$, 1 100 à 199, 2 400 à 399, le passe premium à 499.
+Vérifié depuis Studio : Roblox rend bien ces quatre noms et prix. Le prix
+affiché dans la boutique (`robux`) doit suivre celui fixé sur Roblox.
+
+## Des avatars neutres pour tous (14 novembre 2026)
+
+Josh croyait les skins Roblox coupés en partie : ils ne l'étaient pas
+(`LoadCharacterAppearance` actif, l'avatar complet arrivait). Dans un jeu de
+cache-cache, c'est injuste : un accessoire dépasse d'une cachette, un corps
+réduit se cache mieux. Chacun reçoit maintenant le corps standard de
+Roblox, sans accessoire, peau et vêtements de couleurs unies tirées de son
+numéro de compte (toujours les mêmes) : le même avatar que les bots
+(`Avatar`). Vérifié dans Studio : aucun accessoire, corps standard.
+
+## Les apparences refaites, le grand tirage et le passe unique (14 novembre 2026, avec Josh)
+
+Les apparences n'étaient que des changements de couleur. Choisi avec Josh :
+
+- **Chaque apparence = un style + deux couleurs + sa rareté**
+  (`Config.cosmetics.styles`, `tierLayers`, `CosmeticFx`). La rareté
+  ajoute des couches : rare = étincelles, épique = halo lumineux,
+  légendaire = anneaux d'onde et pluie d'étincelles, cœur et queue plus
+  grands. Textures de particules fournies par Roblox.
+- **Le catalogue** : 15 objets par emplacement dans le tirage (6 communs,
+  5 rares, 3 épiques, 1 légendaire), soit 90, plus 38 objets propres au
+  passe.
+- **Un seul grand tirage** (choix de Josh) : chaque rareté garde sa part
+  (50 / 30 / 15 / 5 %), partagée entre ses objets ; chances affichées par
+  rareté, avec deux décimales. Prix en crédits : la valeur moyenne d'un
+  tirage (420). La boutique du jour vend 6 objets du tirage à prix fixe.
+- **Le passe** : la voie premium donne un objet unique à chaque palier ; la
+  gratuite, un objet tous les 3 à 5 paliers et des crédits entre deux.
+  Jamais un objet du passe au tirage ni en boutique (tests).
+- **Les émotes** jouent des animations officielles de Roblox (41 vérifiées
+  dans Studio). Avant, `PlayEmote` cherchait des émotes que le joueur n'a
+  pas : aucune ne se jouait.
+- **Les traînées** ne lâchent leurs particules qu'en mouvement et hors d'une
+  cachette (elles trahiraient une cachette).
+- **Les titres** s'écrivent à la couleur de leur rareté dans la liste.
+- Réglages vus en vitrine : particules des comètes 4 fois plus denses et
+  plus grosses (elles filent à 180 studs/s), queue raccourcie (elle faisait
+  un rayon laser), lumière baissée dans les cocons clairs (brûlés en blanc).
+
+## Les légendaires signés, et la batte (14 novembre 2026, avec Josh)
+
+- **Chaque légendaire visible a son effet signature** (`Signatures`,
+  `Config.cosmetics.signatures`), en vraies pièces animées : anneau doré en
+  orbite, œil qui regarde où file la comète, gyroscope cramoisi, paupière
+  qui s'entrouvre sur un cocon, cocon qui bat, craquelures de braise et
+  empreintes de néant au sol sous les pas (jamais quand on est caché),
+  petits yeux dans le sillage, trou noir, supernova, grand œil qui regarde
+  monter. Les titres légendaires s'écrivent en gras entre étoiles. Un test
+  refuse un légendaire visible sans signature.
+- **Les chapeaux** : abandonnés avec Josh (un chapeau change la silhouette
+  dans un jeu de cache-cache).
+- **La batte se voit en main** (`BatService`) : au Ventre et avec l'objet
+  Batte. 15 skins au tirage (bois, métal, clous, barbelés, os, glace, néon,
+  cristal, magma ; légendaire « La Fissure »), et 3 au passe à la place de
+  3 émotes premium (paliers 16, 22, 27 ; légendaire « Batte de l'Œil » avec
+  un œil qui regarde autour). Purement visible : le combat ne change pas.

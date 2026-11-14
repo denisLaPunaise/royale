@@ -15,9 +15,22 @@ function Shop.price(items: { [string]: any }, prices: { [string]: number }, id: 
 	return if def then prices[def.rarity] else math.huge
 end
 
--- La boutique du jour : `count` objets du catalogue (hors permanents),
--- choisis d'apres le numero du jour. Le meme jour donne la meme boutique a
--- tout le monde, sur tous les serveurs.
+-- Les objets du tirage : tout le catalogue sauf les objets du passe
+-- (introuvables ailleurs), tries pour un ordre stable.
+function Shop.drawPool(items: { [string]: any }): { string }
+	local pool: { string } = {}
+	for id, def in items do
+		if not def.pass then
+			table.insert(pool, id)
+		end
+	end
+	table.sort(pool)
+	return pool
+end
+
+-- La boutique du jour : `count` objets du tirage (hors permanents), choisis
+-- d'apres le numero du jour. Le meme jour donne la meme boutique a tout le
+-- monde, sur tous les serveurs.
 function Shop.daily(
 	items: { [string]: any },
 	permanent: { string },
@@ -25,12 +38,11 @@ function Shop.daily(
 	count: number
 ): { string }
 	local pool: { string } = {}
-	for id in items do
+	for _, id in Shop.drawPool(items) do
 		if not table.find(permanent, id) then
 			table.insert(pool, id)
 		end
 	end
-	table.sort(pool)
 	-- Un melange reproductible (un generateur lineaire seme par le jour).
 	local state = (day * 2654435761) % 2147483648
 	for i = #pool, 2, -1 do
@@ -45,33 +57,63 @@ function Shop.daily(
 	return out
 end
 
--- Le prix d'un tirage en credits : la valeur moyenne de la selection
--- (CONCEPT.md : sinon un tirage reviendrait moins cher que les objets chers).
-function Shop.drawPrice(
+-- Les chances affichees avant l'achat : chaque rarete garde sa part du total
+-- (`weights`), partagee a egalite entre ses objets ; total 100 %.
+function Shop.chances(
 	items: { [string]: any },
-	prices: { [string]: number },
-	pool: { string }
-): number
-	local total = 0
+	pool: { string },
+	weights: { [string]: number }
+): { [string]: number }
+	local count: { [string]: number } = {}
 	for _, id in pool do
-		total += Shop.price(items, prices, id)
+		local r = items[id].rarity
+		count[r] = (count[r] or 0) + 1
 	end
-	return math.ceil(total / #pool)
-end
-
--- Les chances affichees avant l'achat : toutes egales (Josh), total 100 %.
-function Shop.chances(pool: { string }): { [string]: number }
+	local total = 0
+	for r in count do
+		total += weights[r] or 0
+	end
 	local out: { [string]: number } = {}
 	for _, id in pool do
-		out[id] = 1 / #pool
+		local r = items[id].rarity
+		out[id] = if total > 0 then (weights[r] or 0) / total / count[r] else 0
 	end
 	return out
 end
 
--- Un tirage : un objet de la selection, `u` entre 0 et 1. Il donne toujours
--- quelque chose.
-function Shop.draw(pool: { string }, u: number): string
-	return pool[math.clamp(math.floor(u * #pool) + 1, 1, #pool)]
+-- Le prix d'un tirage en credits : la valeur moyenne de ce qu'il donne
+-- (CONCEPT.md : sinon un tirage reviendrait moins cher que les objets chers).
+function Shop.drawPrice(
+	items: { [string]: any },
+	prices: { [string]: number },
+	pool: { string },
+	weights: { [string]: number }
+): number
+	local chances = Shop.chances(items, pool, weights)
+	local total = 0
+	for _, id in pool do
+		total += chances[id] * Shop.price(items, prices, id)
+	end
+	return math.ceil(total)
+end
+
+-- Un tirage : un objet du tirage, `u` entre 0 et 1, selon ses chances. Il
+-- donne toujours quelque chose.
+function Shop.draw(
+	items: { [string]: any },
+	pool: { string },
+	weights: { [string]: number },
+	u: number
+): string
+	local chances = Shop.chances(items, pool, weights)
+	local acc = 0
+	for _, id in pool do
+		acc += chances[id]
+		if u < acc then
+			return id
+		end
+	end
+	return pool[#pool]
 end
 
 -- Le palier du passe pour cette XP de passe.

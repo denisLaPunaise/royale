@@ -21,6 +21,7 @@ local Royale = ReplicatedStorage:WaitForChild("Royale")
 local Config = require(Royale:WaitForChild("Config"))
 local Squads = require(Royale:WaitForChild("Squads"))
 
+local CosmeticFx = require(script.Parent.CosmeticFx)
 local CombatService = require(script.Parent.CombatService)
 local EyeService = require(script.Parent.EyeService)
 local ChallengeService = require(script.Parent.ChallengeService)
@@ -216,7 +217,7 @@ function SquadService.cocoon(actor: Roster.Actor): boolean
 	p.Material = Enum.Material.Slate
 	-- La couleur de cocon portee (un cosmetique), sinon la couleur de base.
 	local skin = if actor:IsA("Player") then ShopService.equipped(actor, "cocoon") else nil
-	p.Color = rgb(if skin then skin.color else CC.color)
+	p.Color = rgb(CC.color)
 	p.Anchored = true
 	p.CanCollide = true
 	-- Une boule etiree, debout : une sphere prend le plus petit cote, on
@@ -231,6 +232,10 @@ function SquadService.cocoon(actor: Roster.Actor): boolean
 	light.Range = CC.lightRange
 	light.Brightness = CC.lightBrightness
 	light.Parent = p
+	if skin then
+		-- Sa matiere, sa lueur, ses ornements (CosmeticFx).
+		CosmeticFx.cocoon(p, skin)
+	end
 	p.Parent = workspace
 	local cocoon: Cocoon =
 		{ actor = actor, part = p, hits = 0, born = os.clock(), id = "cocon:" .. serial }

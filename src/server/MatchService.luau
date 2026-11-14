@@ -30,6 +30,9 @@ local Circles = require(Royale:WaitForChild("Circles"))
 local Config = require(Royale:WaitForChild("Config"))
 local Regards = require(Royale:WaitForChild("Regards"))
 
+local BatService = require(script.Parent.BatService)
+local CosmeticFx = require(script.Parent.CosmeticFx)
+local Avatar = require(script.Parent.Avatar)
 local BetService = require(script.Parent.BetService)
 local BotService = require(script.Parent.BotService)
 local CombatService = require(script.Parent.CombatService)
@@ -92,7 +95,7 @@ local function waitingSpot(): Vector3
 end
 
 local function spawn(player: Player, at: Vector3)
-	player:LoadCharacter()
+	Avatar.load(player)
 	local character = player.Character
 	if character then
 		character:PivotTo(CFrame.new(at))
@@ -164,16 +167,23 @@ local function drop(players: { Roster.Actor })
 		local seconds = distance / M.cometSpeed
 		pending += 1
 		root.Anchored = true
-		local fire = Instance.new("Fire")
-		fire.Heat = M.cometFireHeat
-		fire.Size = M.cometFireSize
-		-- La comete portee (un cosmetique), sinon la braise de base.
+		-- La comete portee (un cosmetique, CosmeticFx), sinon la braise de base.
 		local skin = if player:IsA("Player") then ShopService.equipped(player, "comet") else nil
-		local c1 = if skin then skin.color else M.cometColor
-		local c2 = if skin then skin.color2 else M.cometColor2
-		fire.Color = Color3.fromRGB(c1[1], c1[2], c1[3])
-		fire.SecondaryColor = Color3.fromRGB(c2[1], c2[2], c2[3])
-		fire.Parent = root
+		local putOut: () -> ()
+		if skin then
+			putOut = CosmeticFx.comet(root, skin)
+		else
+			local fire = Instance.new("Fire")
+			fire.Heat = M.cometFireHeat
+			fire.Size = M.cometFireSize
+			fire.Color = Color3.fromRGB(M.cometColor[1], M.cometColor[2], M.cometColor[3])
+			fire.SecondaryColor =
+				Color3.fromRGB(M.cometColor2[1], M.cometColor2[2], M.cometColor2[3])
+			fire.Parent = root
+			putOut = function()
+				fire:Destroy()
+			end
+		end
 		local facing = CFrame.lookAt(
 			origin,
 			Vector3.new(landing.X, origin.Y, landing.Z) + Vector3.new(0, 0, -1)
@@ -191,7 +201,7 @@ local function drop(players: { Roster.Actor })
 				end
 				RunService.Heartbeat:Wait()
 			end
-			fire:Destroy()
+			putOut()
 			if root.Parent then
 				root.Anchored = false
 				local blast = Instance.new("Explosion")
@@ -549,6 +559,7 @@ function MatchService.start()
 	EyePowerService.start()
 	ReprisService.start()
 	GoulagService.start()
+	BatService.start()
 	SquadService.start()
 	SignalService.start(remote(Config.remotes.signal))
 	BetService.start(remote(Config.remotes.bet), remote(Config.remotes.quit))

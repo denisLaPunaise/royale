@@ -137,6 +137,45 @@ local function circleFrame(parent: Frame, name: string, color: Color3): Frame
 	return c
 end
 
+-- Joue une animation de Roblox une fois, au plus `emoteMaxSeconds` (certaines
+-- bouclent), et l'arrete des qu'on bouge. Le personnage du joueur est a
+-- lui : l'animation se voit chez tout le monde.
+local playing: AnimationTrack? = nil
+local function playAnim(humanoid: Humanoid, anim: number)
+	local animator = humanoid:FindFirstChildOfClass("Animator")
+	if animator == nil then
+		return
+	end
+	if playing then
+		playing:Stop()
+	end
+	local animation = Instance.new("Animation")
+	animation.AnimationId = "rbxassetid://" .. anim
+	local ok, track = pcall(function()
+		return animator:LoadAnimation(animation)
+	end)
+	if not ok then
+		warn("[Royale] Emote : " .. tostring(track))
+		return
+	end
+	local current = track :: AnimationTrack
+	playing = current
+	current:Play()
+	local started = os.clock()
+	task.spawn(function()
+		while current.IsPlaying do
+			if
+				humanoid.MoveDirection.Magnitude > 0
+				or os.clock() - started > Config.cosmetics.emoteMaxSeconds
+			then
+				current:Stop()
+				break
+			end
+			task.wait(0.1)
+		end
+	end)
+end
+
 function GestureView.start()
 	local player = Players.LocalPlayer
 	local remote =
@@ -256,15 +295,10 @@ function GestureView.start()
 			local character = player.Character
 			local humanoid = character and character:FindFirstChildOfClass("Humanoid")
 			if humanoid then
-				local ok, err = pcall(function()
-					-- L'emote portee (un cosmetique), sinon le salut.
-					local id = player:GetAttribute(Config.cosmetics.attributePrefix .. "emote")
-					local def = if typeof(id) == "string" then Config.cosmetics.items[id] else nil
-					humanoid:PlayEmote(if def then def.emote else Config.emote.name)
-				end)
-				if not ok then
-					warn("[Royale] Emote : " .. tostring(err))
-				end
+				-- L'emote portee (un cosmetique), sinon le salut.
+				local id = player:GetAttribute(Config.cosmetics.attributePrefix .. "emote")
+				local def = if typeof(id) == "string" then Config.cosmetics.items[id] else nil
+				playAnim(humanoid, if def then def.anim else Config.emote.anim)
 			end
 		end
 		return Enum.ContextActionResult.Sink
@@ -291,9 +325,7 @@ function GestureView.start()
 				local id = player:GetAttribute(Config.cosmetics.attributePrefix .. "emote")
 				local def = if typeof(id) == "string" then Config.cosmetics.items[id] else nil
 				if humanoid then
-					pcall(function()
-						humanoid:PlayEmote(if def then def.emote else Config.emote.victory)
-					end)
+					playAnim(humanoid, if def then def.anim else Config.emote.victory)
 				end
 			end
 		end

@@ -19,6 +19,7 @@ local TweenService = game:GetService("TweenService")
 local Royale = ReplicatedStorage:WaitForChild("Royale")
 local Config = require(Royale:WaitForChild("Config"))
 
+local CosmeticFx = require(script.Parent.CosmeticFx)
 local Sfx = require(script.Parent.Sfx)
 
 local Roster = {}
@@ -58,14 +59,17 @@ local function publish()
 		-- Le titre porte (un cosmetique), s'il y en a un.
 		local titleId = actor.Parent
 			and actor:GetAttribute(Config.cosmetics.attributePrefix .. "title")
-		local title = if typeof(titleId) == "string" and Config.cosmetics.items[titleId]
-			then Config.cosmetics.items[titleId].title
+		local titleDef = if typeof(titleId) == "string"
+			then Config.cosmetics.items[titleId]
 			else nil
+		local title = if titleDef then titleDef.title else nil
 		table.insert(list, {
 			n = Roster.nameOf(actor),
 			t = teamOf[actor] or 0,
 			a = aliveSet[actor] == true,
 			ti = title,
+			-- Sa rarete : la liste l'ecrit a sa couleur.
+			tr = if titleDef then titleDef.rarity else nil,
 		})
 	end
 	workspace:SetAttribute(
@@ -77,6 +81,11 @@ end
 -- A appeler quand les equipes changent (elles arrivent apres le depart).
 function Roster.refresh()
 	publish()
+end
+
+-- Tous les participants de la partie (en vie ou non).
+function Roster.participants(): { Actor }
+	return table.clone(participants)
 end
 
 function Roster.characterOf(actor: Actor): Model?
@@ -211,7 +220,9 @@ function Roster.take(actor: Actor)
 		local CO = Config.cosmetics
 		local id = actor:GetAttribute(CO.attributePrefix .. "capture")
 		local def = if typeof(id) == "string" then CO.items[id] else nil
-		local c = if def then def.color else CO.captureDefault
+		local c = if def then def.a else CO.captureDefault
+		-- Les particules de l'aspiration portee (CosmeticFx).
+		local clearFx = if def then CosmeticFx.capture(root, def) else nil
 		local color = Color3.fromRGB(c[1], c[2], c[3])
 		local glow = Instance.new("Highlight")
 		glow.FillColor = color
@@ -232,6 +243,9 @@ function Roster.take(actor: Actor)
 		trail.Lifetime = CO.captureTrail
 		trail.Parent = root
 		task.delay(eye.suctionSeconds, function()
+			if clearFx then
+				clearFx()
+			end
 			glow:Destroy()
 			trail:Destroy()
 			a0:Destroy()

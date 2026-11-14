@@ -21,6 +21,7 @@ local Royale = ReplicatedStorage:WaitForChild("Royale")
 local Config = require(Royale:WaitForChild("Config"))
 local Lobby = require(Royale:WaitForChild("Lobby"))
 
+local Avatar = require(script.Parent.Avatar)
 local RemoteGuard = require(script.Parent.RemoteGuard)
 local World = require(script.Parent.World)
 
@@ -691,7 +692,7 @@ function LobbyService.place(player: Player)
 	if away[player] then
 		return
 	end
-	player:LoadCharacter()
+	Avatar.load(player)
 	local character = player.Character
 	if character then
 		character:PivotTo(CFrame.new(LobbyService.spot()))

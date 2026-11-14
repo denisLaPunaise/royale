@@ -173,12 +173,22 @@ Rokit, StyLua, Selene, Lune, GitHub Actions, tous les chiffres dans
   pendant que Rojo tourne** : son fichier temporaire fait planter Rojo.
   Puis les fissures du ciel refaites (`buildCracks`, `Cracks`) ; la place
   doit être publiée par Josh.
-- **Prochaine tâche (décidé avec Josh le 13 novembre 2026)** : créer les
-  produits Robux avec Josh (3 paquets de crédits et le passe premium,
-  `Config.shop.creditPacks` et `Config.pass.premiumProductId` valent 0).
-  Il les crée sur create.roblox.com (Monétisation → Produits de
-  développeur), donne les numéros et les vrais prix ; on ajuste les
-  crédits. Ensuite : une file d'attente entre salons.
+- **14 novembre 2026, les produits Robux** : créés par Josh et branchés
+  (`Config.shop.creditPacks`, `Config.pass.premiumProductId`) ; noms et
+  prix vérifiés depuis Studio, l'achat lui-même reste à faire par Josh
+  (fenêtre de Roblox). Ensuite : une file d'attente entre salons.
+- **14 novembre 2026, les apparences** : avatars neutres pour tous
+  (`Avatar`) ; 90 objets de tirage + 38 du passe, chacun un style, deux
+  couleurs et une rareté qui ajoute des effets (`CosmeticFx`,
+  `Config.cosmetics.styles`) ; un seul grand tirage pondéré ; émotes en
+  animations Roblox. Traînées en mouvement pas encore vues à l'image.
+  Puis les effets signature des légendaires (`Signatures`) et la batte en
+  main avec 15 skins + 3 du passe (`BatService`), vus en vitrine. Le pont
+  MCP se bloque parfois (« Start play hasn't finished yet ») après un
+  lancement trop long : Josh appuie sur Play lui-même, ça repart.
+- **À faire plus tard (demandé par Josh le 14 novembre 2026)** : des
+  petites récompenses quotidiennes (se connecter chaque jour). À concevoir
+  avec lui avant tout code : quoi, combien, une série qui grandit ou non.
 
 ## La place et la recette
 

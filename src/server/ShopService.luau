@@ -27,6 +27,7 @@ local Royale = ReplicatedStorage:WaitForChild("Royale")
 local Config = require(Royale:WaitForChild("Config"))
 local Shop = require(Royale:WaitForChild("Shop"))
 
+local CosmeticFx = require(script.Parent.CosmeticFx)
 local ProfileService = require(script.Parent.ProfileService)
 local RemoteGuard = require(script.Parent.RemoteGuard)
 
@@ -36,6 +37,8 @@ local CO = Config.cosmetics
 local SH = Config.shop
 local PA = Config.pass
 local items = CO.items
+-- Les objets du tirage : tout le catalogue sauf le passe.
+local pool = Shop.drawPool(items)
 local random = Random.new()
 -- Ceux pour qui Roblox interdit les tirages payants (lu a l'arrivee).
 local restricted: { [Player]: boolean } = {}
@@ -58,25 +61,35 @@ local function publishWorld()
 		Config.shop.worldAttribute,
 		HttpService:JSONEncode({
 			daily = Shop.daily(items, SH.permanent, today(), SH.daily),
-			drawPrice = Shop.drawPrice(items, CO.prices, SH.drawPool),
-			chances = Shop.chances(SH.drawPool),
+			drawPrice = Shop.drawPrice(items, CO.prices, pool, SH.drawWeights),
+			chances = Shop.chances(items, pool, SH.drawWeights),
 		})
 	)
 end
 
 -- La trainee portee, derriere le personnage (le serveur la pose : tout le
--- monde la voit).
+-- monde la voit). Ses particules ne sortent qu'en mouvement et hors d'une
+-- cachette : immobile ou cache, elles trahiraient ou l'on est.
+local trailOf: {
+	[Player]: {
+		emitters: { ParticleEmitter },
+		things: { Instance },
+		step: ((on: boolean, root: BasePart) -> ())?,
+	},
+} =
+	{}
 local function applyTrail(player: Player)
+	local old = trailOf[player]
+	if old then
+		for _, thing in old.things do
+			thing:Destroy()
+		end
+		trailOf[player] = nil
+	end
 	local character = player.Character
 	local root = character and character:FindFirstChild("HumanoidRootPart")
-	if root == nil then
+	if root == nil or not root:IsA("BasePart") then
 		return
-	end
-	for _, name in { "RoyaleTrainee", "RoyaleTraineeHaut", "RoyaleTraineeBas" } do
-		local old = root:FindFirstChild(name)
-		if old then
-			old:Destroy()
-		end
 	end
 	local d = ProfileService.get(player)
 	local id = d and d.equipped.trail
@@ -84,23 +97,30 @@ local function applyTrail(player: Player)
 	if def == nil then
 		return
 	end
-	local a0 = Instance.new("Attachment")
-	a0.Name = "RoyaleTraineeHaut"
-	a0.Position = Vector3.new(0, CO.trail.height / 2, 0)
-	a0.Parent = root
-	local a1 = Instance.new("Attachment")
-	a1.Name = "RoyaleTraineeBas"
-	a1.Position = Vector3.new(0, -CO.trail.height / 2, 0)
-	a1.Parent = root
-	local trail = Instance.new("Trail")
-	trail.Name = "RoyaleTrainee"
-	trail.Attachment0 = a0
-	trail.Attachment1 = a1
-	trail.Lifetime = CO.trail.lifetime
-	trail.LightEmission = CO.trail.lightEmission
-	trail.Color = ColorSequence.new(Color3.fromRGB(def.color[1], def.color[2], def.color[3]))
-	trail.Transparency = NumberSequence.new(CO.trail.transparency, 1)
-	trail.Parent = root
+	local emitters, things, step = CosmeticFx.trail(root, def)
+	trailOf[player] = { emitters = emitters, things = things, step = step }
+end
+
+-- Allume ou coupe les particules des trainees.
+local function watchTrails()
+	while true do
+		for player, trail in trailOf do
+			local character = player.Character
+			local root = character and character:FindFirstChild("HumanoidRootPart")
+			local moving = root ~= nil
+				and root:IsA("BasePart")
+				and Vector3.new(root.AssemblyLinearVelocity.X, 0, root.AssemblyLinearVelocity.Z).Magnitude
+					> CO.trail.movingSpeed
+			local on = moving and player:GetAttribute(Config.hiding.hiddenAttribute) == nil
+			for _, e in trail.emitters do
+				e.Enabled = on
+			end
+			if trail.step and root and root:IsA("BasePart") then
+				trail.step(on, root)
+			end
+		end
+		task.wait(CO.trail.checkSeconds)
+	end
 end
 
 local function publish(player: Player)
@@ -228,7 +248,9 @@ local function draw(player: Player, d: any, withCredits: boolean)
 			notify(player, "Les tirages en crédits ne sont pas disponibles pour toi.")
 			return
 		end
-		if not ProfileService.spend(player, Shop.drawPrice(items, CO.prices, SH.drawPool)) then
+		if
+			not ProfileService.spend(player, Shop.drawPrice(items, CO.prices, pool, SH.drawWeights))
+		then
 			notify(player, "Pas assez de crédits.")
 			return
 		end
@@ -240,7 +262,10 @@ local function draw(player: Player, d: any, withCredits: boolean)
 		end
 		d.fragments -= cost
 	end
-	notify(player, "Tirage : " .. give(d, Shop.draw(SH.drawPool, random:NextNumber())))
+	notify(
+		player,
+		"Tirage : " .. give(d, Shop.draw(items, pool, SH.drawWeights, random:NextNumber()))
+	)
 end
 
 local function action(player: Player, name: any, arg: any)
@@ -350,6 +375,7 @@ function ShopService.start(remote: RemoteEvent)
 	end)
 	ProfileService.onGranted(onMatchXp)
 	MarketplaceService.ProcessReceipt = processReceipt
+	task.spawn(watchTrails)
 	-- La trainee revient a chaque nouveau personnage (salon, partie).
 	local function watch(player: Player)
 		player.CharacterAdded:Connect(function()
@@ -363,6 +389,7 @@ function ShopService.start(remote: RemoteEvent)
 	Players.PlayerAdded:Connect(watch)
 	Players.PlayerRemoving:Connect(function(player: Player)
 		restricted[player] = nil
+		trailOf[player] = nil
 	end)
 	-- La boutique change a minuit (UTC) : on la republie de temps en temps.
 	task.spawn(function()

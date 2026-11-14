@@ -27,6 +27,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Royale = ReplicatedStorage:WaitForChild("Royale")
 local Config = require(Royale:WaitForChild("Config"))
 
+local Avatar = require(script.Parent.Avatar)
 local CombatService = require(script.Parent.CombatService)
 local HidingService = require(script.Parent.HidingService)
 local ItemService = require(script.Parent.ItemService)
@@ -90,29 +91,10 @@ local function participantsFolder(): Folder
 	return f
 end
 
--- Un avatar simple mais varie : peau, haut et bas de couleurs differentes.
+-- Le meme avatar que les joueurs (Avatar) : on ne distingue pas un bot.
 
 local function makeModel(name: string): Model
-	local description = Instance.new("HumanoidDescription")
-	local tone = B.skins[random:NextInteger(1, #B.skins)]
-	local skin = Color3.fromRGB(tone[1], tone[2], tone[3])
-	description.HeadColor = skin
-	description.LeftArmColor = skin
-	description.RightArmColor = skin
-	local top = Color3.fromHSV(
-		random:NextNumber(),
-		random:NextNumber(0.3, 0.8),
-		random:NextNumber(0.3, 0.9)
-	)
-	local bottom = Color3.fromHSV(
-		random:NextNumber(),
-		random:NextNumber(0.1, 0.5),
-		random:NextNumber(0.15, 0.6)
-	)
-	description.TorsoColor = top
-	description.LeftLegColor = bottom
-	description.RightLegColor = bottom
-	local model = Players:CreateHumanoidModelFromDescription(description, Enum.HumanoidRigType.R15)
+	local model = Avatar.model(random)
 	model.Name = name
 	local humanoid = model:FindFirstChildOfClass("Humanoid") :: Humanoid
 	humanoid.DisplayName = name

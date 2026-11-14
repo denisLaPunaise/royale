@@ -188,20 +188,42 @@ function ShopView.start()
 			end
 			table.insert(out, { text = "— Ce qui peut tomber, et ses chances —" })
 			local chances = world.chances or {}
-			local ids: { string } = {}
-			for id in chances do
-				table.insert(ids, id)
-			end
-			table.sort(ids)
-			for _, id in ids do
-				table.insert(out, {
-					text = string.format(
-						"%s — %.0f %%%s",
-						describe(id),
-						chances[id] * 100,
-						if owned[id] then " (à toi : rend des crédits)" else ""
-					),
-				})
+			-- Par rarete, de la plus rare a la plus commune : la part de chaque
+			-- rarete, puis chaque objet et sa chance (deux decimales : avec
+			-- ~90 objets, « 1 % » arrondissait 0,83 %).
+			local order = { "legendary", "epic", "rare", "common" }
+			for _, rarity in order do
+				local ids: { string } = {}
+				local part = 0
+				for id, chance in chances do
+					if CO.items[id] and CO.items[id].rarity == rarity then
+						table.insert(ids, id)
+						part += chance
+					end
+				end
+				if #ids > 0 then
+					table.sort(ids, function(x, y)
+						return CO.items[x].name < CO.items[y].name
+					end)
+					local info = Config.rarities[rarity]
+					table.insert(out, {
+						text = string.format(
+							"— %s : %s %% en tout —",
+							info and info.name or rarity,
+							string.gsub(string.format("%.0f", part * 100), "%.", ",")
+						),
+					})
+					for _, id in ids do
+						table.insert(out, {
+							text = string.format(
+								"%s — %s %%%s",
+								describe(id),
+								(string.gsub(string.format("%.2f", chances[id] * 100), "%.", ",")),
+								if owned[id] then " (à toi : rend des crédits)" else ""
+							),
+						})
+					end
+				end
 			end
 			table.insert(out, { text = "Chaque tirage donne un objet. Total : 100 %." })
 		elseif name == "Passe" then
@@ -219,10 +241,7 @@ function ShopView.start()
 				table.insert(out, { text = "Passe premium : débloqué" })
 			elseif PA.premiumProductId ~= 0 then
 				table.insert(out, {
-					text = string.format(
-						"Débloquer le passe premium : %d Robux (provisoire)",
-						PA.premiumRobux
-					),
+					text = string.format("Débloquer le passe premium : %d Robux", PA.premiumRobux),
 					action = "pass",
 				})
 			else

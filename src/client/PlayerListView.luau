@@ -23,6 +23,24 @@ local function rgb(c: { number }): Color3
 	return Color3.fromRGB(c[1], c[2], c[3])
 end
 
+-- Un titre a la couleur de sa rarete (Config.rarities).
+local function titled(title: string, rarity: any): string
+	local info = if typeof(rarity) == "string" then Config.rarities[rarity] else nil
+	if info == nil then
+		return " « " .. title .. " »"
+	end
+	local c = info.color
+	-- Un titre legendaire se remarque : en gras, encadre d'etoiles.
+	local legendary = rarity == "legendary"
+	return string.format(
+		' <font color="#%s">%s« %s »%s</font>',
+		Color3.fromRGB(c[1], c[2], c[3]):ToHex(),
+		if legendary then "<b>✦ " else "",
+		title,
+		if legendary then " ✦</b>" else ""
+	)
+end
+
 function PlayerListView.start()
 	local player = Players.LocalPlayer
 	local gui = Instance.new("ScreenGui")
@@ -103,13 +121,14 @@ function PlayerListView.start()
 			row.Font = (Enum.Font :: any)[V.bodyFont]
 			row.TextSize = PL.textSize
 			row.TextXAlignment = Enum.TextXAlignment.Left
+			row.RichText = true
 			row.TextColor3 = if e.t == mine and mine ~= nil
 				then rgb(Config.squads.markerColor)
 				elseif e.a then rgb(PL.text)
 				else rgb(PL.out)
 			row.Text = (if solo then "" else string.format("[%d] ", e.t))
 				.. e.n
-				.. (if typeof(e.ti) == "string" then " « " .. e.ti .. " »" else "")
+				.. (if typeof(e.ti) == "string" then titled(e.ti, e.tr) else "")
 				.. (if e.a then "" else " — aspiré")
 			row.LayoutOrder = i
 			row.Parent = frame
