@@ -26,6 +26,114 @@ return function(O: any)
 	local slab = O.slab
 	local random = O.random
 
+	-- LES FISSURES qui courent dans le ciel autour de la dechirure. Chacune
+	-- est une fente sombre qui s'amincit vers sa pointe, une braise en son
+	-- coeur, et des ramifications (des batons de neon orange tout droits
+	-- faisaient bon marche, vu par Josh le 14 novembre 2026). La vue du ciel
+	-- fait courir une lueur le long de chaque branche, du trou vers le dehors
+	-- (attributs Branche et Rang).
+	-- Le bord en amande de la dechirure (le trou et son contour), partage par
+	-- la dechirure et les fissures qui en partent.
+	local function almondPoint(
+		angle: number,
+		grow: number,
+		riftY: number,
+		halfLong: number,
+		halfShort: number
+	): Vector3
+		local sx = math.cos(angle)
+		local sz = math.sin(angle) * (0.55 + 0.45 * math.abs(math.sin(angle)))
+		return Vector3.new(sx * (halfLong + grow), riftY, sz * (halfShort + grow))
+	end
+	local CRACK_DARK = Color3.fromRGB(12, 6, 8)
+	local CRACK_EMBER = Color3.fromRGB(255, 96, 40)
+	local function buildCracks(m: Instance, riftY: number, halfLong: number, halfShort: number)
+		for _, old in m:GetChildren() do
+			if old.Name == "Fissure" or old.Name == "FissureFond" then
+				old:Destroy()
+			end
+		end
+		local function piece(
+			from: Vector3,
+			to: Vector3,
+			width: number,
+			branch: number,
+			rank: number,
+			fade: number
+		)
+			-- Les segments se chevauchent un peu : sans ca, chaque coude laissait
+			-- un trou.
+			local dir = (to - from).Unit
+			local a, b = from - dir * width * 0.4, to + dir * width * 0.4
+			local dark =
+				slab(m, a, b, width, 1.2, Enum.Material.SmoothPlastic, CRACK_DARK, "FissureFond")
+			-- La braise, un peu plus bas que la fente : vue du sol, elle passe
+			-- devant.
+			local ember = slab(
+				m,
+				a - Vector3.new(0, 0.8, 0),
+				b - Vector3.new(0, 0.8, 0),
+				math.max(width * 0.32, 0.5),
+				1,
+				Enum.Material.Neon,
+				CRACK_EMBER,
+				"Fissure"
+			)
+			ember.Transparency = fade
+			ember:SetAttribute("Branche", branch)
+			ember:SetAttribute("Rang", rank)
+			for _, p in { dark, ember } do
+				p.CanCollide = false
+				p.CanQuery = false
+				p.CastShadow = false
+			end
+		end
+		local function grow(
+			start: Vector3,
+			heading: number,
+			width: number,
+			ranks: number,
+			branch: number,
+			firstRank: number,
+			depth: number
+		)
+			local at = start
+			for rank = 1, ranks do
+				heading += random:NextNumber(-0.45, 0.45)
+				local length = random:NextNumber(16, 34) * (0.6 + 0.4 * width / 5)
+				local step = Vector3.new(math.cos(heading), 0, math.sin(heading)) * length
+				-- Plus fine et plus pale vers la pointe.
+				local k = (rank - 1) / ranks
+				local w = width * (1 - 0.8 * k)
+				piece(at, at + step, w, branch, firstRank + rank, 0.05 + 0.6 * k)
+				-- Une ramification de temps en temps, plus fine, qui part de biais.
+				if depth < 2 and rank < ranks - 1 and random:NextNumber() < 0.3 then
+					local side = if random:NextNumber() < 0.5 then -1 else 1
+					grow(
+						at + step,
+						heading + side * random:NextNumber(0.6, 1.1),
+						w * 0.6,
+						random:NextInteger(2, 4),
+						branch,
+						firstRank + rank,
+						depth + 1
+					)
+				end
+				at += step
+			end
+		end
+		for i = 1, 18 do
+			local angle = (i / 18) * math.pi * 2 + random:NextNumber(-0.15, 0.15)
+			-- Elle part de la levre du trou et passe sous le bord noir : partie
+			-- d'un cercle fixe, elle commencait parfois au-dela d'un bord etroit
+			-- et flottait dans le vide (vu par Josh).
+			-- Juste apres la levre (qui ondule de 6 studs) : ni au-dessus du trou,
+			-- ni dans le vide.
+			local start = almondPoint(angle, 10, riftY - 1, halfLong, halfShort)
+			grow(start, angle, random:NextNumber(6.5, 9.5), random:NextInteger(6, 10), i, 0, 0)
+		end
+	end
+
 	local function buildSky(root: Instance, center: Vector3)
 		local m = model(root, SKY.folder)
 		-- Toujours charge chez chaque client : l'Oeil se voit de partout, et la
@@ -42,9 +150,7 @@ return function(O: any)
 		-- Le bord : une couronne pleine entre le trou et un contour exterieur
 		-- dechiquete, remplie de triangles (un seul plan, pas des pics).
 		local function almond(angle: number, grow: number): Vector3
-			local sx = math.cos(angle)
-			local sz = math.sin(angle) * (0.55 + 0.45 * math.abs(math.sin(angle)))
-			return Vector3.new(sx * (halfLong + grow), riftY, sz * (halfShort + grow))
+			return almondPoint(angle, grow, riftY, halfLong, halfShort)
 		end
 		local inner: { Vector3 } = {}
 		local outer: { Vector3 } = {}
@@ -89,39 +195,7 @@ return function(O: any)
 				end
 			end
 		end
-		-- Les fissures qui courent dans le ciel autour de la dechirure, en zigzag.
-		for i = 1, 16 do
-			local angle = (i / 16) * math.pi * 2 + random:NextNumber(-0.15, 0.15)
-			local dir = Vector3.new(math.cos(angle), 0, math.sin(angle))
-			local at = Vector3.new(dir.X * (halfLong + 80), riftY - 1, dir.Z * (halfShort + 80))
-			for rank = 1, random:NextInteger(4, 8) do
-				local turn = random:NextNumber(-0.7, 0.7)
-				local step = Vector3.new(
-					dir.X * math.cos(turn) - dir.Z * math.sin(turn),
-					0,
-					dir.X * math.sin(turn) + dir.Z * math.cos(turn)
-				) * random:NextNumber(40, 90)
-				local crack = slab(
-					m,
-					at,
-					at + step,
-					random:NextNumber(1.5, 4),
-					1.5,
-					Enum.Material.Neon,
-					C.rift,
-					"Fissure"
-				)
-				crack.CanCollide = false
-				crack.CanQuery = false
-				crack.CastShadow = false
-				crack.Transparency = random:NextNumber(0.1, 0.45)
-				-- La vue du ciel fait courir une lueur le long de chaque branche,
-				-- du trou vers le dehors.
-				crack:SetAttribute("Branche", i)
-				crack:SetAttribute("Rang", rank)
-				at += step
-			end
-		end
+		buildCracks(m, riftY, halfLong, halfShort)
 		-- Le fond de la dechirure : une voute sombre et courbe derriere l'Oeil,
 		-- eclairee de l'interieur par une lueur rouge. (Une plaque noire plate
 		-- faisait un carre au-dessus de l'Oeil, vu par Josh le 12 novembre 2026.)
@@ -662,6 +736,7 @@ return function(O: any)
 
 	return {
 		buildSky = buildSky,
+		buildCracks = buildCracks,
 		buildLighting = buildLighting,
 		applyMaterials = applyMaterials,
 		EYE_HEIGHT = EYE_HEIGHT,

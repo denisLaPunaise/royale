@@ -116,9 +116,14 @@ return function(t: harness.Harness)
 		#Shop.passRewards({ [1] = {}, [2] = {} }, 0, 2) == 2
 	)
 	local perMatch = Config.progression.xp.played + Config.progression.xp.perRegard * 3
-	t.check(
-		"le passe se finit en une saison (moins de 200 parties moyennes)",
-		PA.tiers * PA.tierXp / perMatch < 200
-	)
+	-- Un joueur regulier : 3 parties par jour, ses defis quotidiens et
+	-- hebdomadaires faits. Il doit finir le passe en 3 a 8 semaines.
+	local CH = Config.challenges
+	local perDay = 3 * perMatch
+		+ CH.daily * CH.passXp
+		+ CH.weekly * CH.passXp * CH.weeklyRewardFactor / 7
+	local days = PA.tiers * PA.tierXp / perDay
+	t.check("le passe ne se finit pas en moins de 3 semaines", days >= 21)
+	t.check("le passe se finit dans une saison de 8 semaines", days <= 56)
 	t.check("le bonus du premium reste petit", PA.premiumXpBonus <= 0.25)
 end

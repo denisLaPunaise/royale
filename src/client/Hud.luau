@@ -38,7 +38,7 @@ local function label(
 	l.Size = size
 	l.Position = position
 	l.AnchorPoint = Vector2.new(0.5, 0)
-	l.Font = (Enum.Font :: any)[V.font]
+	l.Font = (Enum.Font :: any)[V.bodyFont]
 	l.TextSize = textSize
 	l.TextColor3 = Color3.fromRGB(240, 232, 220)
 	l.TextStrokeTransparency = 0.4
@@ -136,6 +136,10 @@ function Hud.start()
 	local power = label(gui, "Pouvoir", UDim2.new(0.9, 0, 0, 64), UDim2.new(0.5, 0, 0, 154), 26)
 	power.TextColor3 = Color3.fromRGB(255, 110, 80)
 	local center = label(gui, "Centre", UDim2.fromOffset(760, 90), UDim2.fromScale(0.5, 0.3), 30)
+	-- La voix de l'Oeil et les titres gardent la machine a ecrire (Config.view).
+	for _, voice in { regard, eyeState, power, center } do
+		voice.Font = (Enum.Font :: any)[V.font]
+	end
 	local warning = label(gui, "Alerte", UDim2.fromOffset(760, 34), UDim2.fromScale(0.5, 0.62), 28)
 	local hint = label(gui, "Aide", UDim2.fromOffset(760, 28), UDim2.new(0.5, 0, 1, -150), 22)
 

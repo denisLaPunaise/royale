@@ -67,4 +67,21 @@ return function(t: harness.Harness)
 	end
 
 	t.check("au moins un contexte est declare", contextCount > 0)
+
+	-- Les panneaux du salon montrent des boutons : ils doivent exister, sinon
+	-- le panneau enseigne une commande qui ne fait rien.
+	local arts = { eye = true, hide = true, crouch = true, loot = true, fight = true, win = true }
+	for i, panel in Config.lobby.tutorial.panels do
+		t.check(
+			string.format("panneau %d : son dessin existe (%s)", i, panel.art),
+			arts[panel.art] == true
+		)
+		for _, b in panel.buttons do
+			local context = Config.controls.contexts[b[1]]
+			t.check(
+				string.format("panneau %d : le bouton %s.%s existe", i, b[1], b[2]),
+				context ~= nil and context[b[2]] ~= nil
+			)
+		end
+	end
 end

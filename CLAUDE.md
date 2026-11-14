@@ -154,6 +154,25 @@ Rokit, StyLua, Selene, Lune, GitHub Actions, tous les chiffres dans
   (`HidingService.fillCircle`, `Config.hiding.circleFill`), Repris des
   flairés hors plafond ; deux bugs (cocon + égout, chute hors du monde,
   `Config.match.voidBelow`). Détail dans `docs/DECISIONS.md`.
+- **14 novembre 2026 (nuit), suite de l'équilibrage** : 24 parties de plus ;
+  Regard 4 encore adouci, la rancune garde les marques deux fois plus
+  longtemps (`markFactor`), écritures de profil espacées
+  (`Config.progression.minWriteSeconds`), avertissement de chute plus
+  détaillé. Économie calculée : le passe se finit en ~9 jours, durée de
+  saison à fixer avec Josh. Rapport : `docs/RAPPORT-14-NOVEMBRE.md`.
+- **14 novembre 2026, matin** : le passe rallongé (`Config.pass.tierXp`
+  900, ~4 semaines à 3 parties par jour) ; le salon vu en image : colonnes
+  et lampadaires décalés (ils cachaient les panneaux), écran du salon en
+  carte sombre (remplacée le jour même). Puis le salon refait avec Josh :
+  barre et boutons de manette (`LobbyView`, `ButtonIcons`), deux polices
+  (`Config.view.bodyFont`), six panneaux illustrés et décor sous l'Œil
+  (`LobbyScene`, `Config.lobby.tutorial` / `decor`).
+  Deuxième passe : le vrai ciel de l'Œil, vivant (regards, clignements),
+  construit chez chaque joueur ; barre et boutons en pastilles ; colonnes
+  antiques (`Config.lobby.columnStyle`). **Ne pas écrire avec `sed -i`
+  pendant que Rojo tourne** : son fichier temporaire fait planter Rojo.
+  Puis les fissures du ciel refaites (`buildCracks`, `Cracks`) ; la place
+  doit être publiée par Josh.
 - **Prochaine tâche (décidé avec Josh le 13 novembre 2026)** : créer les
   produits Robux avec Josh (3 paquets de crédits et le passe premium,
   `Config.shop.creditPacks` et `Config.pass.premiumProductId` valent 0).

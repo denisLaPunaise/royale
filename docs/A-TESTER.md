@@ -676,3 +676,64 @@ ne marchent pas exprès quand l'Œil entend la course, ils ne se parlent pas.
    Tu en as vu une apparaître sous tes yeux ? (Ça ne devrait pas.)
 6. La durée totale : 15 à 18 minutes, c'est bien ?
 
+## La nuit d'équilibrage (13 au 14 novembre 2026)
+
+**Vérifié seul dans Studio, avec des bots** : 24 parties de plus (solo,
+duo, escouade, bots maladroits, normaux et prudents), aucune erreur du jeu.
+La sauvegarde garde niveau et crédits d'un lancement à l'autre.
+
+**À regarder en plus** :
+1. Le Regard 4 : on doit souvent arriver en finale à 3 ou 4 en solo. Si
+   tout le monde y meurt encore d'un coup, note quels pouvoirs l'Œil avait
+   (ils s'affichent en haut de l'écran).
+2. En escouade : ouvrir le cocon d'un ami (3 coups) avant que l'Œil ne le
+   trouve. C'est faisable ? Trop facile ?
+3. Les pouvoirs : un pouvoir te paraît-il injuste ou inutile ? La rancune
+   a été adoucie cette nuit.
+
+
+## Le passe (14 novembre 2026)
+
+Le salon de ce matin a été refait juste après : voir la partie suivante.
+
+1. **Le passe** : après une soirée, a-t-on l'impression d'avancer ? Il faut
+   maintenant environ 4 semaines à 3 parties par jour.
+
+## Le nouveau salon (14 novembre 2026)
+
+Vérifié en images dans Studio (petite fenêtre, sans manette : les icônes de
+manette n'ont été vues qu'en les forçant). Jamais sur ta télé.
+
+1. **La barre en haut et les boutons en bas** : lisibles sur la télé ? Les
+   icônes sont-elles bien celles de ta manette ?
+2. **La nouvelle police** dans le salon et en partie (listes, aide, jauge) :
+   plus lisible ? La machine à écrire reste pour les titres et l'Œil.
+3. **Les six panneaux** : on a envie de les lire ? Les dessins se
+   comprennent-ils ?
+4. **L'Œil qui te suit des yeux** au loin : ça fait de l'effet, ou ça
+   distrait ?
+5. **Les nuages** : ça fait bien une mer de nuages, ou trop « neige » ?
+6. **Avec tes amis** : chacun voit l'Œil le regarder lui. Normal.
+
+## Le salon, deuxième passe (14 novembre 2026)
+
+Vérifié en images dans Studio ; le clignement et le regard qui bouge
+vérifiés par le calcul (paupière mesurée fermée, 17 changements de regard en
+12 s), jamais vus en mouvement par toi.
+
+1. **L'Œil** : il regarde bien partout, te fixe de temps en temps, et
+   cligne ? Trop souvent, pas assez ?
+2. **La barre du haut** : le médaillon, la jauge, « PRÊT » en vert quand tu
+   appuies sur R2.
+3. **Les boutons du bas** : lisibles sur la télé ?
+4. **Les colonnes** : plus belles ?
+
+## Les fissures du ciel (14 novembre 2026)
+
+Vues en image dans Studio, la lueur jamais vue bouger par toi.
+
+1. **En jeu**, lève les yeux : les fissures font-elles « ciel déchiré »,
+   plus des bâtons de néon ?
+2. **La lueur qui court** du trou vers le bout des branches : jolie, trop
+   rapide, trop clignotante ?
+3. **Au salon**, pareil sur l'Œil du salon.

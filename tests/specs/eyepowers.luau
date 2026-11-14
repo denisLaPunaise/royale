@@ -110,6 +110,12 @@ return function(t: harness.Harness)
 		"paupiere lourde : la pause dure 2/3",
 		math.abs(leftLid - r1.closedSeconds * 2 / 3) < 0.02
 	)
+	t.equal(
+		"rancune : il garde ses marques deux fois plus longtemps",
+		EyePowers.apply(r1, { "grudge" }, L, lcg(1)).markFactor,
+		2
+	)
+	t.equal("sans rancune, la duree normale", EyePowers.apply(r1, {}, L, lcg(1)).markFactor, 1)
 	local long = EyePowers.apply(r1, { "longBurst" }, L, lcg(1))
 	local n = long.longBurst
 	t.check("regard long : une des premieres rafales", n >= 1 and n <= L.longBurst.among)

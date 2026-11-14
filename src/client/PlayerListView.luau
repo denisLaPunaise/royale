@@ -100,7 +100,7 @@ function PlayerListView.start()
 			local row = Instance.new("TextLabel")
 			row.BackgroundTransparency = 1
 			row.Size = UDim2.new(1, -8, 0, PL.rowHeight)
-			row.Font = (Enum.Font :: any)[V.font]
+			row.Font = (Enum.Font :: any)[V.bodyFont]
 			row.TextSize = PL.textSize
 			row.TextXAlignment = Enum.TextXAlignment.Left
 			row.TextColor3 = if e.t == mine and mine ~= nil

@@ -119,7 +119,7 @@ Bien caché, on n'est jamais aspiré directement, mais une cachette n'est jamais
 | L'œil lent mais sûr | Poursuite un peu plus lente, mais il garde la piste 2 s de plus |
 | Le flair | Il arrache d'abord les cachettes occupées depuis longtemps |
 | Le regard rasant | Son faisceau arrive plus en biais : les recoins couvrent moins |
-| La rancune | Les cachettes marquées le restent jusqu'à la fin de la partie |
+| La rancune | Les cachettes marquées le restent deux fois plus longtemps (réglé le 14 novembre : « jusqu'à la fin » vidait le Regard 4, voir `DECISIONS.md`) |
 | L'éclair | Chaque rafale s'ouvre par un éclair : les joueurs à découvert brillent 2 s pour tout le monde |
 | La paupière lourde | Ses pauses entre deux rafales raccourcissent d'un tiers |
 | Le retour | Quand il perd ta piste, il revient voir ta dernière position 5 s plus tard |

@@ -16,6 +16,8 @@ local RunService = game:GetService("RunService")
 local Royale = ReplicatedStorage:WaitForChild("Royale")
 local Config = require(Royale:WaitForChild("Config"))
 
+local Cracks = require(script.Parent.Cracks)
+
 local SkyView = {}
 
 local V = Config.view
@@ -133,7 +135,9 @@ function SkyView.start()
 
 	local lidAmount = 1
 	local look = down
+	local pulseCracks = Cracks.track(sky)
 	RunService.RenderStepped:Connect(function(dt: number)
+		pulseCracks(os.clock())
 		local open = workspace:GetAttribute(Config.match.eyeOpenAttribute) == true
 		local warning = workspace:GetAttribute(Config.eye.warningAttribute) == true
 

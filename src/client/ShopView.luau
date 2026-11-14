@@ -93,7 +93,7 @@ function ShopView.start()
 	local footer = Instance.new("TextLabel")
 	footer.BackgroundTransparency = 1
 	footer.Size = UDim2.new(1, 0, 0, SH.rowHeight)
-	footer.Font = (Enum.Font :: any)[V.font]
+	footer.Font = (Enum.Font :: any)[V.bodyFont]
 	footer.TextSize = SH.textSize
 	footer.TextColor3 = Color3.fromRGB(170, 160, 150)
 	footer.Text = "A : choisir   B : fermer"
@@ -107,7 +107,7 @@ function ShopView.start()
 			l = Instance.new("TextLabel")
 			l.BackgroundTransparency = 1
 			l.Size = UDim2.new(1, 0, 0, SH.rowHeight)
-			l.Font = (Enum.Font :: any)[V.font]
+			l.Font = (Enum.Font :: any)[V.bodyFont]
 			l.TextSize = SH.textSize
 			l.TextScaled = true
 			local limit = Instance.new("UITextSizeConstraint")

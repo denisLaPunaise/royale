@@ -593,3 +593,114 @@ début des Regards, 15 à 25 minutes.
   les maladroits finissent au Regard 4 (15 min). Personne n'est balayé au
   Regard 1 : le Ventre rend une deuxième chance.
 
+### Nuit du 13 au 14 novembre 2026 (suite de l'équilibrage)
+
+- **Le Regard 4 encore adouci** : 1 faisceau pour 8 joueurs (au lieu de
+  6), ouvert 30 s (au lieu de 35), fermé 15 s (au lieu de 12). Sur cinq
+  parties solo, il prenait encore 80 % des joueurs (deux fois tout le
+  monde en moins de 3 minutes), pour une cible de 50 %.
+- **La rancune garde les marques deux fois plus longtemps** (au lieu de
+  « jusqu'à la fin »). Les deux parties où le Regard 4 a tout vidé avaient
+  la rancune, le flair et la paupière lourde : au Regard 4, presque toutes
+  les cachettes du cercle avaient servi, et toutes restaient marquées. Se
+  cacher ne servait plus à rien.
+- **Les objets** : les bots n'utilisent que les objets qui protègent
+  (fumigène, cape…), quand l'Œil les traque. Les parties ne peuvent donc pas
+  juger les autres objets. Les garde-fous restent les tests : aucun objet
+  ne couvre une ouverture entière, et le meilleur sac de 4 protège moins
+  d'un quart du plus court Regard.
+- **L'économie, proposition à valider avec Josh** : une partie rapporte
+  environ 106 XP et 28 crédits en solo, 128 XP et 34 crédits en escouade.
+  Le niveau 11 demande environ 37 parties, le niveau 21 environ 120. Une
+  apparence coûte 1 jour de jeu (commune) à 12 jours (légendaire), à
+  3 parties par jour avec les défis ; un tirage environ 4 jours. **Le
+  passe (30 paliers de 300 XP) se finit en environ 9 jours** à 3 parties
+  par jour avec les défis : trop vite pour une saison de plusieurs
+  semaines. La durée d'une saison est à décider avec Josh ; pour 6
+  semaines, il faudrait environ 900 XP par palier. Pas changé.
+- **Les sauvegardes ne se marchent plus dessus** : jamais deux écritures du
+  même profil à moins de 7 s (Roblox en accepte une toutes les 6 s par clé,
+  puis met en file d'attente, puis jette). Vu une fois au banc. La
+  sauvegarde de fin de partie part à côté, pour ne pas retarder la fin ; un
+  profil lâché (le joueur part) n'est plus jamais repris par une sauvegarde
+  en retard.
+- **Une chute hors du monde reste inexpliquée** (1 fois en 24 parties : un
+  bot passé d'un coup du niveau de la route au vide). Le filet le rattrape,
+  la partie continue ; l'avertissement dit maintenant ce qu'il faisait
+  (caché, porté, au sol) pour trouver la cause la prochaine fois.
+- **En escouade**, environ 4 cocons sur 10 sont trouvés par l'Œil avant
+  d'être ouverts (bots). Les parties durent environ 16 minutes et finissent
+  souvent au Regard 4, quand il ne reste qu'une équipe.
+
+
+## Le passe rallongé et le salon retouché (14 novembre 2026)
+
+- **Le passe** : 900 XP par palier au lieu de 300 (demande de Josh). Un
+  joueur qui fait 3 parties par jour avec ses défis le finit en environ
+  4 semaines au lieu de 9 jours ; la saison en dure environ 8. Le test
+  vérifie maintenant ce joueur-là : entre 3 et 8 semaines.
+- **Le salon, vu en image** : une colonne puis un lampadaire se dressaient
+  pile devant le panneau « Comment jouer » (et une colonne devant le
+  classement). Les colonnes et les lampadaires sont décalés d'un demi-cran.
+  L'écran du salon, du texte nu sur le pavé, est devenu une carte sombre
+  bordée couleur lanterne, au texte plus petit.
+
+## Le salon refait (14 novembre 2026, avec Josh)
+
+Josh trouvait le salon moins beau que le reste du jeu. Choisi avec lui :
+
+- **L'écran** : une petite barre en haut (niveau, XP, crédits, mode, groupe,
+  prêt) et, en bas, les boutons avec l'icône de la manette (celle de Roblox,
+  Xbox ou PlayStation ; au clavier, la touche dans une pastille). L'ancienne
+  carte restait affichée tout le temps au salon. Barre et boutons rapetissent
+  sur un petit écran (`Config.lobby.hud`).
+- **Deux polices** : la machine à écrire pour les titres et la voix de
+  l'Œil, une police nette (Builder Sans) pour tout ce qu'on lit vite, au
+  salon et en partie (`Config.view.font` / `bodyFont`).
+- **« Comment jouer »** : six panneaux illustrés au lieu du pavé (l'Œil, se
+  cacher, se faire petit, fouiller, se défendre, gagner), chacun avec un
+  dessin, une phrase et ses boutons ; un test vérifie que chaque bouton
+  existe dans `Config.controls`.
+- **Le décor, « juste sous l'Œil »** : Josh craignait qu'une ville en
+  contrebas montre les bords vides de la carte. Une mer de nuages cache
+  tout, un banc de nuages ferme l'horizon (les collines de la carte
+  dépassaient), l'Œil de la carte en plus petit flotte au loin et **suit
+  chaque joueur des yeux** (chez lui seulement), arbres morts et buissons
+  contre le muret, rochers qui flottent, dessous de la place en île.
+- **Décidé sans Josh** : les colonnes sautent l'arc des panneaux, les
+  cachettes en vitrine laissent un trou devant le classement (« Caisses » le
+  cachait), le classement a un titre et un cadre comme les panneaux.
+
+## Le salon, deuxième passe (14 novembre 2026, avec Josh)
+
+- **L'Œil « comme le vrai »** : le ciel de la carte (déchirure, lèvres,
+  paupières, Œil) en plus petit, incliné vers la place. Il **vit** : il
+  regarde tantôt toi, tantôt ailleurs dans le cône que sa paupière laisse,
+  et cligne (parfois deux fois). Construit **chez chaque joueur**
+  (`LobbyScene`) : le ciel y est toujours chargé, et ses 1 900 pièces
+  envoyées par le serveur retardaient tout le reste (les remotes arrivaient
+  après 5 s).
+- **La barre du haut** : médaillon de niveau, jauge d'XP, pièce et
+  crédits, pastille du mode, groupe, pastille verte « PRÊT ».
+- **Les boutons du bas** : chacun dans sa pastille ; « Prêt » (l'action
+  principale) en couleur lanterne.
+- **Les colonnes** : antiques (socle à deux marches, fût cannelé,
+  chapiteau ou cassure, lierre sur certaines).
+- **Les panneaux** ne sont pas interactifs : on les lit en passant (réponse
+  à Josh).
+
+## Les fissures du ciel refaites (14 novembre 2026, demande de Josh)
+
+Les « éclairs » autour de l'Œil étaient 16 traits de néon orange tout
+droits, figés (la lueur annoncée par la recette n'était animée par personne
+dans Royale). Ce sont maintenant de vraies fissures : une fente sombre qui
+s'amincit, une braise en son cœur, des ramifications
+(`tools/carte/Ciel.luau`, `buildCracks`), et une lueur qui court du trou
+vers le dehors, branche par branche (`Cracks`, `Config.view.crackPulse`), en
+jeu comme au salon. Seules les fissures ont été reconstruites dans la place
+(`buildCracks` détruit les anciennes) : **Josh doit publier** la place.
+
+Josh a vu des fissures qui flottaient : parties d'un cercle fixe, elles
+commençaient parfois au-delà d'un bord noir étroit. Elles partent
+maintenant juste après la lèvre du trou ; mesuré au rayon, les 18 départs
+sont posés sur le bord noir.

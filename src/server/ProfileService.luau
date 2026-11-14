@@ -25,7 +25,13 @@ local ProfileService = {}
 local P = Config.progression
 local A = P.attributes
 
-type Entry = { data: any, readable: boolean, dirty: boolean }
+type Entry = {
+	data: any,
+	readable: boolean,
+	dirty: boolean,
+	lastWrite: number,
+	released: boolean?,
+}
 
 local profiles: { [Player]: Entry } = {}
 local loadedListeners: { (Player) -> () } = {}
@@ -131,6 +137,25 @@ local function save(player: Player, release: boolean): boolean
 	if entry == nil or not entry.readable or ds == nil then
 		return false
 	end
+	-- Roblox n'accepte qu'une ecriture par cle toutes les 6 s ; au-dela, il
+	-- met en file d'attente, puis jette (vu au banc : la sauvegarde de fin de
+	-- partie et l'automatique a quelques secondes d'ecart). On attend.
+	-- En boucle : deux sauvegardes qui attendent ensemble passent l'une apres
+	-- l'autre. Une fois lache (le joueur part), plus rien ne le reprend.
+	if release then
+		entry.released = true
+	end
+	while true do
+		local gap = P.minWriteSeconds - (os.clock() - entry.lastWrite)
+		if gap <= 0 then
+			break
+		end
+		task.wait(gap)
+	end
+	if entry.released and not release then
+		return false
+	end
+	entry.lastWrite = os.clock()
 	local written = false
 	local data = table.clone(entry.data)
 	data.session = if release then nil else { job = game.JobId, at = now() }
@@ -163,8 +188,13 @@ local function load(player: Player)
 	if not readable then
 		warn("[Royale] Profil illisible pour " .. player.Name .. " : rien ne sera sauvegardé")
 	end
-	profiles[player] =
-		{ data = data or Progression.fill(nil, P.version), readable = readable, dirty = false }
+	-- La lecture ecrit aussi (le verrou de session) : elle compte.
+	profiles[player] = {
+		data = data or Progression.fill(nil, P.version),
+		readable = readable,
+		dirty = false,
+		lastWrite = os.clock(),
+	}
 	publish(player)
 	for _, listener in loadedListeners do
 		task.spawn(listener, player)
@@ -252,7 +282,8 @@ function ProfileService.grant(player: Player, result: Progression.Result)
 			.. "|"
 			.. tostring(workspace:GetServerTimeNow())
 	)
-	save(player, false)
+	-- A part : l'attente entre deux ecritures ne retarde pas la fin de partie.
+	task.spawn(save, player, false)
 end
 
 function ProfileService.start()

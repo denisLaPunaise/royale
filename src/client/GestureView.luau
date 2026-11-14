@@ -86,7 +86,7 @@ local function showSignal(kind: string, at: Vector3, from: string)
 	local label = Instance.new("TextLabel")
 	label.BackgroundTransparency = 1
 	label.Size = UDim2.fromScale(1, 1)
-	label.Font = (Enum.Font :: any)[V.font]
+	label.Font = (Enum.Font :: any)[V.bodyFont]
 	label.TextScaled = true
 	label.TextColor3 = rgb(def.color)
 	label.TextStrokeTransparency = 0.2
@@ -191,7 +191,7 @@ function GestureView.start()
 				local text = Instance.new("TextLabel")
 				text.BackgroundTransparency = 1
 				text.Size = UDim2.fromScale(1, 1)
-				text.Font = (Enum.Font :: any)[Config.view.font]
+				text.Font = (Enum.Font :: any)[Config.view.bodyFont]
 				text.TextScaled = true
 				text.TextColor3 = rgb(MP.zoneText)
 				text.Text = label

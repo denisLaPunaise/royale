@@ -32,7 +32,26 @@ return function()
 		workspace:SetAttribute("BancMode", parts[1])
 		Config.bots.mistakeChance = tonumber(parts[2]) or baseMistake
 	end
+	local cocoonLog = { opened = 0, lit = 0, made = 0 }
+	game:GetService("LogService").MessageOut:Connect(function(msg)
+		if msg:find("ouvre le cocon") then
+			cocoonLog.opened += 1
+		elseif msg:find("atteint le cocon") then
+			cocoonLog.lit += 1
+		elseif msg:find("revient dans un cocon") then
+			cocoonLog.made += 1
+		end
+	end)
 	local all = {}
+	local errors = {}
+	game:GetService("LogService").MessageOut:Connect(function(msg, kind)
+		if kind == Enum.MessageType.MessageError or kind == Enum.MessageType.MessageWarning then
+			if not msg:find("ContentId") and not msg:find("rbxasset") and #errors < 200 then
+				table.insert(errors, msg:sub(1, 200))
+				workspace:SetAttribute("BancErreurs", Http:JSONEncode(errors))
+			end
+		end
+	end)
 	local cur = nil
 	local t0 = 0
 	local regard = 0
@@ -41,6 +60,7 @@ return function()
 		local wasAlive = Roster.isAlive(actor)
 		local tb = debug.traceback()
 		local hidden = Hiding.isHidden(actor)
+		local bagBefore = actor:GetAttribute("Sac")
 		local root = Roster.rootOf(actor)
 		local outside = root ~= nil and Zone.outside(root.Position)
 		local down = Combat.isDown(actor)
@@ -85,6 +105,7 @@ return function()
 				hunt = hunted,
 				open = open,
 				bot = not actor:IsA("Player"),
+				bag = bagBefore,
 			})
 		end
 	end
@@ -122,6 +143,11 @@ return function()
 			if r ~= regard then
 				regard = r
 				cur.alive[r] = Roster.count()
+				local m, rr = cur, r
+				task.delay(3, function()
+					m.powers = m.powers or {}
+					m.powers[rr] = workspace:GetAttribute("PouvoirOeil")
+				end)
 				cur.at[r] = math.floor(os.clock() - t0)
 				local f = workspace.Carte:FindFirstChild("CachettesDeLaPartie")
 				local n = 0
@@ -138,7 +164,18 @@ return function()
 			if phase ~= "Partie" then
 				cur.duration = math.floor(os.clock() - t0)
 				cur.winner = workspace:GetAttribute("Gagnant")
+				cur.winBags = {}
+				for _, a in Roster.alive() do
+					table.insert(cur.winBags, a:GetAttribute("Sac") or "")
+				end
 				cur.lastRegard = regard
+				cur.cocoons = string.format(
+					"%d faits, %d ouverts, %d pris",
+					cocoonLog.made,
+					cocoonLog.opened,
+					cocoonLog.lit
+				)
+				cocoonLog.made, cocoonLog.opened, cocoonLog.lit = 0, 0, 0
 				table.insert(all, cur)
 				workspace:SetAttribute("BancBilan", Http:JSONEncode(all))
 				print(

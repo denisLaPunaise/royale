@@ -327,11 +327,11 @@ function EyeService.step(dt: number, regard: any, open: boolean, burst: number, 
 				flagged[player] = true
 			end
 		end
-		-- La rancune : il n'oublie plus ses marques.
+		-- La rancune : il garde ses marques plus longtemps.
 		local candidates = HidingService.ripCandidates(
 			flagged,
 			regard.solidFalls,
-			if regard.grudge then math.huge else Config.hiding.markBursts,
+			Config.hiding.markBursts * regard.markFactor,
 			regard.flair
 		)
 		for i = 1, math.min(regard.ripsPerBurst, #candidates) do

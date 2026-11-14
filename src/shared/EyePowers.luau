@@ -111,7 +111,7 @@ function EyePowers.apply(
 		out.memorySeconds += list.slowSure.memoryBonus
 	end
 	out.flair = have.flair == true
-	out.grudge = have.grudge == true
+	out.markFactor = if have.grudge then list.grudge.markFactor else 1
 	out.prints = have.prints == true
 	if have.slant then
 		out.slantElevation = list.slant.elevation

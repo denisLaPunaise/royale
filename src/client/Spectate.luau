@@ -100,7 +100,7 @@ function Spectate.start()
 	info.AnchorPoint = Vector2.new(0.5, 1)
 	info.Position = UDim2.new(0.5, 0, 1, -V.spectateInfoBottom)
 	info.Size = UDim2.new(0.9, 0, 0, V.spectateInfoHeight)
-	info.Font = (Enum.Font :: any)[V.font]
+	info.Font = (Enum.Font :: any)[V.bodyFont]
 	info.TextScaled = true
 	info.TextColor3 = Color3.fromRGB(240, 232, 220)
 	info.TextStrokeTransparency = 0.4

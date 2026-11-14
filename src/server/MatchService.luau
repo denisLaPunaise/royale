@@ -351,11 +351,19 @@ local function playOnce(humans: { Player }, mode: string, groups: { { Player } }
 			local root = Roster.rootOf(actor)
 			if root == nil or root.Position.Y < M.voidBelow then
 				local from = lastSeen[actor]
+				-- Ce qu'il faisait, pour retrouver ce qui l'a mis la (vu une fois
+				-- en 20 parties : passe d'un coup de la route au vide).
 				warn(
 					string.format(
-						"[Royale] %s est tombé hors du monde (vu en dernier à %s)",
+						"[Royale] %s est tombé hors du monde (%s, vu en dernier à %s ; caché : %s, porté : %s, au sol : %s)",
 						Roster.nameOf(actor),
-						if from then string.format("%d, %d, %d", from.X, from.Y, from.Z) else "?"
+						if root
+							then string.format("à %d de haut", root.Position.Y)
+							else "sans corps",
+						if from then string.format("%d, %d, %d", from.X, from.Y, from.Z) else "?",
+						tostring(actor:GetAttribute(Config.hiding.hiddenAttribute)),
+						tostring(actor:GetAttribute(Config.combat.carriedAttribute)),
+						tostring(actor:GetAttribute(Config.combat.downAttribute))
 					)
 				)
 				Roster.take(actor)

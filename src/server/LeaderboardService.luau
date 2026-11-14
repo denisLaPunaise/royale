@@ -67,8 +67,10 @@ local function board(): TextLabel?
 		return nil
 	end
 	local o = Config.lobby.origin
+	local a = math.rad(LD.angle)
+	local reach = Config.lobby.radius - LD.boardInset
 	local at = Vector3.new(o[1], o[2], o[3])
-		+ Vector3.new(0, LD.boardHeight / 2 + 1, -(Config.lobby.radius - LD.boardInset))
+		+ Vector3.new(math.cos(a) * reach, LD.boardHeight / 2 + 1, math.sin(a) * reach)
 	local part = Instance.new("Part")
 	part.Name = "Classement"
 	part.Anchored = true
@@ -83,21 +85,58 @@ local function board(): TextLabel?
 	gui.PixelsPerStud = LD.pixelsPerStud
 	gui.LightInfluence = 0
 	gui.Parent = part
+	-- Le titre en machine a ecrire, la liste en police nette (Config.view) :
+	-- tout en un seul texte mis a l'echelle, un nom seul remplissait le
+	-- panneau en lettres geantes (vu en image).
+	local lantern = Config.lobby.colors.lantern
+	-- Le meme cadre que les panneaux « Comment jouer » (LobbyScene).
+	local frame = Instance.new("Frame")
+	frame.Name = "Cadre"
+	frame.AnchorPoint = Vector2.new(0.5, 0.5)
+	frame.Position = UDim2.fromScale(0.5, 0.5)
+	frame.Size = UDim2.fromScale(0.95, 0.94)
+	frame.BackgroundTransparency = 1
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0.04, 0)
+	corner.Parent = frame
+	local stroke = Instance.new("UIStroke")
+	stroke.Color = Color3.fromRGB(lantern[1], lantern[2], lantern[3])
+	stroke.Thickness = 4
+	stroke.Transparency = 0.35
+	stroke.Parent = frame
+	frame.Parent = gui
+	local title = Instance.new("TextLabel")
+	title.Name = "Titre"
+	title.BackgroundTransparency = 1
+	title.Position = UDim2.fromScale(0.06, 0.05)
+	title.Size = UDim2.fromScale(0.88, 0.16)
+	title.Font = (Enum.Font :: any)[Config.view.font]
+	title.TextScaled = true
+	title.TextColor3 = Color3.fromRGB(lantern[1], lantern[2], lantern[3])
+	title.Text = "CLASSEMENT — VICTOIRES"
+	title.Parent = gui
 	local text = Instance.new("TextLabel")
+	text.Name = "Liste"
 	text.BackgroundTransparency = 1
-	text.Size = UDim2.fromScale(1, 1)
-	text.Font = (Enum.Font :: any)[Config.view.font]
-	text.TextScaled = true
-	text.TextColor3 = Color3.fromRGB(255, 200, 140)
+	text.Position = UDim2.fromScale(0.08, 0.24)
+	text.Size = UDim2.fromScale(0.84, 0.74)
+	text.Font = (Enum.Font :: any)[Config.view.bodyFont]
+	text.LineHeight = 1.1
+	-- Les `size` lignes tiennent dans la liste : la taille se deduit de sa
+	-- hauteur, jamais recopiee.
+	local rows = LD.boardHeight * LD.pixelsPerStud * text.Size.Y.Scale
+	text.TextSize = math.floor(rows / (LD.size * text.LineHeight))
+	text.TextColor3 = Color3.fromRGB(240, 232, 220)
+	text.TextXAlignment = Enum.TextXAlignment.Left
 	text.TextYAlignment = Enum.TextYAlignment.Top
-	text.Text = "CLASSEMENT — victoires\n…"
+	text.Text = "…"
 	text.Parent = gui
 	return text
 end
 
 local function refresh(text: TextLabel)
 	local ods = getStore()
-	local lines = { "CLASSEMENT — victoires" }
+	local lines = {}
 	local ok, err = pcall(function()
 		local page = (ods :: OrderedDataStore):GetSortedAsync(false, LD.size):GetCurrentPage()
 		for i, entry in page do
@@ -110,7 +149,7 @@ local function refresh(text: TextLabel)
 	if not ok or ods == nil then
 		table.insert(lines, "(indisponible pour l'instant)")
 		warn("[Royale] Classement illisible : " .. tostring(err))
-	elseif #lines == 1 then
+	elseif #lines == 0 then
 		table.insert(lines, "Personne encore : à toi de gagner.")
 	end
 	text.Text = table.concat(lines, "\n")

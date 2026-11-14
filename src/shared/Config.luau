@@ -325,10 +325,12 @@ Config.regards = {
 		-- Mesure : a 6 ou 7 en vie, l'ancien Regard 4 (1 faisceau pour 5, 45 s
 		-- ouvert, 8 s ferme, 15 studs d'erreur) finissait la partie en deux
 		-- minutes, sans finale. Il tue encore plus vite par joueur que le 3 :
-		-- il entend les coups, et ses pouvoirs se sont accumules.
-		playersPerBeam = 6,
-		openSeconds = 35,
-		closedSeconds = 12,
+		-- il entend les coups, et ses pouvoirs se sont accumules. Au banc de la
+		-- nuit du 13 au 14, il prenait encore 80 % des joueurs en solo (deux
+		-- fois tout le monde en moins de 3 min), pour une cible de 50 %.
+		playersPerBeam = 8,
+		openSeconds = 30,
+		closedSeconds = 15,
 		-- La marche : un faisceau plus rapide (17) attrapait tous ceux qu'il
 		-- voyait, et au Regard 4 c'est definitif (14 -> 2 en vie au banc).
 		chaseSpeed = 15,
@@ -486,7 +488,12 @@ Config.eyePowers = {
 		},
 		grudge = {
 			name = "La rancune",
-			text = "Les cachettes marquées le restent jusqu'à la fin.",
+			text = "Il garde ses marques sur les cachettes deux fois plus longtemps.",
+			-- Deux fois plus d'ouvertures avant d'oublier une marque. « Jusqu'a
+			-- la fin » (la fiche) rendait, avec le flair et la paupiere lourde,
+			-- toute cachette inutile au Regard 4 : deux parties videes en moins
+			-- de 3 min au banc de la nuit du 13 au 14 novembre 2026.
+			markFactor = 2,
 		},
 		flash = {
 			name = "L'éclair",
@@ -1558,10 +1565,69 @@ Config.lobby = {
 	-- Le salon, loin de la carte (a l'oppose du Ventre) : une place en ruine.
 	origin = { -3200, 300, 0 },
 	radius = 70,
-	-- Les colonnes brisees qui font la ruine.
+	-- Les colonnes brisees qui font la ruine. Pas un multiple de 4 : les
+	-- panneaux sont a 90 et 270 degres, une colonne s'y planterait devant.
 	columns = 10,
+	-- Les lampadaires du muret, decales d'un demi-cran : 8 les tient loin
+	-- des deux panneaux (pas 6 ni 10, qui en planteraient un devant).
+	lanterns = 8,
+	-- Les colonnes antiques : entieres (avec chapiteau) ou brisees, et du
+	-- lierre sur certaines (LobbyService).
+	columnStyle = {
+		wholeChance = 0.35,
+		wholeHeight = 14,
+		brokenHeight = { 4, 11 },
+		flutes = 10,
+		fluteColor = { 70, 66, 62 },
+		ivyChance = 0.5,
+		-- Beaucoup de petites feuilles : sept grandes faisaient des blocs.
+		ivyLeaves = 16,
+		ivyColor = { 62, 86, 44 },
+	},
+	-- L'ecran du salon (choisi avec Josh le 14 novembre 2026 : « petite
+	-- barre discrete ») : en haut, une barre (niveau, groupe, mode, pret) ;
+	-- en bas, les boutons, chacun avec son icone de manette. Tailles en
+	-- pixels.
+	hud = {
+		barTop = 14,
+		barHeight = 50,
+		barPadding = 10,
+		barGap = 14,
+		barTextSize = 20,
+		-- Le medaillon du niveau, la jauge d'XP, la piece des credits, les
+		-- pastilles (mode, pret), les separateurs.
+		badgeSize = 36,
+		xpWidth = 130,
+		xpBarHeight = 6,
+		smallTextSize = 15,
+		coinSize = 16,
+		chipHeight = 28,
+		chipPadding = 12,
+		separatorHeight = 24,
+		separatorTransparency = 0.6,
+		-- Le fond de la pastille de l'action principale (Pret), et l'ecart
+		-- entre le bord d'une pastille et son icone.
+		primaryBackground = { 70, 42, 20 },
+		hintInset = 6,
+		-- Sur un petit ecran, barre et boutons rapetissent pour garder cette
+		-- marge de chaque cote (pixels).
+		screenMargin = 12,
+		hintBottom = 26,
+		hintHeight = 44,
+		hintGap = 12,
+		hintIcon = 32,
+		hintTextSize = 19,
+		-- Au clavier : la touche dans une pastille de cette largeur mini.
+		keyMinWidth = 36,
+		corner = 10,
+		background = { 14, 11, 10 },
+		transparency = 0.3,
+		strokeTransparency = 0.45,
+		text = { 240, 232, 220 },
+		ready = { 140, 220, 120 },
+	},
 	-- Le petit tutoriel : les cachettes en vitrine sur un arc (degres), et
-	-- le panneau « Comment jouer ».
+	-- les panneaux illustres « Comment jouer » sur l'arc d'en face.
 	tutorial = {
 		maxSpots = 9,
 		radius = 50,
@@ -1572,19 +1638,140 @@ Config.lobby = {
 		tagHeight = 3,
 		tagAbove = 7,
 		tagDistance = 60,
-		boardWidth = 22,
-		boardHeight = 14,
-		boardInset = 6,
-		pixelsPerStud = 30,
-		lines = {
-			"COMMENT JOUER",
-			"• L'Œil s'ouvre et se ferme. Ouvert, ne reste pas dans sa lumière.",
-			"• Cache-toi : X près d'une cachette (elles sont ici, apprends-les).",
-			"• B : s'accroupir ; B maintenu : s'allonger ; B en courant : glisser.",
-			"• Fouille les meubles (X maintenu). L1/R1 choisir, L2 utiliser.",
-			"• R2 frapper, Y pousser. Aspiré ? Le Ventre : une seule chance.",
-			"• Reste dans le cercle. La dernière équipe en vie gagne.",
+		-- Les cachettes en vitrine sautent cet angle (degres, de chaque cote)
+		-- devant le classement : « Caisses » le cachait (vu en image).
+		boardClearance = 12,
+		-- Les panneaux (choisi avec Josh : un par idee, illustre, une phrase
+		-- courte ; l'ancien pave de six lignes ne se lisait pas). En studs :
+		-- a hauteur d'yeux, sur un arc de cet angle de depart et de ce pas.
+		-- Aucune colonne sur cet arc (LobbyService les saute) ; les
+		-- lampadaires (22,5 + 45 k) tombent entre deux panneaux.
+		panelWidth = 13,
+		panelHeight = 8.5,
+		panelLift = 2.4,
+		panelRadius = 59,
+		panelArcStart = 40,
+		panelArcStep = 20,
+		pixelsPerStud = 50,
+		-- Chaque bouton : { contexte, action, texte } de Config.controls (un
+		-- test verifie qu'il existe). `art` choisit le dessin (LobbyView).
+		panels = {
+			{
+				art = "eye",
+				title = "L'ŒIL",
+				text = "Ouvert, il chasse. Ne reste pas dans sa lumière.",
+				buttons = {},
+			},
+			{
+				art = "hide",
+				title = "SE CACHER",
+				text = "Chaque cachette a ses places. Elles sont toutes ici.",
+				buttons = { { "onFoot", "interact", "entrer" } },
+			},
+			{
+				art = "crouch",
+				title = "SE FAIRE PETIT",
+				text = "Accroupi ou allongé, on se voit moins.",
+				buttons = { { "onFoot", "posture", "maintenu : s'allonger" } },
+			},
+			{
+				art = "loot",
+				title = "FOUILLER",
+				text = "Les meubles cachent des objets.",
+				buttons = {
+					{ "onFoot", "interact", "maintenu" },
+					{ "onFoot", "useItem", "utiliser" },
+				},
+			},
+			{
+				art = "fight",
+				title = "SE DÉFENDRE",
+				text = "Frappe ou pousse qui te gêne.",
+				buttons = { { "onFoot", "hit", "frapper" }, { "onFoot", "shove", "pousser" } },
+			},
+			{
+				art = "win",
+				title = "GAGNER",
+				text = "Reste dans le cercle. Aspiré ? Le Ventre te laisse une chance.",
+				buttons = {},
+			},
 		},
+	},
+	-- Le decor (choisi avec Josh : « juste sous l'Oeil », pas de ville en
+	-- contrebas : on en verrait les bords vides). Une mer de nuages cache
+	-- tout ; l'Oeil de la carte, en plus petit, veille au loin et suit
+	-- chaque joueur des yeux (chez lui) ; des rochers flottent sous la place.
+	decor = {
+		-- Les modeles (arbres morts, buissons) de la recette.
+		models = "RoyaleModeles",
+		trees = { "Mort1", "Mort2" },
+		treeAngles = { 172, 196, 345, 10 },
+		treeRadius = 63,
+		bushes = "BuissonReel",
+		bushAngles = { 160, 185, 350, 20, 232, 300 },
+		bushRadius = 64,
+		bushScale = 0.6,
+		-- Les nuages : des boules aplaties, sous la place, jusqu'a ce rayon.
+		-- Chaque nuage est un amas de quelques boules : une boule seule faisait
+		-- une crepe blanche posee sur de la neige (vu en image).
+		cloudCount = 110,
+		cloudPuffs = 3,
+		cloudBelow = 70,
+		cloudSpread = 18,
+		cloudInner = 60,
+		cloudOuter = 900,
+		cloudWidth = { 60, 160 },
+		cloudHeight = { 22, 48 },
+		cloudColor = { 214, 210, 208 },
+		cloudTransparency = 0.1,
+		-- Un plancher sous les nuages : le vide entre deux boules montrait le
+		-- ciel par en dessous (2048 au plus, la taille maxi d'une part). Plus
+		-- sombre que les nuages, pour que la mer ait du relief.
+		cloudFloorBelow = 95,
+		cloudFloorSize = 2000,
+		cloudFloorColor = { 168, 168, 174 },
+		-- Un banc de gros nuages a l'horizon : sans lui, les collines de la
+		-- carte depassaient au loin (vu en image).
+		bankCount = 56,
+		bankRadius = { 880, 1000 },
+		bankWidth = { 220, 380 },
+		bankHeight = { 90, 160 },
+		bankBelow = 55,
+		-- Le dessous de la place : une ile qui s'effile, couche par couche
+		-- { part du rayon, profondeur en studs }.
+		islandLayers = { { 0.75, 24 }, { 0.5, 38 }, { 0.25, 52 } },
+		-- L'Oeil, dans le ciel de la carte en plus petit (sa dechirure, ses
+		-- paupieres ; construit chez chaque joueur, LobbyScene) : la taille,
+		-- ce qu'on garde autour de lui (studs avant reduction), et ou flotte
+		-- son centre (studs, depuis la place).
+		skyName = "CielDuSalon",
+		skyScale = 0.4,
+		skyKeep = 380,
+		eyeOffset = { 480, 230, 0 },
+		-- Il vit (choisi avec Josh : « il regarde un peu dans tous les sens et
+		-- cligne ») : il change de cible toutes les quelques secondes, souvent
+		-- toi, sinon un point au hasard dans le cone ou sa paupiere le laisse
+		-- tourner (Config.view.eyeTurnMax).
+		eyeTurnRate = 2.5,
+		glanceSeconds = { 0.8, 3 },
+		glanceAtPlayer = 0.45,
+		-- Les clignements : tous les quelques secondes, parfois deux de suite.
+		blinkEvery = { 2.5, 6.5 },
+		blinkCloseSeconds = 0.09,
+		blinkOpenSeconds = 0.16,
+		doubleBlink = 0.25,
+		-- Le rouge des dessins des panneaux (celui des faisceaux).
+		eyeGlow = { 255, 70, 40 },
+		-- Les rochers flottants : autour du dessous, ils montent et descendent
+		-- de cette amplitude (studs) en cette periode (s).
+		-- Chaque rocher : quelques blocs tournes, plutot qu'un cube.
+		rocks = 16,
+		rockPieces = 3,
+		rockRadius = { 76, 110 },
+		rockBelow = { 4, 40 },
+		rockSize = { 3, 9 },
+		rockBob = 2.5,
+		rockPeriod = { 5, 9 },
 	},
 	-- Un groupe : 4 au plus (l'escouade), invite en maintenant X sur
 	-- quelqu'un ; l'invitation attend une reponse ce temps.
@@ -1642,6 +1829,9 @@ Config.progression = {
 	sessionStaleSeconds = 60,
 	-- On sauvegarde aussi regulierement (s), au cas ou le serveur tombe.
 	autosaveSeconds = 120,
+	-- Jamais deux ecritures du meme profil a moins de ceci (s) : la limite
+	-- de Roblox est de 6 s par cle, avec une marge.
+	minWriteSeconds = 7,
 	-- L'XP d'une partie : de quoi jouer, plus pour chaque Regard atteint,
 	-- beaucoup pour la victoire.
 	xp = { played = 50, perRegard = 15, win = 150 },
@@ -1837,6 +2027,9 @@ Config.leaderboard = {
 	boardWidth = 18,
 	boardHeight = 14,
 	boardInset = 6,
+	-- Ou il se dresse dans le salon (degres, comme les arcs du tutoriel :
+	-- 270 = cote -Z). L'arc des cachettes en vitrine laisse un trou devant.
+	angle = 270,
 	pixelsPerStud = 30,
 }
 
@@ -1895,7 +2088,11 @@ Config.pass = {
 	season = 1,
 	tiers = 30,
 	-- L'XP de passe par palier (l'XP d'une partie compte aussi pour le passe).
-	tierXp = 300,
+	-- A 300, le passe se finissait en ~9 jours a 3 parties par jour avec les
+	-- defis : trop vite pour une saison de 8 semaines. A 900, ~4 semaines
+	-- pour ce joueur-la (demande de Josh, 14 novembre 2026) : celui qui joue
+	-- plus le finit plus tot, celui qui joue moins a encore le temps.
+	tierXp = 900,
 	premiumProductId = 0,
 	premiumRobux = 499,
 	-- Le premium donne un peu plus d'XP de compte (CONCEPT.md), jamais de
@@ -2058,6 +2255,11 @@ Config.view = {
 	-- passeraient au travers (vu en image). Ils s'effacent sous cette
 	-- ouverture (0 ferme, 1 ouvert).
 	irisShowAt = 0.3,
+	-- La lueur qui court dans les fissures du ciel (Cracks) : sa vitesse
+	-- (radians par seconde), le decalage d'un segment au suivant (elle part
+	-- du trou), le decalage d'une branche a l'autre, et jusqu'ou elle
+	-- s'eteint (0 jamais, 1 tout a fait).
+	crackPulse = { speed = 2.2, rankStep = 0.7, branchOffset = 1.7, depth = 0.85 },
 	irisParts = { "Iris", "IrisChaud", "AnneauIris", "Lisere", "Fibre", "Pupille", "Reflet" },
 	-- Les couleurs sont en { rouge, vert, bleu } (0 a 255) : Config se charge
 	-- aussi dans les tests, ou Color3 n'existe pas.
@@ -2102,8 +2304,25 @@ Config.view = {
 	spectateInfoBottom = 40,
 	spectateInfoHeight = 30,
 	spectateInfoTextSize = 22,
-	-- La police des textes de l'Oeil (Survivor : la machine a ecrire).
+	-- Deux polices (choisi avec Josh le 14 novembre 2026, « melange ») : la
+	-- machine a ecrire pour les titres et la voix de l'Oeil (l'ambiance de
+	-- Survivor), une police nette pour tout ce qu'on lit vite (consignes,
+	-- listes, chiffres) : la machine a ecrire en petit se lisait mal.
 	font = "SpecialElite",
+	bodyFont = "BuilderSansMedium",
+	bodyBoldFont = "BuilderSansBold",
+	-- Au clavier, les touches dans une pastille (ButtonIcons), avec leur nom
+	-- francais quand celui de Roblox ne parle pas.
+	keyBackground = { 236, 226, 212 },
+	keyText = { 30, 24, 22 },
+	keyNames = {
+		MouseButton1 = "Clic gauche",
+		MouseButton2 = "Clic droit",
+		Return = "Entrée",
+		Backspace = "Retour",
+		LeftShift = "Maj",
+		Space = "Espace",
+	},
 	-- Le sac en bas de l'ecran : 4 places de cette taille (pixels), un ecart,
 	-- a cette distance du bas ; la place choisie a un cadre plus epais.
 	slotWidth = 120,

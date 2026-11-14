@@ -95,7 +95,7 @@ local function textLabel(
 	l.Size = size
 	l.Position = position
 	l.AnchorPoint = Vector2.new(0.5, 0)
-	l.Font = (Enum.Font :: any)[V.font]
+	l.Font = (Enum.Font :: any)[V.bodyFont]
 	l.TextSize = textSize
 	l.TextColor3 = Color3.fromRGB(240, 232, 220)
 	l.TextStrokeTransparency = 0.4

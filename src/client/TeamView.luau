@@ -86,7 +86,7 @@ function TeamView.start()
 	list.Size = UDim2.fromOffset(TV.listWidth, TV.listHeight)
 	list.TextXAlignment = Enum.TextXAlignment.Left
 	list.TextYAlignment = Enum.TextYAlignment.Bottom
-	list.Font = (Enum.Font :: any)[V.font]
+	list.Font = (Enum.Font :: any)[V.bodyFont]
 	list.TextSize = TV.listTextSize
 	list.TextColor3 = rgb(SQ.markerColor)
 	list.TextStrokeTransparency = 0.4
@@ -128,7 +128,7 @@ function TeamView.start()
 		local label = Instance.new("TextLabel")
 		label.BackgroundTransparency = 1
 		label.Size = UDim2.fromScale(1, 1)
-		label.Font = (Enum.Font :: any)[V.font]
+		label.Font = (Enum.Font :: any)[V.bodyFont]
 		label.TextScaled = true
 		label.TextColor3 = rgb(SQ.markerColor)
 		label.TextStrokeTransparency = 0.3
